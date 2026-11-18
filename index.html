@@ -2,14 +2,21 @@
 <html lang="ar" dir="rtl" id="htmlRoot">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="docTitle">نظام إدارة الصيدلية المتطور</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- إعدادات تشغيل التطبيق بملء الشاشة على أجهزة الآيفون والآيباد iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="صيدليتي">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0d9488">
+
+    <title id="docTitle">صيدليتي</title>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Readex+Pro:wght@400;600&family=Amiri:wght@400;700&family=Tajawal:wght@400;700&family=Almarai:wght@400;700&family=Changa:wght@400;700&family=El+Messiri:wght@400;700&family=Reem+Kufi:wght@400;700&family=Scheherazade+New:wght@400;700&family=Lateef&family=Noto+Naskh+Arabic:wght@400;700&family=Noto+Kufi+Arabic:wght@400;700&family=Harmattan:wght@400;700&family=Katibeh&family=Lalezar&family=Rakkas&family=Lemonada:wght@400;700&family=Marhey:wght@400;700&family=Roboto:wght@400;700&family=Open+Sans:wght@400;700&family=Lato:wght@400;700&family=Montserrat:wght@400;700&family=Poppins:wght@400;700&family=Inter:wght@400;700&family=Oswald:wght@400;700&family=Raleway:wght@400;700&family=Ubuntu:wght@400;700&family=Playfair+Display:wght@400;700&family=Merriweather:wght@400;700&family=Nunito:wght@400;700&family=PT+Sans:wght@400;700&family=Quicksand:wght@400;700&family=Mulish:wght@400;700&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #0d9488; --primary-dark: #0f766e; --bg: #f1f5f9; --card: #ffffff; --text: #1e293b; --danger: #ef4444; --warning: #f59e0b; --success: #10b981; --border: #cbd5e1; --font-family: 'Cairo', sans-serif; }
         * { box-sizing: border-box; font-family: var(--font-family); }
-        body { background-color: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; }
+        body { background-color: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; padding-top: env(safe-area-inset-top); }
         
         /* إخفاء الإعلانات المزعجة تماماً */
         iframe[src*="ads"], .adsbygoogle, div[id*="announcement"], div[class*="banner"], a[href*="appsgeyser"][href*="banner"] { display: none !important; visibility: hidden !important; height: 0 !important; }
@@ -330,7 +337,7 @@
             title: "💊 Dermannoxwê", tb_patients: "Nexweş", tb_inventory: "Stok", tb_sales: "🛒 Firotin", tb_expiry: "⏳ Dem", tb_charity: "❤️ Xêr", tb_debts: "Deyn", tb_settings: "Mîheng",
             p_title: "Nexweş", l_pName: "Nav:", l_pAge: "Temen:", l_pNotes: "Derman:", l_pImages: "Wêne:", b_savePatient: "Tomar", b_delRow: "Jêbirin", b_addMoreMed: "+ Dermanek din", th_pName: "Nav", th_pAge: "Temen", th_pNotes: "Derman", th_pImages: "Wêne", th_pAction: "Cîbicî",
             m_title: "Derman", l_mName: "Nav:", l_mCode: "Kod:", l_mBarcode: "Barkod:", b_cam: "📷 Kamera", l_mPrice: "Bihayê:", l_mExpiry: "Dem:", b_saveMed: "Tomar", th_mName: "Nav", th_mCode: "Kod", th_mBarcode: "Barkod", th_mPrice: "Bihayê", th_mExpiry: "Dem", th_mAction: "Cîbicî",
-            s_title: "🛒 Firotin", l_sMed: "Derman hilbijêre:", l_sPrice: "Bihayê:", l_sQty: "Hejمار:", b_addSale: "+ Zêde bike", s_listTitle: "📋 Lîste", th_sMed: "Nav", th_sPrice: "Bihayê", th_sQty: "Hejmar", th_sTotal: "Giştî", th_sAction: "Jêbirin", t_grandTotal: "Giştî", b_saveSale: "💾 Tomar bike",
+            s_title: "🛒 Firotin", l_sMed: "Derman hilbijêre:", l_sPrice: "Bihayê:", l_sQty: "Hejmar:", b_addSale: "+ Zêde bike", s_listTitle: "📋 Lîste", th_sMed: "Nav", th_sPrice: "Bihayê", th_sQty: "Hejmar", th_sTotal: "Giştî", th_sAction: "Jêbirin", t_grandTotal: "Giştî", b_saveSale: "💾 Tomar bike",
             e_title: "⏳ Dem", e_desc: "Çavdêriya dermanan", th_eName: "Nav", th_eCode: "Kod", th_eDate: "Dem", th_eStatus: "Rewş",
             c_title: "❤️ Xêr", l_cName: "Navê kesî:", l_cMed: "Derman:", l_cPrice: "Bihayê:", l_cNotes: "Têbînî:", b_saveCharity: "💾 Tomar bike", th_cName: "Nav", th_cMed: "Derman", th_cPrice: "Bihayê", th_cNotes: "Têbînî", th_cDate: "Dem", th_cAction: "Cîbicî", t_charityTotal: "Giştî",
             d_title: "Deyn", l_dName: "Nav:", l_dAmount: "Mîqdar:", l_dDetails: "Hûrgilî:", b_saveDebt: "Tomar", th_dName: "Nav", th_dAmount: "Mîqdar", th_dDetails: "Hûrgilî", th_dAction: "Cîbicî",
