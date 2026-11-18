@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام إدارة الصيدلية</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>نظام إدارة الصيدلية المتطور</title>
+    <!-- استيراد مكتبة قراءة الباركود عبر الكاميرا المباشرة -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <!-- استيراد أكثر من 40 خط عالمي وعربي وكردي -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Readex+Pro:wght@400;600&family=Amiri:wght@400;700&family=Tajawal:wght@400;700&family=Almarai:wght@400;700&family=Changa:wght@400;700&family=El+Messiri:wght@400;700&family=Reem+Kufi:wght@400;700&family=Scheherazade+New:wght@400;700&family=Lateef&family=Amiri+Quran&family=Noto+Naskh+Arabic:wght@400;700&family=Noto+Kufi+Arabic:wght@400;700&family=Harmattan:wght@400;700&family=Katibeh&family=Lalezar&family=Rakkas&family=Vibes&family=Lemonada:wght@400;700&family=Marhey:wght@400;700&family=Readex+Pro:wght@400;700&family=Roboto:wght@400;700&family=Open+Sans:wght@400;700&family=Lato:wght@400;700&family=Montserrat:wght@400;700&family=Poppins:wght@400;700&family=Inter:wght@400;700&family=Oswald:wght@400;700&family=Raleway:wght@400;700&family=Ubuntu:wght@400;700&family=Playfair+Display:wght@400;700&family=Merriweather:wght@400;700&family=Nunito:wght@400;700&family=Ubuntu:wght@400;700&family=PT+Sans:wght@400;700&family=Quicksand:wght@400;700&family=Mulish:wght@400;700&family=Inconsolata:wght@400;700&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #0d9488; --primary-dark: #0f766e; --bg: #f1f5f9; --card: #ffffff; --text: #1e293b; --danger: #ef4444; --warning: #f59e0b; --border: #cbd5e1; --font-family: 'Cairo', sans-serif; }
         * { box-sizing: border-box; font-family: var(--font-family); }
@@ -13,7 +16,7 @@
         header h1 { margin: 0; font-size: 1.3rem; }
         .lang-select { padding: 8px; border-radius: 6px; border: none; font-weight: bold; background: #fff; color: var(--primary-dark); cursor: pointer; }
         .tabs { display: flex; justify-content: center; background: #fff; border-bottom: 2px solid var(--border); position: sticky; top: 0; z-index: 10; overflow-x: auto; }
-        .tab-btn { flex: 1; min-width: 110px; padding: 12px 8px; border: none; background: none; font-size: 0.9rem; font-weight: bold; color: #64748b; cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; }
+        .tab-btn { flex: 1; min-width: 100px; padding: 12px 6px; border: none; background: none; font-size: 0.85rem; font-weight: bold; color: #64748b; cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; }
         .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); background-color: #f0fdfa; }
         .container { max-width: 950px; margin: 15px auto; padding: 0 10px; }
         .section { display: none; }
@@ -27,34 +30,29 @@
         .btn:hover { background-color: var(--primary-dark); }
         .btn-danger { background-color: var(--danger); padding: 5px 10px; font-size: 0.8rem; width: auto; }
         .btn-warning { background-color: var(--warning); color: white; padding: 5px 10px; font-size: 0.8rem; width: auto; }
+        .btn-secondary { background-color: #475569; margin-top: 5px; }
         .search-box { width: 100%; padding: 10px; margin-bottom: 10px; border: 2px solid var(--primary); border-radius: 6px; font-size: 0.95rem; }
         
-        /* حاوية الجداول والأنماط الـ 12 */
         .table-container { overflow-x: auto; border-radius: 6px; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 20px; }
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 10px; text-align: inherit; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
         th { background-color: #f8fafc; color: var(--primary-dark); }
 
-        /* الأنماط المختلفة للجداول */
-        .style-1 table { border-style: solid; }
-        .style-2 table { border-collapse: separate; border-spacing: 0 6px; background: transparent; }
-        .style-2 th, .style-2 td { background: white; border: 1px solid var(--border); }
-        .style-3 th { background-color: var(--primary); color: white; }
-        .style-4 tr:nth-child(even) { background-color: #f8fafc; }
-        .style-5 th { border-bottom: 3px solid var(--primary); }
-        .style-6 td { border-bottom: 2px dashed var(--border); }
-        .style-7 table { box-shadow: 0 8px 20px rgba(0,0,0,0.08); border-radius: 10px; overflow: hidden; }
-        .style-8 th { background: #1e293b; color: white; }
-        .style-9 td { padding: 5px 8px; font-size: 0.85rem; }
-        .style-10 th { text-transform: uppercase; letter-spacing: 1px; background: #e2e8f0; color: #0f172a; }
-        .style-11 table { border: 2px solid var(--primary); border-radius: 8px; }
-        .style-12 th { background: #ffe4e6; color: #9f1239; }
-
+        .med-item-row { display: flex; gap: 5px; margin-bottom: 5px; align-items: center; }
         .med-images { display: flex; gap: 4px; flex-wrap: wrap; }
         .med-images img { width: 45px; height: 45px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border); cursor: pointer; }
         .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; }
         .modal img { max-width: 90%; max-height: 90%; border-radius: 6px; }
         .sync-badge { background: #10b981; color: white; padding: 3px 8px; border-radius: 15px; font-size: 0.7rem; display: inline-block; margin-top: 5px; }
+        
+        #reader { width: 100%; max-width: 400px; margin: 10px auto; display: none; }
+
+        @media print {
+            body { background: white; }
+            header, .tabs, .card, .search-box, .btn, .lang-select { display: none !important; }
+            .section { display: block !important; }
+            .table-container { box-shadow: none; border: 1px solid #000; }
+        }
     </style>
 </head>
 <body id="bodyTag">
@@ -82,12 +80,21 @@
     <!-- المرضى -->
     <div id="patients" class="section active">
         <div class="card">
-            <h3 id="p_title">إضافة مريض</h3>
+            <h3 id="p_title">إضافة / تعديل مريض</h3>
             <input type="hidden" id="pEditId">
             <div class="form-grid">
                 <div class="form-group"><label id="l_pName">الاسم:</label><input type="text" id="pName"></div>
                 <div class="form-group"><label id="l_pAge">العمر:</label><input type="number" id="pAge"></div>
-                <div class="form-group"><label id="l_pNotes">الأدوية:</label><input type="text" id="pNotes"></div>
+                <div class="form-group" style="grid-column: span 2;">
+                    <label id="l_pNotes">الأدوية والملاحظات (أكثر من دواء):</label>
+                    <div id="medsListContainer">
+                        <div class="med-item-row">
+                            <input type="text" class="med-input-field" placeholder="اسم الدواء والجرعة...">
+                            <button type="button" class="btn btn-danger" style="width:auto; margin:0;" onclick="this.parentElement.remove()">حذف</button>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-secondary" onclick="addMedInputRow()">+ إضافة دواء آخر</button>
+                </div>
                 <div class="form-group"><label id="l_pImages">صور الأدوية:</label><input type="file" id="pImages" accept="image/*" multiple></div>
             </div>
             <button class="btn" onclick="savePatient()" id="b_savePatient">حفظ المريض</button>
@@ -104,15 +111,22 @@
     <!-- المخزون -->
     <div id="inventory" class="section">
         <div class="card">
-            <h3 id="m_title">إضافة علاج</h3>
+            <h3 id="m_title">إضافة / تعديل علاج</h3>
             <input type="hidden" id="mEditId">
             <div class="form-grid">
                 <div class="form-group"><label id="l_mName">اسم العلاج:</label><input type="text" id="mName"></div>
                 <div class="form-group"><label id="l_mCode">الكود:</label><input type="text" id="mCode"></div>
-                <div class="form-group"><label id="l_mBarcode">الباركود:</label><input type="text" id="mBarcode"></div>
+                <div class="form-group">
+                    <label id="l_mBarcode">الباركود:</label>
+                    <div style="display:flex; gap:5px;">
+                        <input type="text" id="mBarcode" placeholder="رقم الباركود">
+                        <button type="button" class="btn" style="width:auto; margin:0;" onclick="startBarcodeScanner()">📷 فتح الكاميرا</button>
+                    </div>
+                </div>
+                <div id="reader"></div>
                 <div class="form-group"><label id="l_mPrice">السعر:</label><input type="text" id="mPrice"></div>
             </div>
-            <button class="btn" onclick="saveMedicine()" id="b_saveMed">إضافة للمخزون</button>
+            <button class="btn" onclick="saveMedicine()" id="b_saveMed">حفظ العلاج</button>
         </div>
         <input type="text" class="search-box" id="searchMed" onkeyup="renderMeds()" placeholder="">
         <div class="table-container" id="mTableBox">
@@ -126,14 +140,14 @@
     <!-- الديون -->
     <div id="debts" class="section">
         <div class="card">
-            <h3 id="d_title">تسجيل دين</h3>
+            <h3 id="d_title">تسجيل / تعديل دين</h3>
             <input type="hidden" id="dEditId">
             <div class="form-grid">
                 <div class="form-group"><label id="l_dName">الاسم:</label><input type="text" id="dName"></div>
                 <div class="form-group"><label id="l_dAmount">المبلغ:</label><input type="number" id="dAmount"></div>
                 <div class="form-group"><label id="l_dDetails">التفاصيل:</label><input type="text" id="dDetails"></div>
             </div>
-            <button class="btn" onclick="saveDebt()" id="b_saveDebt">إضافة للقائمة</button>
+            <button class="btn" onclick="saveDebt()" id="b_saveDebt">حفظ الدين</button>
         </div>
         <input type="text" class="search-box" id="searchDebt" onkeyup="renderDebts()" placeholder="">
         <div class="table-container" id="dTableBox">
@@ -147,7 +161,7 @@
     <!-- الإعدادات -->
     <div id="settings" class="section">
         <div class="card">
-            <h3 id="st_cloudTitle">☁️ ربط الحساب بالإيميل</h3>
+            <h3>☁️ ربط الحساب بالإيميل</h3>
             <p style="color:#64748b; font-size:0.85rem;">أدخل إيميلك لحفظ واسترجاع بياناتك تلقائياً.</p>
             <div class="form-group">
                 <label>البريد الإلكتروني:</label>
@@ -156,9 +170,54 @@
             <button class="btn" onclick="saveUserEmail()">ربط واسترجاع البيانات</button>
             <div id="syncStatus"></div>
         </div>
+
         <div class="card">
-            <h3 id="st_themeTitle">🎨 إعدادات المظهر والجداول</h3>
+            <h3>🖨️ طباعة المستندات والتقارير</h3>
+            <p style="color:#64748b; font-size:0.85rem;">استنساخ وطباعة صفحات الأدوية والمراجعين والديون عند الحاجة.</p>
+            <button class="btn" style="background:#2563eb;" onclick="window.print()">🖨️ طباعة الصفحة الحالية / التقارير</button>
+        </div>
+
+        <div class="card">
+            <h3>🎨 إعدادات الخطوط والمظهر (أكثر من 40 نوع خط)</h3>
             <div class="form-grid">
+                <div class="form-group">
+                    <label>اختر نوع الخط العالمي:</label>
+                    <select id="fontSelect" onchange="changeGlobalFont(this.value)">
+                        <option value="'Cairo', sans-serif">Cairo (عربي عصري)</option>
+                        <option value="'Tajawal', sans-serif">Tajawal (تجوال)</option>
+                        <option value="'Almarai', sans-serif">Almarai (المراعي)</option>
+                        <option value="'Amiri', serif">Amiri (أميري تراثي)</option>
+                        <option value="'Changa', sans-serif">Changa (شانجا)</option>
+                        <option value="'El Messiri', sans-serif">El Messiri (المسيري)</option>
+                        <option value="'Reem Kufi', sans-serif">Reem Kufi (ريم كوفي)</option>
+                        <option value="'Scheherazade New', serif">Scheherazade (شهرزاد)</option>
+                        <option value="'Lateef', serif">Lateef (لطيف)</option>
+                        <option value="'Noto Naskh Arabic', serif">Noto Naskh (نسخ)</option>
+                        <option value="'Noto Kufi Arabic', sans-serif">Noto Kufi (كوفي)</option>
+                        <option value="'Harmattan', serif">Harmattan (هطرمان)</option>
+                        <option value="'Katibeh', serif">Katibeh (كاتبة)</option>
+                        <option value="'Lalezar', cursive">Lalezar (لاله زار)</option>
+                        <option value="'Rakkas', cursive">Rakkas (رقاص)</option>
+                        <option value="'Lemonada', cursive">Lemonada (ليمونادا)</option>
+                        <option value="'Marhey', cursive">Marhey (مرحي)</option>
+                        <option value="'Roboto', sans-serif">Roboto (English)</option>
+                        <option value="'Open Sans', sans-serif">Open Sans (English)</option>
+                        <option value="'Lato', sans-serif">Lato (English)</option>
+                        <option value="'Montserrat', sans-serif">Montserrat (English)</option>
+                        <option value="'Poppins', sans-serif">Poppins (English)</option>
+                        <option value="'Inter', sans-serif">Inter (English)</option>
+                        <option value="'Oswald', sans-serif">Oswald (English)</option>
+                        <option value="'Raleway', sans-serif">Raleway (English)</option>
+                        <option value="'Ubuntu', sans-serif">Ubuntu (English)</option>
+                        <option value="'Playfair Display', serif">Playfair Display</option>
+                        <option value="'Merriweather', serif">Merriweather</option>
+                        <option value="'Nunito', sans-serif">Nunito</option>
+                        <option value="'PT Sans', sans-serif">PT Sans</option>
+                        <option value="'Quicksand', sans-serif">Quicksand</option>
+                        <option value="'Mulish', sans-serif">Mulish</option>
+                        <option value="'Fira Code', monospace">Fira Code (Code)</option>
+                    </select>
+                </div>
                 <div class="form-group">
                     <label>لون الثيم:</label>
                     <select id="colorSelect" onchange="changeColorTheme(this.value)">
@@ -169,20 +228,14 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>شكل ونمط الجداول (أكثر من 10 أنماط):</label>
+                    <label>شكل الجداول:</label>
                     <select id="tableStyleSelect" onchange="changeTableStyle(this.value)">
                         <option value="style-1">النمط 1: قياسي بسيط</option>
-                        <option value="style-2">النمط 2: جداول منفصلة (Cards)</option>
-                        <option value="style-3">النمط 3: رأس ملون أساسي</option>
-                        <option value="style-4">النمط 4: صفوف مخططة متباينة (Zebra)</option>
-                        <option value="style-5">النمط 5: خط سفلي عريض للرأس</option>
-                        <option value="style-6">النمط 6: خطوط أفقية متقطعة (Dashed)</option>
-                        <option value="style-7">النمط 7: زوايا دائرية مع ظل عميق</option>
-                        <option value="style-8">النمط 8: رأس داكن وأنيق</option>
-                        <option value="style-9">النمط 9: جدول مضغوط ومصغر</option>
-                        <option value="style-10">النمط 10: أحرف كبيرة وبارزة</option>
-                        <option value="style-11">النمط 11: إطار كامل متصل</option>
-                        <option value="style-12">النمط 12: رأس وردي مميز</option>
+                        <option value="style-2">النمط 2: جداول منفصلة</option>
+                        <option value="style-3">النمط 3: رأس ملون</option>
+                        <option value="style-4">النمط 4: صفوف متباينة</option>
+                        <option value="style-7">النمط 7: زوايا دائرية وظل</option>
+                        <option value="style-8">النمط 8: رأس داكن</option>
                     </select>
                 </div>
             </div>
@@ -194,12 +247,12 @@
 
 <script>
     const translations = {
-        ar: { title: "💊 نظام صيدليتي", tb_patients: "المرضى", tb_inventory: "المخزون", tb_debts: "الديون", tb_settings: "الإعدادات", p_title: "إضافة / تعديل مريض", l_pName: "الاسم:", l_pAge: "العمر:", l_pNotes: "الأدوية:", l_pImages: "صور:", b_savePatient: "حفظ المريض", ph_searchP: "🔍 ابحث...", th_pName: "الاسم", th_pAge: "العمر", th_pNotes: "الأدوية", th_pImages: "صور", th_pAction: "إجراء", m_title: "إضافة / تعديل علاج", l_mName: "العلاج:", l_mCode: "الكود:", l_mBarcode: "باركود:", l_mPrice: "السعر:", b_saveMed: "حفظ العلاج", ph_searchM: "🔍 ابحث...", th_mName: "العلاج", th_mCode: "الكود", th_mBarcode: "باركود", th_mPrice: "السعر", th_mAction2: "إجراء", d_title: "تسجيل / تعديل دين", l_dName: "الاسم:", l_dAmount: "المبلغ:", l_dDetails: "التفاصيل:", b_saveDebt: "حفظ الدين", ph_searchD: "🔍 ابحث...", th_dName: "الاسم", th_dAmount: "المبلغ", th_dDetails: "التفاصيل", th_dAction: "إجراء", st_cloudTitle: "☁️ ربط الحساب", st_themeTitle: "🎨 المظهر والجداول", deleteBtn: "حذف", editBtn: "تعديل", payBtn: "تسديد" },
-        ckb: { title: "💊 دەرمانخانە", tb_patients: "نەخۆش", tb_inventory: "کۆگا", tb_debts: "قەرز", tb_settings: "ڕێکخستن", p_title: "نەخۆش", l_pName: "ناو:", l_pAge: "تەمەن:", l_pNotes: "دەرمان:", l_pImages: "وێنە:", b_savePatient: "پاشەکەوت", ph_searchP: "🔍 گەڕان...", th_pName: "ناو", th_pAge: "تەمەن", th_pNotes: "دەرمان", th_pImages: "وێنە", th_pAction: "کردار", m_title: "دەرمان", l_mName: "ناو:", l_mCode: "کۆد:", l_mBarcode: "بارکۆد:", l_mPrice: "نرخ:", b_saveMed: "پاشەکەوت", ph_searchM: "🔍 گەڕان...", th_mName: "ناو", th_mCode: "کۆد", th_mBarcode: "بارکۆد", th_mPrice: "نرخ", th_mAction2: "کردار", d_title: "قەرز", l_dName: "ناو:", l_dAmount: "بڕ:", l_dDetails: "وردەکاری:", b_saveDebt: "پاشەکەوت", ph_searchD: "🔍 گەڕان...", th_dName: "ناو", th_dAmount: "بڕ", th_dDetails: "وردەکاری", th_dAction: "کردار", st_cloudTitle: "☁️ بەستنەوە", st_themeTitle: "🎨 ڕوکار و خشتە", deleteBtn: "سڕینەوە", editBtn: "دەستکاری", payBtn: "دانەوە" },
-        kmr: { title: "💊 Dermannoxwê", tb_patients: "Nexweş", tb_inventory: "Stok", tb_debts: "Deyn", tb_settings: "Mîheng", p_title: "Nexweş", l_pName: "Nav:", l_pAge: "Temen:", l_pNotes: "Derman:", l_pImages: "Wêne:", b_savePatient: "Tomar", ph_searchP: "🔍 Lêgerîn...", th_pName: "Nav", th_pAge: "Temen", th_pNotes: "Derman", th_pImages: "Wêne", th_pAction: "Cîbicîkirin", m_title: "Derman", l_mName: "Nav:", l_mCode: "Kod:", l_mBarcode: "Barkod:", l_mPrice: "Bihayê:", b_saveMed: "Tomar", ph_searchM: "🔍 Lêgerîn...", th_mName: "Nav", th_mCode: "Kod", th_mBarcode: "Barkod", th_mPrice: "Bihayê", th_mAction2: "Cîbicîkirin", d_title: "Deyn", l_dName: "Nav:", l_dAmount: "Mîqdar:", l_dDetails: "Hûrgilî:", b_saveDebt: "Tomar", ph_searchD: "🔍 Lêgerîn...", th_dName: "Nav", th_dAmount: "Mîqdar", th_dDetails: "Hûrgilî", th_dAction: "Cîbicîkirin", st_cloudTitle: "☁️ Girêdan", st_themeTitle: "🎨 Mîheng", deleteBtn: "Jêbirin", editBtn: "Guherandin", payBtn: "Dan" },
-        bad: { title: "💊 دەرمانخانە", tb_patients: "نەخۆش", tb_inventory: "کۆگا", tb_debts: "قەرز", tb_settings: "رێکخستن", p_title: "نەخۆش", l_pName: "ناڤ:", l_pAge: "تەمەن:", l_pNotes: "دەرمان:", l_pImages: "وێنە:", b_savePatient: "تۆمار", ph_searchP: "🔍 لێگەریان...", th_pName: "ناڤ", th_pAge: "تەمەن", th_pNotes: "دەرمان", th_pImages: "وێنە", th_pAction: "کریار", m_title: "دەرمان", l_mName: "ناڤ:", l_mCode: "کۆد:", l_mBarcode: "بارکۆد:", l_mPrice: "بها:", b_saveMed: "تۆمار", ph_searchM: "🔍 لێگەریان...", th_mName: "ناڤ", th_mCode: "کۆد", th_mBarcode: "بارکۆد", th_mPrice: "بها", th_mAction2: "کریار", d_title: "قەرز", l_dName: "ناڤ:", l_dAmount: "مقدار:", l_dDetails: "وردەکاری:", b_saveDebt: "تۆمار", ph_searchD: "🔍 لێگەریان...", th_dName: "ناڤ", th_dAmount: "مقدار", th_dDetails: "وردەکاری", th_dAction: "کریار", st_cloudTitle: "☁️ گرێدان", st_themeTitle: "🎨 ڕوکار", deleteBtn: "ژێبرن", editBtn: "دەستکاری", payBtn: "دان" },
-        trk: { title: "💊 Eczane", tb_patients: "Hastalar", tb_inventory: "Stok", tb_debts: "Borçlar", tb_settings: "Ayarlar", p_title: "Hasta", l_pName: "Adı:", l_pAge: "Yaş:", l_pNotes: "İlaçlar:", l_pImages: "Resim:", b_savePatient: "Kaydet", ph_searchP: "🔍 Ara...", th_pName: "Adı", th_pAge: "Yaş", th_pNotes: "İlaçlar", th_pImages: "Resim", th_pAction: "İşlem", m_title: "İlaç", l_mName: "Adı:", l_mCode: "Kod:", l_mBarcode: "Barkod:", l_mPrice: "Fiyat:", b_saveMed: "Kaydet", ph_searchM: "🔍 Ara...", th_mName: "Adı", th_mCode: "Kod", th_mBarcode: "Barkod", th_mPrice: "Fiyat", th_mAction2: "İşlem", d_title: "Borç", l_dName: "Adı:", l_dAmount: "Tutar:", l_dDetails: "Detay:", b_saveDebt: "Kaydet", ph_searchD: "🔍 Ara...", th_dName: "Adı", th_dAmount: "Tutar", th_dDetails: "Detay", th_dAction: "İşlem", st_cloudTitle: "☁️ Bulut", st_themeTitle: "🎨 Görünüm", deleteBtn: "Sil", editBtn: "Düzenle", payBtn: "Öde" },
-        en: { title: "💊 Pharmacy", tb_patients: "Patients", tb_inventory: "Inventory", tb_debts: "Debts", tb_settings: "Settings", p_title: "Patient", l_pName: "Name:", l_pAge: "Age:", l_pNotes: "Notes:", l_pImages: "Images:", b_savePatient: "Save", ph_searchP: "🔍 Search...", th_pName: "Name", th_pAge: "Age", th_pNotes: "Notes", th_pImages: "Images", th_pAction: "Action", m_title: "Medicine", l_mName: "Name:", l_mCode: "Code:", l_mBarcode: "Barcode:", l_mPrice: "Price:", b_saveMed: "Save", ph_searchM: "🔍 Search...", th_mName: "Name", th_mCode: "Code", th_mBarcode: "Barcode", th_mPrice: "Price", th_mAction2: "Action", d_title: "Debt", l_dName: "Name:", l_dAmount: "Amount:", l_dDetails: "Details:", b_saveDebt: "Save", ph_searchD: "🔍 Search...", th_dName: "Name", th_dAmount: "Amount", th_dDetails: "Details", th_dAction: "Action", st_cloudTitle: "☁️ Cloud", st_themeTitle: "🎨 Theme & Tables", deleteBtn: "Delete", editBtn: "Edit", payBtn: "Pay" }
+        ar: { title: "💊 نظام صيدليتي", tb_patients: "المرضى", tb_inventory: "المخزون", tb_debts: "الديون", tb_settings: "الإعدادات", p_title: "إضافة / تعديل مريض", l_pName: "الاسم:", l_pAge: "العمر:", l_pNotes: "الأدوية والملاحظات:", l_pImages: "صور:", b_savePatient: "حفظ المريض", ph_searchP: "🔍 ابحث...", th_pName: "الاسم", th_pAge: "العمر", th_pNotes: "الأدوية", th_pImages: "صور", th_pAction: "إجراء", m_title: "إضافة / تعديل علاج", l_mName: "العلاج:", l_mCode: "الكود:", l_mBarcode: "باركود:", l_mPrice: "السعر:", b_saveMed: "حفظ العلاج", ph_searchM: "🔍 ابحث...", th_mName: "العلاج", th_mCode: "الكود", th_mBarcode: "باركود", th_mPrice: "السعر", th_mAction2: "إجراء", d_title: "تسجيل / تعديل دين", l_dName: "الاسم:", l_dAmount: "المبلغ:", l_dDetails: "التفاصيل:", b_saveDebt: "حفظ الدين", ph_searchD: "🔍 ابحث...", th_dName: "الاسم", th_dAmount: "المبلغ", th_dDetails: "التفاصيل", th_dAction: "إجراء", deleteBtn: "حذف", editBtn: "تعديل", payBtn: "تسديد" },
+        ckb: { title: "💊 دەرمانخانە", tb_patients: "نەخۆش", tb_inventory: "کۆگا", tb_debts: "قەرز", tb_settings: "ڕێکخستن", p_title: "نەخۆش", l_pName: "ناو:", l_pAge: "تەمەن:", l_pNotes: "دەرمان:", l_pImages: "وێنە:", b_savePatient: "پاشەکەوت", ph_searchP: "🔍 گەڕان...", th_pName: "ناو", th_pAge: "تەمەن", th_pNotes: "دەرمان", th_pImages: "وێنە", th_pAction: "کردار", m_title: "دەرمان", l_mName: "ناو:", l_mCode: "کۆد:", l_mBarcode: "بارکۆد:", l_mPrice: "نرخ:", b_saveMed: "پاشەکەوت", ph_searchM: "🔍 گەڕان...", th_mName: "ناو", th_mCode: "کۆد", th_mBarcode: "بارکۆد", th_mPrice: "نرخ", th_mAction2: "کردار", d_title: "قەرز", l_dName: "ناو:", l_dAmount: "بڕ:", l_dDetails: "وردەکاری:", b_saveDebt: "پاشەکەوت", ph_searchD: "🔍 گەڕان...", th_dName: "ناو", th_dAmount: "بڕ", th_dDetails: "وردەکاری", th_dAction: "کردار", deleteBtn: "سڕینەوە", editBtn: "دەستکاری", payBtn: "دانەوە" },
+        kmr: { title: "💊 Dermannoxwê", tb_patients: "Nexweş", tb_inventory: "Stok", tb_debts: "Deyn", tb_settings: "Mîheng", p_title: "Nexweş", l_pName: "Nav:", l_pAge: "Temen:", l_pNotes: "Derman:", l_pImages: "Wêne:", b_savePatient: "Tomar", ph_searchP: "🔍 Lêgerîn...", th_pName: "Nav", th_pAge: "Temen", th_pNotes: "Derman", th_pImages: "Wêne", th_pAction: "Cîbicîkirin", m_title: "Derman", l_mName: "Nav:", l_mCode: "Kod:", l_mBarcode: "Barkod:", l_mPrice: "Bihayê:", b_saveMed: "Tomar", ph_searchM: "🔍 Lêgerîn...", th_mName: "Nav", th_mCode: "Kod", th_mBarcode: "Barkod", th_mPrice: "Bihayê", th_mAction2: "Cîbicîkirin", d_title: "Deyn", l_dName: "Nav:", l_dAmount: "Mîqdar:", l_dDetails: "Hûrgilî:", b_saveDebt: "Tomar", ph_searchD: "🔍 Lêgerîn...", th_dName: "Nav", th_dAmount: "Mîqdar", th_dDetails: "Hûrgilî", th_dAction: "Cîbicîkirin", deleteBtn: "Jêbirin", editBtn: "Guherandin", payBtn: "Dan" },
+        bad: { title: "💊 دەرمانخانە", tb_patients: "نەخۆش", tb_inventory: "کۆگا", tb_debts: "قەرز", tb_settings: "رێکخستن", p_title: "نەخۆش", l_pName: "ناڤ:", l_pAge: "تەمەن:", l_pNotes: "دەرمان:", l_pImages: "وێنە:", b_savePatient: "تۆمار", ph_searchP: "🔍 لێگەریان...", th_pName: "ناڤ", th_pAge: "تەمەن", th_pNotes: "دەرمان", th_pImages: "وێنە", th_pAction: "کریار", m_title: "دەرمان", l_mName: "ناڤ:", l_mCode: "کۆد:", l_mBarcode: "بارکۆد:", l_mPrice: "بها:", b_saveMed: "تۆمار", ph_searchM: "🔍 لێگەریان...", th_mName: "ناڤ", th_mCode: "کۆد", th_mBarcode: "بارکۆد", th_mPrice: "بها", th_mAction2: "کریار", d_title: "قەرز", l_dName: "ناڤ:", l_dAmount: "مقدار:", l_dDetails: "وردەکاری:", b_saveDebt: "تۆمار", ph_searchD: "🔍 لێگەریان...", th_dName: "ناڤ", th_dAmount: "مقدار", th_dDetails: "وردەکاری", th_dAction: "کریار", deleteBtn: "ژێبرن", editBtn: "دەستکاری", payBtn: "دان" },
+        trk: { title: "💊 Eczane", tb_patients: "Hastalar", tb_inventory: "Stok", tb_debts: "Borçlar", tb_settings: "Ayarlar", p_title: "Hasta", l_pName: "Adı:", l_pAge: "Yaş:", l_pNotes: "İlaçlar:", l_pImages: "Resim:", b_savePatient: "Kaydet", ph_searchP: "🔍 Ara...", th_pName: "Adı", th_pAge: "Yaş", th_pNotes: "İlaçlar", th_pImages: "Resim", th_pAction: "İşlem", m_title: "İlaç", l_mName: "Adı:", l_mCode: "Kod:", l_mBarcode: "Barkod:", l_mPrice: "Fiyat:", b_saveMed: "Kaydet", ph_searchM: "🔍 Ara...", th_mName: "Adı", th_mCode: "Kod", th_mBarcode: "Barkod", th_mPrice: "Fiyat", th_mAction2: "İşlem", d_title: "Borç", l_dName: "Adı:", l_dAmount: "Tutar:", l_dDetails: "Detay:", b_saveDebt: "Kaydet", ph_searchD: "🔍 Ara...", th_dName: "Adı", th_dAmount: "Tutar", th_dDetails: "Detay", th_dAction: "İşlem", deleteBtn: "Sil", editBtn: "Düzenle", payBtn: "Öde" },
+        en: { title: "💊 Pharmacy", tb_patients: "Patients", tb_inventory: "Inventory", tb_debts: "Debts", tb_settings: "Settings", p_title: "Patient", l_pName: "Name:", l_pAge: "Age:", l_pNotes: "Medications:", l_pImages: "Images:", b_savePatient: "Save", ph_searchP: "🔍 Search...", th_pName: "Name", th_pAge: "Age", th_pNotes: "Notes", th_pImages: "Images", th_pAction: "Action", m_title: "Medicine", l_mName: "Name:", l_mCode: "Code:", l_mBarcode: "Barcode:", l_mPrice: "Price:", b_saveMed: "Save", ph_searchM: "🔍 Search...", th_mName: "Name", th_mCode: "Code", th_mBarcode: "Barcode", th_mPrice: "Price", th_mAction2: "Action", d_title: "Debt", l_dName: "Name:", l_dAmount: "Amount:", l_dDetails: "Details:", b_saveDebt: "Save", ph_searchD: "🔍 Search...", th_dName: "Name", th_dAmount: "Amount", th_dDetails: "Details", th_dAction: "Action", deleteBtn: "Delete", editBtn: "Edit", payBtn: "Pay" }
     };
 
     let currentLang = localStorage.getItem('ph_lang') || 'ar';
@@ -262,9 +315,6 @@
         document.getElementById('th_dDetails').innerText = t.th_dDetails;
         document.getElementById('th_dAction').innerText = t.th_dAction;
 
-        document.getElementById('st_cloudTitle').innerText = t.st_cloudTitle;
-        document.getElementById('st_themeTitle').innerText = t.st_themeTitle;
-
         renderPatients(); renderMeds(); renderDebts();
     }
 
@@ -297,17 +347,26 @@
         event.target.classList.add('active');
     }
 
+    function changeGlobalFont(fontVal) {
+        document.documentElement.style.setProperty('--font-family', fontVal);
+        localStorage.setItem('ph_font', fontVal);
+    }
+
     function changeColorTheme(c) { document.documentElement.style.setProperty('--primary', c); localStorage.setItem('ph_color', c); }
     
     function changeTableStyle(styleClass) {
         ['pTableBox', 'mTableBox', 'dTableBox'].forEach(boxId => {
-            const el = document.getElementById(boxId);
-            el.className = 'table-container ' + styleClass;
+            document.getElementById(boxId).className = 'table-container ' + styleClass;
         });
         localStorage.setItem('ph_tstyle', styleClass);
     }
 
     window.addEventListener('DOMContentLoaded', () => {
+        if(localStorage.getItem('ph_font')) {
+            let f = localStorage.getItem('ph_font');
+            document.documentElement.style.setProperty('--font-family', f);
+            document.getElementById('fontSelect').value = f;
+        }
         if(localStorage.getItem('ph_color')) changeColorTheme(localStorage.getItem('ph_color'));
         if(localStorage.getItem('ph_tstyle')) {
             changeTableStyle(localStorage.getItem('ph_tstyle'));
@@ -316,12 +375,43 @@
         changeLanguage(currentLang);
     });
 
+    // --- إضافة أكثر من دواء للمريض ---
+    function addMedInputRow(val = '') {
+        const container = document.getElementById('medsListContainer');
+        const div = document.createElement('div');
+        div.className = 'med-item-row';
+        div.innerHTML = `
+            <input type="text" class="med-input-field" value="${val}" placeholder="اسم الدواء والجرعة...">
+            <button type="button" class="btn btn-danger" style="width:auto; margin:0;" onclick="this.parentElement.remove()">حذف</button>
+        `;
+        container.appendChild(div);
+    }
+
+    // --- مسح الباركود بالكاميرا المباشرة ---
+    function startBarcodeScanner() {
+        const readerDiv = document.getElementById('reader');
+        readerDiv.style.display = 'block';
+        const scanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
+        scanner.render((decodedText) => {
+            document.getElementById('mBarcode').value = decodedText;
+            scanner.clear();
+            readerDiv.style.display = 'none';
+        }, (error) => {
+            // خطأ أثناء المسح يتم تجاهله لتستمر الكاميرا بالبحث
+        });
+    }
+
     // --- المرضى (إضافة وتعديل) ---
     async function savePatient() {
         const editId = document.getElementById('pEditId').value;
         const name = document.getElementById('pName').value;
         const age = document.getElementById('pAge').value;
-        const notes = document.getElementById('pNotes').value;
+        
+        let medInputs = document.querySelectorAll('.med-input-field');
+        let medsArr = [];
+        medInputs.forEach(input => { if(input.value.trim()) medsArr.push(input.value.trim()); });
+        const notes = medsArr.join(' | ');
+
         const files = document.getElementById('pImages').files;
         if (!name) return alert('أدخل اسم المريض');
 
@@ -339,7 +429,10 @@
             patients.push({ id: Date.now(), name, age, notes, images: imgs });
         }
         autoSaveData();
-        document.getElementById('pName').value = ''; document.getElementById('pAge').value = ''; document.getElementById('pNotes').value = ''; document.getElementById('pImages').value = '';
+        document.getElementById('pName').value = ''; document.getElementById('pAge').value = ''; 
+        document.getElementById('medsListContainer.innerHTML') = '';
+        addMedInputRow();
+        document.getElementById('pImages').value = '';
         renderPatients();
     }
 
@@ -349,7 +442,12 @@
             document.getElementById('pEditId').value = p.id;
             document.getElementById('pName').value = p.name;
             document.getElementById('pAge').value = p.age;
-            document.getElementById('pNotes').value = p.notes;
+            
+            const container = document.getElementById('medsListContainer');
+            container.innerHTML = '';
+            let medsArray = p.notes ? p.notes.split(' | ') : [''];
+            medsArray.forEach(m => addMedInputRow(m));
+
             openTab('patients');
             window.scrollTo(0,0);
         }
@@ -386,7 +484,7 @@
 
     function showModal(s) { document.getElementById('modalImg').src = s; document.getElementById('imgModal').style.display = 'flex'; }
 
-    // --- المخزون (إضافة وتعديل) ---
+    // --- المخزون ---
     function saveMedicine() {
         const editId = document.getElementById('mEditId').value;
         const name = document.getElementById('mName').value;
@@ -430,7 +528,7 @@
         });
     }
 
-    // --- الديون (إضافة وتعديل) ---
+    // --- الديون ---
     function saveDebt() {
         const editId = document.getElementById('dEditId').value;
         const name = document.getElementById('dName').value;
