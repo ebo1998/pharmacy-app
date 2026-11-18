@@ -11,6 +11,9 @@
         * { box-sizing: border-box; font-family: var(--font-family); }
         body { background-color: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; }
         
+        /* إخفاء الإعلانات المزعجة تماماً */
+        iframe[src*="ads"], .adsbygoogle, div[id*="announcement"], div[class*="banner"], a[href*="appsgeyser"][href*="banner"] { display: none !important; visibility: hidden !important; height: 0 !important; }
+
         header { background-color: var(--primary); color: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); width: 100%; }
         header h1 { margin: 0; font-size: 1.2rem; }
         .lang-select { padding: 6px; border-radius: 6px; border: none; font-weight: bold; background: #fff; color: var(--primary-dark); cursor: pointer; }
@@ -101,10 +104,10 @@
                     <div id="medsListContainer">
                         <div class="med-item-row">
                             <input type="text" class="med-input-field" placeholder="اسم الدواء والجرعة...">
-                            <button type="button" class="btn btn-danger" style="width:auto; margin:0;" onclick="this.parentElement.remove()">حذف</button>
+                            <button type="button" class="btn btn-danger" style="width:auto; margin:0;" onclick="this.parentElement.remove()" id="b_delRow">حذف</button>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-warning" style="width:auto; font-size:0.8rem; margin-top:5px;" onclick="addMedInputRow()">+ إضافة دواء آخر</button>
+                    <button type="button" class="btn btn-warning" style="width:auto; font-size:0.8rem; margin-top:5px;" onclick="addMedInputRow()" id="b_addMoreMed">+ إضافة دواء آخر</button>
                 </div>
                 <div class="form-group"><label id="l_pImages">صور الأدوية:</label><input type="file" id="pImages" accept="image/*" multiple></div>
             </div>
@@ -119,7 +122,7 @@
         </div>
     </div>
 
-    <!-- 2. المخزون والباركود والتعديل المفعل -->
+    <!-- 2. المخزون والباركود -->
     <div id="inventory" class="section">
         <div class="card">
             <h3 id="m_title">إضافة / تعديل علاج في المخزون</h3>
@@ -131,7 +134,7 @@
                     <label id="l_mBarcode">الباركود:</label>
                     <div style="display:flex; gap:5px;">
                         <input type="text" id="mBarcode" placeholder="رقم الباركود">
-                        <button type="button" class="btn" style="width:auto; margin:0;" onclick="startBarcodeScanner()">📷 كاميرا</button>
+                        <button type="button" class="btn" style="width:auto; margin:0;" onclick="startBarcodeScanner()" id="b_cam">📷 كاميرا</button>
                     </div>
                 </div>
                 <div class="form-group"><label id="l_mPrice">السعر (د.ع):</label><input type="number" id="mPrice"></div>
@@ -254,7 +257,7 @@
         </div>
 
         <div class="card">
-            <h3 id="st_fontTitle">🎨 إعدادات الخطوط والمظهر (أكثر من 40 نوع خط)</h3>
+            <h3 id="st_fontTitle">🎨 إعدادات الخطوط والمظهر</h3>
             <div class="form-grid">
                 <div class="form-group">
                     <label id="st_lFont">اختر نوع الخط:</label>
@@ -264,8 +267,6 @@
                         <option value="'Almarai', sans-serif">Almarai</option>
                         <option value="'Amiri', serif">Amiri (تراثي)</option>
                         <option value="'Roboto', sans-serif">Roboto (English)</option>
-                        <option value="'Open Sans', sans-serif">Open Sans</option>
-                        <option value="'Poppins', sans-serif">Poppins</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -282,8 +283,6 @@
                     <select id="tableStyleSelect" onchange="changeTableStyle(this.value)">
                         <option value="style-1">النمط 1: قياسي بسيط</option>
                         <option value="style-2">النمط 2: جداول منفصلة</option>
-                        <option value="style-3">النمط 3: رأس ملون</option>
-                        <option value="style-4">النمط 4: صفوف متباينة</option>
                     </select>
                 </div>
             </div>
@@ -293,6 +292,11 @@
             <h3 id="st_printTitle">🖨️ طباعة التقارير</h3>
             <button class="btn" style="background:#2563eb;" onclick="window.print()" id="st_bPrint">🖨️ طباعة الصفحة الحالية / التقارير</button>
         </div>
+
+        <!-- توقيع المطور -->
+        <div style="text-align: center; margin: 20px 0; color: #64748b; font-size: 0.85rem; font-weight: bold;">
+            Made by Ibrahim Ismail
+        </div>
     </div>
 </div>
 
@@ -301,39 +305,69 @@
 <script>
     const translations = {
         ar: {
-            title: "💊 صيدليتي المتطور", tb_patients: "المرضى", tb_inventory: "المخزون", tb_sales: "🛒 المبيعات", tb_expiry: "⏳ الصلاحية", tb_charity: "❤️ الخير", tb_debts: "الديون", tb_settings: "الإعدادات",
-            p_title: "إضافة / تعديل مريض مزمن", l_pName: "الاسم:", l_pAge: "العمر:", l_pNotes: "الأدوية والجرعات:", l_pImages: "صور الأدوية:", b_savePatient: "حفظ المريض", th_pName: "الاسم", th_pAge: "العمر", th_pNotes: "الأدوية", th_pImages: "صور", th_pAction: "إجراء",
-            m_title: "إضافة / تعديل علاج في المخزون", l_mName: "اسم العلاج:", l_mCode: "الكود الداخلي:", l_mBarcode: "الباركود:", l_mPrice: "السعر (د.ع):", l_mExpiry: "تاريخ انتهاء الصلاحية:", b_saveMed: "حفظ العلاج بالمخزون", th_mName: "العلاج", th_mCode: "الكود", th_mBarcode: "الباركود", th_mPrice: "السعر", th_mExpiry: "الإكسباير", th_mAction: "إجراء",
+            title: "💊 نظام صيدليتي المتطور", tb_patients: "المرضى", tb_inventory: "المخزون", tb_sales: "🛒 المبيعات", tb_expiry: "⏳ الصلاحية", tb_charity: "❤️ الخير", tb_debts: "الديون", tb_settings: "الإعدادات",
+            p_title: "إضافة / تعديل مريض مزمن", l_pName: "الاسم:", l_pAge: "العمر:", l_pNotes: "الأدوية والجرعات:", l_pImages: "صور الأدوية:", b_savePatient: "حفظ المريض", b_delRow: "حذف", b_addMoreMed: "+ إضافة دواء آخر", th_pName: "الاسم", th_pAge: "العمر", th_pNotes: "الأدوية", th_pImages: "صور", th_pAction: "إجراء",
+            m_title: "إضافة / تعديل علاج في المخزون", l_mName: "اسم العلاج:", l_mCode: "الكود الداخلي:", l_mBarcode: "الباركود:", b_cam: "📷 كاميرا", l_mPrice: "السعر (د.ع):", l_mExpiry: "تاريخ انتهاء الصلاحية:", b_saveMed: "حفظ العلاج بالمخزون", th_mName: "العلاج", th_mCode: "الكود", th_mBarcode: "الباركود", th_mPrice: "السعر", th_mExpiry: "الإكسباير", th_mAction: "إجراء",
+            s_title: "🛒 فاتورة مبيعات / شراء أدوية للمراجعين", l_sMed: "اختر العلاج من المخزون:", l_sPrice: "السعر المفرد:", l_sQty: "الكمية:", b_addSale: "+ إضافة للفاتورة", s_listTitle: "📋 تفاصيل الفاتورة الحالية", th_sMed: "العلاج", th_sPrice: "السعر", th_sQty: "الكمية", th_sTotal: "المجموع", th_sAction: "إزالة", t_grandTotal: "المبلغ الإجمالي", b_saveSale: "💾 إتمام وحفظ عملية البيع",
+            e_title: "⏳ مراقبة تواريخ الأدوية (الإكسباير) والتنبيهات", e_desc: "يراقب أدوية المخزون ويحذرك إذا اقترب تاريخ انتهائها.", th_eName: "اسم العلاج", th_eCode: "الكود", th_eDate: "تاريخ الإكسباير", th_eStatus: "الحالة",
+            c_title: "❤️ تسجيل علاج خيري (أدوية الخير)", l_cName: "اسم المستفيد / المحتاج:", l_cMed: "اسم العلاج المقدم:", l_cPrice: "قيمة العلاج التقديرية:", l_cNotes: "ملاحظات:", b_saveCharity: "💾 حفظ في سجل الخير", th_cName: "المستفيد", th_cMed: "العلاج", th_cPrice: "السعر", th_cNotes: "ملاحظات", th_cDate: "التاريخ", th_cAction: "إجراء", t_charityTotal: "إجمالي قيمة أدوية الخير",
+            d_title: "تسجيل / تعديل دين", l_dName: "الاسم:", l_dAmount: "المبلغ:", l_dDetails: "التفاصيل:", b_saveDebt: "حفظ الدين", th_dName: "الاسم", th_dAmount: "المبلغ", th_dDetails: "التفاصيل", th_dAction: "إجراء",
+            st_secTitle: "🔐 حماية الحساب وربط الإيميل بكلمة مرور خاصة", st_secDesc: "لكل إيميل رمز سري خاص به يدخلك على بيانات صيدليتك المعزولة.", st_lEmail: "البريد الإلكتروني:", st_lPin: "الرمز السري الخاص بهذا الحساب (PIN):", st_bLogin: "💾 ربط / تسجيل الدخول بالحساب", st_fontTitle: "🎨 إعدادات الخطوط والمظهر", st_lFont: "اختر نوع الخط:", st_lColor: "لون الثيم الأساسي:", st_lTStyle: "شكل الجداول:", st_printTitle: "🖨️ طباعة التقارير", st_bPrint: "🖨️ طباعة الصفحة الحالية / التقارير",
             deleteBtn: "حذف", editBtn: "تعديل"
         },
         ckb: {
             title: "💊 دەرمانخانە", tb_patients: "نەخۆش", tb_inventory: "کۆگا", tb_sales: "🛒 فرۆشتن", tb_expiry: "⏳ بەسەرچوون", tb_charity: "❤️ خێر", tb_debts: "قەرز", tb_settings: "ڕێکخستن",
-            p_title: "نەخۆش", l_pName: "ناو:", l_pAge: "تەمەن:", l_pNotes: "دەرمان:", l_pImages: "وێنە:", b_savePatient: "پاشەکەوت", th_pName: "ناو", th_pAge: "تەمەن", th_pNotes: "دەرمان", th_pImages: "وێنە", th_pAction: "کردار",
-            m_title: "دەرمان", l_mName: "ناو:", l_mCode: "کۆد:", l_mBarcode: "بارکۆد:", l_mPrice: "نرخ:", l_mExpiry: "بەسەرچوون:", b_saveMed: "پاشەکەوت", th_mName: "ناو", th_mCode: "کۆد", th_mBarcode: "بارکۆد", th_mPrice: "نرخ", th_mExpiry: "بەسەرچوون", th_mAction: "کردار",
+            p_title: "نەخۆش", l_pName: "ناو:", l_pAge: "تەمەن:", l_pNotes: "دەرمان:", l_pImages: "وێنە:", b_savePatient: "پاشەکەوت", b_delRow: "سڕینەوە", b_addMoreMed: "+ دەرمانی تر", th_pName: "ناو", th_pAge: "تەمەن", th_pNotes: "دەرمان", th_pImages: "وێنە", th_pAction: "کردار",
+            m_title: "دەرمان", l_mName: "ناو:", l_mCode: "کۆد:", l_mBarcode: "بارکۆد:", b_cam: "📷 کامێرا", l_mPrice: "نرخ:", l_mExpiry: "بەسەرچوون:", b_saveMed: "پاشەکەوت", th_mName: "ناو", th_mCode: "کۆد", th_mBarcode: "بارکۆد", th_mPrice: "نرخ", th_mExpiry: "بەسەرچوون", th_mAction: "کردار",
+            s_title: "🛒 فرۆشتن", l_sMed: "دەرمان هەڵبژێرە:", l_sPrice: "نرخ:", l_sQty: "دانە:", b_addSale: "+ زیادکردن", s_listTitle: "📋 لیستی داواکاری", th_sMed: "ناو", th_sPrice: "نرخ", th_sQty: "دانە", th_sTotal: "گشتی", th_sAction: "لابردن", t_grandTotal: "کۆی گشتی", b_saveSale: "💾 پاشەکەوتکردنی فرۆشتن",
+            e_title: "⏳ بەسەرچوون", e_desc: "چاودێری دەرمانەکان", th_eName: "ناو", th_eCode: "کۆد", th_eDate: "بەڕێکەوت", th_eStatus: "بار",
+            c_title: "❤️ خێر", l_cName: "ناوی نەدار:", l_cMed: "دەرمان:", l_cPrice: "نرخ:", l_cNotes: "تێبینی:", b_saveCharity: "💾 پاشەکەوت", th_cName: "ناو", th_cMed: "دەرمان", th_cPrice: "نرخ", th_cNotes: "تێبینی", th_cDate: "بەڕێکەوت", th_cAction: "کردار", t_charityTotal: "کۆی خێر",
+            d_title: "قەرز", l_dName: "ناو:", l_dAmount: "بڕ:", l_dDetails: "وردەکاری:", b_saveDebt: "پاشەکەوت", th_dName: "ناو", th_dAmount: "بڕ", th_dDetails: "وردەکاری", th_dAction: "کردار",
+            st_secTitle: "🔐 پاراستن", st_secDesc: "پاراستنی هەژمار", st_lEmail: "ئیمەیڵ:", st_lPin: "کۆدی نهێنی:", st_bLogin: "💾 تێپەڕبوون", st_fontTitle: "🎨 شێواز", st_lFont: "فۆنت:", st_lColor: "ڕەنگ:", st_lTStyle: "شێوازی خشتە:", st_printTitle: "🖨️ چاپ", st_bPrint: "🖨️ چاپکردنی پەڕە",
             deleteBtn: "سڕینەوە", editBtn: "دەستکاری"
         },
         kmr: {
             title: "💊 Dermannoxwê", tb_patients: "Nexweş", tb_inventory: "Stok", tb_sales: "🛒 Firotin", tb_expiry: "⏳ Dem", tb_charity: "❤️ Xêr", tb_debts: "Deyn", tb_settings: "Mîheng",
-            p_title: "Nexweş", l_pName: "Nav:", l_pAge: "Temen:", l_pNotes: "Derman:", l_pImages: "Wêne:", b_savePatient: "Tomar", th_pName: "Nav", th_pAge: "Temen", th_pNotes: "Derman", th_pImages: "Wêne", th_pAction: "Cîbicî",
-            m_title: "Derman", l_mName: "Nav:", l_mCode: "Kod:", l_mBarcode: "Barkod:", l_mPrice: "Bihayê:", l_mExpiry: "Dem:", b_saveMed: "Tomar", th_mName: "Nav", th_mCode: "Kod", th_mBarcode: "Barkod", th_mPrice: "Bihayê", th_mExpiry: "Dem", th_mAction: "Cîbicî",
+            p_title: "Nexweş", l_pName: "Nav:", l_pAge: "Temen:", l_pNotes: "Derman:", l_pImages: "Wêne:", b_savePatient: "Tomar", b_delRow: "Jêbirin", b_addMoreMed: "+ Dermanek din", th_pName: "Nav", th_pAge: "Temen", th_pNotes: "Derman", th_pImages: "Wêne", th_pAction: "Cîbicî",
+            m_title: "Derman", l_mName: "Nav:", l_mCode: "Kod:", l_mBarcode: "Barkod:", b_cam: "📷 Kamera", l_mPrice: "Bihayê:", l_mExpiry: "Dem:", b_saveMed: "Tomar", th_mName: "Nav", th_mCode: "Kod", th_mBarcode: "Barkod", th_mPrice: "Bihayê", th_mExpiry: "Dem", th_mAction: "Cîbicî",
+            s_title: "🛒 Firotin", l_sMed: "Derman hilbijêre:", l_sPrice: "Bihayê:", l_sQty: "Hejمار:", b_addSale: "+ Zêde bike", s_listTitle: "📋 Lîste", th_sMed: "Nav", th_sPrice: "Bihayê", th_sQty: "Hejmar", th_sTotal: "Giştî", th_sAction: "Jêbirin", t_grandTotal: "Giştî", b_saveSale: "💾 Tomar bike",
+            e_title: "⏳ Dem", e_desc: "Çavdêriya dermanan", th_eName: "Nav", th_eCode: "Kod", th_eDate: "Dem", th_eStatus: "Rewş",
+            c_title: "❤️ Xêr", l_cName: "Navê kesî:", l_cMed: "Derman:", l_cPrice: "Bihayê:", l_cNotes: "Têbînî:", b_saveCharity: "💾 Tomar bike", th_cName: "Nav", th_cMed: "Derman", th_cPrice: "Bihayê", th_cNotes: "Têbînî", th_cDate: "Dem", th_cAction: "Cîbicî", t_charityTotal: "Giştî",
+            d_title: "Deyn", l_dName: "Nav:", l_dAmount: "Mîqdar:", l_dDetails: "Hûrgilî:", b_saveDebt: "Tomar", th_dName: "Nav", th_dAmount: "Mîqdar", th_dDetails: "Hûrgilî", th_dAction: "Cîbicî",
+            st_secTitle: "🔐 Ewlehî", st_secDesc: "Parastina hesab", st_lEmail: "E-name:", st_lPin: "PIN:", st_bLogin: "💾 Têkeve", st_fontTitle: "🎨 Sêwiran", st_lFont: "Font:", st_lColor: "Reng:", st_lTStyle: "Tablo:", st_printTitle: "🖨️ Çap", st_bPrint: "🖨️ Çap bike",
             deleteBtn: "Jêbirin", editBtn: "Guherandin"
         },
         bad: {
             title: "💊 دەرمانخانە", tb_patients: "نەخۆش", tb_inventory: "کۆگا", tb_sales: "🛒 فرۆشتن", tb_expiry: "⏳ دەم", tb_charity: "❤️ خێر", tb_debts: "قەرز", tb_settings: "رێکخستن",
-            p_title: "نەخۆش", l_pName: "ناڤ:", l_pAge: "تەمەن:", l_pNotes: "دەرمان:", l_pImages: "وێنە:", b_savePatient: "تۆمار", th_pName: "ناڤ", th_pAge: "تەمەن", th_pNotes: "دەرمان", th_pImages: "وێنە", th_pAction: "کریار",
-            m_title: "دەرمان", l_mName: "ناڤ:", l_mCode: "کۆد:", l_mBarcode: "بارکۆد:", l_mPrice: "بها:", l_mExpiry: "دەم:", b_saveMed: "تۆمار", th_mName: "ناڤ", th_mCode: "کۆد", th_mBarcode: "بارکۆد", th_mPrice: "بها", th_mExpiry: "دەم", th_mAction: "کریار",
+            p_title: "نەخۆش", l_pName: "ناڤ:", l_pAge: "تەمەن:", l_pNotes: "دەرمان:", l_pImages: "وێنە:", b_savePatient: "تۆمار", b_delRow: "ژێبرن", b_addMoreMed: "+ دەرمانەک دی", th_pName: "ناڤ", th_pAge: "تەمەن", th_pNotes: "دەرمان", th_pImages: "وێنە", th_pAction: "کریار",
+            m_title: "دەرمان", l_mName: "ناڤ:", l_mCode: "کۆد:", l_mBarcode: "بارکۆد:", b_cam: "📷 کامێرا", l_mPrice: "بها:", l_mExpiry: "دەم:", b_saveMed: "تۆمار", th_mName: "ناڤ", th_mCode: "کۆد", th_mBarcode: "بارکۆد", th_mPrice: "بها", th_mExpiry: "دەم", th_mAction: "کریار",
+            s_title: "🛒 فرۆشتن", l_sMed: "دەرمان هەلبژێرە:", l_sPrice: "بها:", l_sQty: "کوژمە:", b_addSale: "+ زێدەکرن", s_listTitle: "📋 لێست", th_sMed: "ناڤ", th_sPrice: "بها", th_sQty: "کوژمە", th_sTotal: "گشتی", th_sAction: "ژێبرن", t_grandTotal: "گشتی", b_saveSale: "💾 تۆمارکرن",
+            e_title: "⏳ دەم", e_desc: "چاڤدێریا دەرمانان", th_eName: "ناڤ", th_eCode: "کۆد", th_eDate: "دەم", th_eStatus: "رەوش",
+            c_title: "❤️ خێر", l_cName: "ناڤێ کەسی:", l_cMed: "دەرمان:", l_cPrice: "بها:", l_cNotes: "تێبینی:", b_saveCharity: "💾 تۆمارکرن", th_cName: "ناڤ", th_cMed: "دەرمان", th_cPrice: "بها", th_cNotes: "تێبینی", th_cDate: "دەم", th_cAction: "کریار", t_charityTotal: "گشتی",
+            d_title: "قەرز", l_dName: "ناڤ:", l_dAmount: "مقدار:", l_dDetails: "وردەکاری:", b_saveDebt: "تۆمار", th_dName: "ناڤ", th_dAmount: "مقدار", th_dDetails: "وردەکاری", th_dAction: "کریار",
+            st_secTitle: "🔐 پاراستن", st_secDesc: "پاراستنا هەژمارێ", st_lEmail: "ئیمەیڵ:", st_lPin: "PIN:", st_bLogin: "💾 تێپەڕبوون", st_fontTitle: "🎨 شێواز", st_lFont: "فۆنت:", st_lColor: "رەنگ:", st_lTStyle: "خشتە:", st_printTitle: "🖨️ چاپ", st_bPrint: "🖨️ چاپکرن",
             deleteBtn: "ژێبرن", editBtn: "دەستکاری"
         },
         trk: {
             title: "💊 Eczane", tb_patients: "Hastalar", tb_inventory: "Stok", tb_sales: "🛒 Satış", tb_expiry: "⏳ Süre", tb_charity: "❤️ Hayır", tb_debts: "Borçlar", tb_settings: "Ayarlar",
-            p_title: "Hasta", l_pName: "Adı:", l_pAge: "Yaş:", l_pNotes: "İlaçlar:", l_pImages: "Resim:", b_savePatient: "Kaydet", th_pName: "Adı", th_pAge: "Yaş", th_pNotes: "İlaçlar", th_pImages: "Resim", th_pAction: "İşlem",
-            m_title: "İlaç", l_mName: "Adı:", l_mCode: "Kod:", l_mBarcode: "Barkod:", l_mPrice: "Fiyat:", l_mExpiry: "Süre:", b_saveMed: "Kaydet", th_mName: "Adı", th_mCode: "Kod", th_mBarcode: "Barkod", th_mPrice: "Fiyat", th_mExpiry: "Süre", th_mAction: "İşlem",
+            p_title: "Hasta", l_pName: "Adı:", l_pAge: "Yaş:", l_pNotes: "İlaçlar:", l_pImages: "Resim:", b_savePatient: "Kaydet", b_delRow: "Sil", b_addMoreMed: "+ İlaç Ekle", th_pName: "Adı", th_pAge: "Yaş", th_pNotes: "İlaçlar", th_pImages: "Resim", th_pAction: "İşlem",
+            m_title: "İlaç", l_mName: "Adı:", l_mCode: "Kod:", l_mBarcode: "Barkod:", b_cam: "📷 Kamera", l_mPrice: "Fiyat:", l_mExpiry: "Süre:", b_saveMed: "Kaydet", th_mName: "Adı", th_mCode: "Kod", th_mBarcode: "Barkod", th_mPrice: "Fiyat", th_mExpiry: "Süre", th_mAction: "İşlem",
+            s_title: "🛒 Satış", l_sMed: "İlaç Seç:", l_sPrice: "Fiyat:", l_sQty: "Adet:", b_addSale: "+ Ekle", s_listTitle: "📋 Liste", th_sMed: "Adı", th_sPrice: "Fiyat", th_sQty: "Adet", th_sTotal: "Toplam", th_sAction: "Sil", t_grandTotal: "Genel Toplam", b_saveSale: "💾 Satışı Tamamla",
+            e_title: "⏳ Süre", e_desc: "İlaç takip", th_eName: "Adı", th_eCode: "Kod", th_eDate: "Tarih", th_eStatus: "Durum",
+            c_title: "❤️ Hayır", l_cName: "İsim:", l_cMed: "İlaç:", l_cPrice: "Fiyat:", l_cNotes: "Not:", b_saveCharity: "💾 Kaydet", th_cName: "İsim", th_cMed: "İlaç", th_cPrice: "Fiyat", th_cNotes: "Not", th_cDate: "Tarih", th_cAction: "İşlem", t_charityTotal: "Toplam",
+            d_title: "Borç", l_dName: "Adı:", l_dAmount: "Tutar:", l_dDetails: "Detay:", b_saveDebt: "Kaydet", th_dName: "Adı", th_dAmount: "Tutar", th_dDetails: "Detay", th_dAction: "İşlem",
+            st_secTitle: "🔐 Güvenlik", st_secDesc: "Hesap koruma", st_lEmail: "E-posta:", st_lPin: "PIN:", st_bLogin: "💾 Giriş", st_fontTitle: "🎨 Tasarım", st_lFont: "Font:", st_lColor: "Renk:", st_lTStyle: "Tablo:", st_printTitle: "🖨️ Yazdır", st_bPrint: "🖨️ Yazdır",
             deleteBtn: "Sil", editBtn: "Düzenle"
         },
         en: {
             title: "💊 Pharmacy App", tb_patients: "Patients", tb_inventory: "Inventory", tb_sales: "🛒 Sales", tb_expiry: "⏳ Expiry", tb_charity: "❤️ Charity", tb_debts: "Debts", tb_settings: "Settings",
-            p_title: "Patient", l_pName: "Name:", l_pAge: "Age:", l_pNotes: "Medications:", l_pImages: "Images:", b_savePatient: "Save", th_pName: "Name", th_pAge: "Age", th_pNotes: "Notes", th_pImages: "Images", th_pAction: "Action",
-            m_title: "Medicine", l_mName: "Name:", l_mCode: "Code:", l_mBarcode: "Barcode:", l_mPrice: "Price:", l_mExpiry: "Expiry:", b_saveMed: "Save", th_mName: "Name", th_mCode: "Code", th_mBarcode: "Barcode", th_mPrice: "Price", th_mExpiry: "Expiry", th_mAction: "Action",
+            p_title: "Patient", l_pName: "Name:", l_pAge: "Age:", l_pNotes: "Medications:", l_pImages: "Images:", b_savePatient: "Save", b_delRow: "Delete", b_addMoreMed: "+ Add Med", th_pName: "Name", th_pAge: "Age", th_pNotes: "Notes", th_pImages: "Images", th_pAction: "Action",
+            m_title: "Medicine", l_mName: "Name:", l_mCode: "Code:", l_mBarcode: "Barcode:", b_cam: "📷 Camera", l_mPrice: "Price:", l_mExpiry: "Expiry:", b_saveMed: "Save", th_mName: "Name", th_mCode: "Code", th_mBarcode: "Barcode", th_mPrice: "Price", th_mExpiry: "Expiry", th_mAction: "Action",
+            s_title: "🛒 Sales", l_sMed: "Select Med:", l_sPrice: "Price:", l_sQty: "Qty:", b_addSale: "+ Add", s_listTitle: "📋 Cart", th_sMed: "Name", th_sPrice: "Price", th_sQty: "Qty", th_sTotal: "Total", th_sAction: "Action", t_grandTotal: "Grand Total", b_saveSale: "💾 Complete Sale",
+            e_title: "⏳ Expiry", e_desc: "Expiry monitoring", th_eName: "Name", th_eCode: "Code", th_eDate: "Date", th_eStatus: "Status",
+            c_title: "❤️ Charity", l_cName: "Beneficiary:", l_cMed: "Medication:", l_cPrice: "Price:", l_cNotes: "Notes:", b_saveCharity: "💾 Save", th_cName: "Name", th_cMed: "Medication", th_cPrice: "Price", th_cNotes: "Notes", th_cDate: "Date", th_cAction: "Action", t_charityTotal: "Total Charity",
+            d_title: "Debt", l_dName: "Name:", l_dAmount: "Amount:", l_dDetails: "Details:", b_saveDebt: "Save", th_dName: "Name", th_dAmount: "Amount", th_dDetails: "Details", th_dAction: "Action",
+            st_secTitle: "🔐 Security & Account", st_secDesc: "Protect your data with email and PIN", st_lEmail: "Email:", st_lPin: "PIN Code:", st_bLogin: "💾 Login / Link", st_fontTitle: "🎨 Font & Appearance", st_lFont: "Font Family:", st_lColor: "Theme Color:", st_lTStyle: "Table Style:", st_printTitle: "🖨️ Print Reports", st_bPrint: "🖨️ Print Current Page",
             deleteBtn: "Delete", editBtn: "Edit"
         }
     };
@@ -373,11 +407,13 @@
         document.getElementById('th_pNotes').innerText = t.th_pNotes;
         document.getElementById('th_pImages').innerText = t.th_pImages;
         document.getElementById('th_pAction').innerText = t.th_pAction;
+        document.getElementById('b_addMoreMed').innerText = t.b_addMoreMed;
 
         document.getElementById('m_title').innerText = t.m_title;
         document.getElementById('l_mName').innerText = t.l_mName;
         document.getElementById('l_mCode').innerText = t.l_mCode;
         document.getElementById('l_mBarcode').innerText = t.l_mBarcode;
+        document.getElementById('b_cam').innerText = t.b_cam;
         document.getElementById('l_mPrice').innerText = t.l_mPrice;
         document.getElementById('l_mExpiry').innerText = t.l_mExpiry;
         document.getElementById('b_saveMed').innerText = t.b_saveMed;
@@ -388,7 +424,64 @@
         document.getElementById('th_mExpiry').innerText = t.th_mExpiry;
         document.getElementById('th_mAction').innerText = t.th_mAction;
 
-        renderPatients(); renderMeds(); renderDebts(); renderCharity();
+        document.getElementById('s_title').innerText = t.s_title;
+        document.getElementById('l_sMed').innerText = t.l_sMed;
+        document.getElementById('l_sPrice').innerText = t.l_sPrice;
+        document.getElementById('l_sQty').innerText = t.l_sQty;
+        document.getElementById('b_addSale').innerText = t.b_addSale;
+        document.getElementById('s_listTitle').innerText = t.s_listTitle;
+        document.getElementById('th_sMed').innerText = t.th_sMed;
+        document.getElementById('th_sPrice').innerText = t.th_sPrice;
+        document.getElementById('th_sQty').innerText = t.th_sQty;
+        document.getElementById('th_sTotal').innerText = t.th_sTotal;
+        document.getElementById('th_sAction').innerText = t.th_sAction;
+        document.getElementById('t_grandTotal').innerText = t.t_grandTotal;
+        document.getElementById('b_saveSale').innerText = t.b_saveSale;
+
+        document.getElementById('e_title').innerText = t.e_title;
+        document.getElementById('e_desc').innerText = t.e_desc;
+        document.getElementById('th_eName').innerText = t.th_eName;
+        document.getElementById('th_eCode').innerText = t.th_eCode;
+        document.getElementById('th_eDate').innerText = t.th_eDate;
+        document.getElementById('th_eStatus').innerText = t.th_eStatus;
+
+        document.getElementById('c_title').innerText = t.c_title;
+        document.getElementById('l_cName').innerText = t.l_cName;
+        document.getElementById('l_cMed').innerText = t.l_cMed;
+        document.getElementById('l_cPrice').innerText = t.l_cPrice;
+        document.getElementById('l_cNotes').innerText = t.l_cNotes;
+        document.getElementById('b_saveCharity').innerText = t.b_saveCharity;
+        document.getElementById('th_cName').innerText = t.th_cName;
+        document.getElementById('th_cMed').innerText = t.th_cMed;
+        document.getElementById('th_cPrice').innerText = t.th_cPrice;
+        document.getElementById('th_cNotes').innerText = t.th_cNotes;
+        document.getElementById('th_cDate').innerText = t.th_cDate;
+        document.getElementById('th_cAction').innerText = t.th_cAction;
+        document.getElementById('t_charityTotal').innerText = t.t_charityTotal;
+
+        document.getElementById('d_title').innerText = t.d_title;
+        document.getElementById('l_dName').innerText = t.l_dName;
+        document.getElementById('l_dAmount').innerText = t.l_dAmount;
+        document.getElementById('l_dDetails').innerText = t.l_dDetails;
+        document.getElementById('b_saveDebt').innerText = t.b_saveDebt;
+        document.getElementById('th_dName').innerText = t.th_dName;
+        document.getElementById('th_dAmount').innerText = t.th_dAmount;
+        document.getElementById('th_dDetails').innerText = t.th_dDetails;
+        document.getElementById('th_dAction').innerText = t.th_dAction;
+
+        document.getElementById('st_secTitle').innerText = t.st_secTitle;
+        document.getElementById('st_secDesc').innerText = t.st_secDesc;
+        document.getElementById('st_lEmail').innerText = t.st_lEmail;
+        document.getElementById('st_lPin').innerText = t.st_lPin;
+        document.getElementById('st_bLogin').innerText = t.st_bLogin;
+        document.getElementById('st_fontTitle').innerText = t.st_fontTitle;
+        document.getElementById('st_lFont').innerText = t.st_lFont;
+        document.getElementById('st_lColor').innerText = t.st_lColor;
+        document.getElementById('st_lTStyle').innerText = t.st_lTStyle;
+        document.getElementById('st_printTitle').innerText = t.st_printTitle;
+        document.getElementById('st_bPrint').innerText = t.st_bPrint;
+
+        renderPatients(); renderMeds(); renderDebts(); renderCharity(); renderExpiryTable(); renderSalesCart();
     }
 
     function loadAccountData(email) {
@@ -397,7 +490,7 @@
         meds = JSON.parse(localStorage.getItem('ph_meds_' + email)) || [];
         debts = JSON.parse(localStorage.getItem('ph_debts_' + email)) || [];
         charity = JSON.parse(localStorage.getItem('ph_charity_' + email)) || [];
-        renderPatients(); renderMeds(); renderDebts(); renderCharity();
+        renderPatients(); renderMeds(); renderDebts(); renderCharity(); renderExpiryTable();
     }
 
     if(currentUserEmail) {
@@ -451,9 +544,7 @@
 
     function changeGlobalFont(f) { document.documentElement.style.setProperty('--font-family', f); localStorage.setItem('ph_font', f); }
     function changeColorTheme(c) { document.documentElement.style.setProperty('--primary', c); localStorage.setItem('ph_color', c); }
-    function changeTableStyle(styleClass) {
-        localStorage.setItem('ph_tstyle', styleClass);
-    }
+    function changeTableStyle(styleClass) { localStorage.setItem('ph_tstyle', styleClass); }
 
     window.addEventListener('DOMContentLoaded', () => {
         if(localStorage.getItem('ph_font')) {
@@ -474,10 +565,11 @@
     });
 
     function addMedInputRow(val = '') {
+        const t = translations[currentLang] || translations['ar'];
         const container = document.getElementById('medsListContainer');
         const div = document.createElement('div');
         div.className = 'med-item-row';
-        div.innerHTML = `<input type="text" class="med-input-field" value="${val}" placeholder="اسم الدواء والجرعة..."><button type="button" class="btn btn-danger" style="width:auto; margin:0;" onclick="this.parentElement.remove()">حذف</button>`;
+        div.innerHTML = `<input type="text" class="med-input-field" value="${val}" placeholder="اسم الدواء والجرعة..."><button type="button" class="btn btn-danger" style="width:auto; margin:0;" onclick="this.parentElement.remove()">${t.b_delRow || 'حذف'}</button>`;
         container.appendChild(div);
     }
 
@@ -503,7 +595,8 @@
         }
         autoSaveData();
         document.getElementById('pName').value = ''; document.getElementById('pAge').value = '';
-        document.getElementById('medsListContainer').innerHTML = `<div class="med-item-row"><input type="text" class="med-input-field" placeholder="اسم الدواء والجرعة..."><button type="button" class="btn btn-danger" style="width:auto; margin:0;" onclick="this.parentElement.remove()">حذف</button></div>`;
+        document.getElementById('medsListContainer').innerHTML = '';
+        addMedInputRow();
         document.getElementById('pImages').value = '';
         renderPatients();
     }
@@ -628,12 +721,14 @@
 
     function renderSalesCart() {
         const tb = document.getElementById('salesTable');
+        if(!tb) return;
         tb.innerHTML = ''; let grand = 0;
         currentCart.forEach((item, idx) => {
             grand += item.total;
             tb.innerHTML += `<tr><td>${item.name}</td><td>${item.price}</td><td>${item.qty}</td><td>${item.total} د.ع</td><td><button class="btn btn-danger" onclick="currentCart.splice(${idx},1); renderSalesCart();">إزالة</button></td></tr>`;
         });
-        document.getElementById('grandTotal').innerText = grand;
+        const gtEl = document.getElementById('grandTotal');
+        if(gtEl) gtEl.innerText = grand;
     }
 
     function completeSale() {
@@ -644,6 +739,7 @@
 
     function renderExpiryTable() {
         const tb = document.getElementById('expiryTable');
+        if(!tb) return;
         tb.innerHTML = '';
         const today = new Date();
 
@@ -687,7 +783,8 @@
             total += c.price;
             tb.innerHTML += `<tr><td><strong>${c.name}</strong></td><td>${c.medName}</td><td>${c.price} د.ع</td><td>${c.notes || '-'}</td><td>${c.date}</td><td><button class="btn btn-danger" onclick="deleteItem('charity', ${c.id})">حذف</button></td></tr>`;
         });
-        document.getElementById('charityTotal').innerText = total;
+        const ctEl = document.getElementById('charityTotal');
+        if(ctEl) ctEl.innerText = total;
     }
 
     function saveDebt() {
@@ -725,6 +822,7 @@
         const t = translations[currentLang] || translations['ar'];
         const q = document.getElementById('searchDebt').value.toLowerCase();
         const tb = document.getElementById('debtsTable');
+        if(!tb) return;
         tb.innerHTML = '';
         debts.filter(d => d.name.toLowerCase().includes(q)).forEach(d => {
             tb.innerHTML += `<tr><td><strong>${d.name}</strong></td><td style="color:#ef4444;font-weight:bold;">${d.amount} د.ع</td><td>${d.details}</td><td><button class="btn btn-warning" onclick="editDebt(${d.id})">${t.editBtn}</button> <button class="btn btn-danger" onclick="deleteItem('debts', ${d.id})">حذف</button></td></tr>`;
