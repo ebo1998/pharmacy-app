@@ -9,25 +9,27 @@
     <style>
         :root { --primary: #0d9488; --primary-dark: #0f766e; --bg: #f1f5f9; --card: #ffffff; --text: #1e293b; --danger: #ef4444; --warning: #f59e0b; --success: #10b981; --border: #cbd5e1; --font-family: 'Cairo', sans-serif; }
         * { box-sizing: border-box; font-family: var(--font-family); }
-        body { background-color: var(--bg); color: var(--text); margin: 0; padding: 0; }
-        header { background-color: var(--primary); color: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        body { background-color: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; }
+        
+        header { background-color: var(--primary); color: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); width: 100%; }
         header h1 { margin: 0; font-size: 1.2rem; }
         .lang-select { padding: 6px; border-radius: 6px; border: none; font-weight: bold; background: #fff; color: var(--primary-dark); cursor: pointer; }
         
-        /* تحسين أزرار الأقسام لتكون مرتبة وغير متداخلة */
-        .tabs { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 4px; background: #e2e8f0; padding: 6px; position: sticky; top: 0; z-index: 10; border-bottom: 2px solid var(--border); }
-        .tab-btn { padding: 10px 4px; border: none; background: #fff; font-size: 0.8rem; font-weight: bold; color: #475569; cursor: pointer; border-radius: 4px; text-align: center; transition: 0.2s; }
+        /* تنسيق الأقسام بثبات وعمودي تام (صعود ونزول فقط) */
+        .tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; background: #e2e8f0; padding: 8px; width: 100%; box-sizing: border-box; }
+        .tab-btn { padding: 10px 5px; border: none; background: #fff; font-size: 0.8rem; font-weight: bold; color: #475569; cursor: pointer; border-radius: 4px; text-align: center; transition: 0.2s; }
         .tab-btn.active { color: white; background-color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .tab-btn.full-width { grid-column: span 3; }
         
-        .container { max-width: 980px; margin: 15px auto; padding: 0 10px; }
-        .section { display: none; }
+        .container { max-width: 100%; width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box; }
+        .section { display: none; width: 100%; }
         .section.active { display: block; }
         
-        .card { background: var(--card); padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 15px; border: 1px solid var(--border); }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
-        .form-group { display: flex; flex-direction: column; }
+        .card { background: var(--card); padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 15px; border: 1px solid var(--border); width: 100%; box-sizing: border-box; }
+        .form-grid { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+        .form-group { display: flex; flex-direction: column; width: 100%; }
         label { font-weight: bold; margin-bottom: 4px; font-size: 0.85rem; }
-        input, select { padding: 8px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.95rem; background: #fff; color: var(--text); }
+        input, select { padding: 9px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.95rem; background: #fff; color: var(--text); width: 100%; box-sizing: border-box; }
         
         .btn { background-color: var(--primary); color: white; border: none; padding: 10px; border-radius: 6px; font-size: 0.95rem; font-weight: bold; cursor: pointer; margin-top: 10px; width: 100%; transition: 0.2s; }
         .btn:hover { background-color: var(--primary-dark); }
@@ -35,24 +37,24 @@
         .btn-warning { background-color: var(--warning); color: white; padding: 5px 10px; font-size: 0.8rem; width: auto; }
         .btn-success { background-color: var(--success); color: white; }
         
-        .search-box { width: 100%; padding: 10px; margin-bottom: 10px; border: 2px solid var(--primary); border-radius: 6px; font-size: 0.95rem; }
+        .search-box { width: 100%; padding: 10px; margin-bottom: 10px; border: 2px solid var(--primary); border-radius: 6px; font-size: 0.95rem; box-sizing: border-box; }
         
-        .table-container { overflow-x: auto; border-radius: 6px; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 10px; text-align: inherit; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+        .table-container { width: 100%; overflow-x: auto; border-radius: 6px; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 20px; box-sizing: border-box; }
+        table { width: 100%; border-collapse: collapse; min-width: 300px; }
+        th, td { padding: 10px; text-align: right; border-bottom: 1px solid var(--border); font-size: 0.85rem; word-break: break-word; }
         th { background-color: #f8fafc; color: var(--primary-dark); }
 
         .badge-expired { background: #fee2e2; color: #991b1b; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.75rem; }
         .badge-warning { background: #fef3c7; color: #92400e; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.75rem; }
         .badge-safe { background: #d1fae5; color: #065f46; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.75rem; }
 
-        .med-item-row { display: flex; gap: 5px; margin-bottom: 5px; align-items: center; }
+        .med-item-row { display: flex; gap: 5px; margin-bottom: 5px; align-items: center; width: 100%; }
         .med-images { display: flex; gap: 4px; flex-wrap: wrap; }
         .med-images img { width: 45px; height: 45px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border); cursor: pointer; }
         .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; }
         .modal img { max-width: 90%; max-height: 90%; border-radius: 6px; }
         .sync-badge { background: #10b981; color: white; padding: 3px 8px; border-radius: 15px; font-size: 0.7rem; display: inline-block; margin-top: 5px; }
-        #reader { width: 100%; max-width: 350px; margin: 10px auto; display: none; }
+        #reader { width: 100%; max-width: 320px; margin: 10px auto; display: none; }
 
         @media print {
             body { background: white; }
@@ -77,13 +79,13 @@
 </header>
 
 <div class="tabs">
-    <button class="tab-btn active" onclick="openTab('patients')" id="tb_patients">المرضى</button>
-    <button class="tab-btn" onclick="openTab('inventory')" id="tb_inventory">المخزون</button>
-    <button class="tab-btn" onclick="openTab('sales')" id="tb_sales">🛒 المبيعات</button>
-    <button class="tab-btn" onclick="openTab('expiry')" id="tb_expiry">⏳ الصلاحية</button>
-    <button class="tab-btn" onclick="openTab('charity')" id="tb_charity">❤️ الخير</button>
-    <button class="tab-btn" onclick="openTab('debts')" id="tb_debts">الديون</button>
-    <button class="tab-btn" onclick="openTab('settings')" id="tb_settings">الإعدادات</button>
+    <button class="tab-btn active" onclick="openTab('patients')">المرضى</button>
+    <button class="tab-btn" onclick="openTab('inventory')">المخزون</button>
+    <button class="tab-btn" onclick="openTab('sales')">🛒 المبيعات</button>
+    <button class="tab-btn" onclick="openTab('expiry')">⏳ الصلاحية</button>
+    <button class="tab-btn" onclick="openTab('charity')">❤️ الخير</button>
+    <button class="tab-btn" onclick="openTab('debts')">الديون</button>
+    <button class="tab-btn full-width" onclick="openTab('settings')">الإعدادات</button>
 </div>
 
 <div class="container">
@@ -95,7 +97,7 @@
             <div class="form-grid">
                 <div class="form-group"><label>الاسم:</label><input type="text" id="pName"></div>
                 <div class="form-group"><label>العمر:</label><input type="number" id="pAge"></div>
-                <div class="form-group" style="grid-column: span 2;">
+                <div class="form-group">
                     <label>الأدوية والجرعات (متعددة):</label>
                     <div id="medsListContainer">
                         <div class="med-item-row">
@@ -110,7 +112,7 @@
             <button class="btn" onclick="savePatient()">حفظ المريض</button>
         </div>
         <input type="text" class="search-box" id="searchPatient" onkeyup="renderPatients()" placeholder="🔍 ابحث باسم المريض...">
-        <div class="table-container" id="pTableBox">
+        <div class="table-container">
             <table>
                 <thead><tr><th>الاسم</th><th>العمر</th><th>الأدوية</th><th>صور</th><th>إجراء</th></tr></thead>
                 <tbody id="patientsTable"></tbody>
@@ -118,10 +120,10 @@
         </div>
     </div>
 
-    <!-- 2. المخزون والباركود -->
+    <!-- 2. المخزون والباركود (مع زر التعديل المفعل) -->
     <div id="inventory" class="section">
         <div class="card">
-            <h3>إضافة / تعديل علاج في المخزون (مع تاريخ الصلاحية)</h3>
+            <h3>إضافة / تعديل علاج في المخزون</h3>
             <input type="hidden" id="mEditId">
             <div class="form-grid">
                 <div class="form-group"><label>اسم العلاج:</label><input type="text" id="mName"></div>
@@ -140,9 +142,9 @@
             <button class="btn" onclick="saveMedicine()">حفظ العلاج بالمخزون</button>
         </div>
         <input type="text" class="search-box" id="searchMed" onkeyup="renderMeds()" placeholder="🔍 ابحث بالاسم، الكود، أو الباركود...">
-        <div class="table-container" id="mTableBox">
+        <div class="table-container">
             <table>
-                <thead><tr><th>العلاج</th><th>الكود</th><th>الباركود</th><th>السعر</th><th>تاريخ الإكسباير</th><th>إجراء</th></tr></thead>
+                <thead><tr><th>العلاج</th><th>الكود</th><th>الباركود</th><th>السعر</th><th>الإكسباير</th><th>إجراء</th></tr></thead>
                 <tbody id="medsTable"></tbody>
             </table>
         </div>
@@ -173,20 +175,20 @@
                     <tbody id="salesTable"></tbody>
                 </table>
             </div>
-            <h2 style="text-align:left; color:var(--primary);">المبلغ الإجمالي: <span id="grandTotal">0</span> د.ع</h2>
+            <h3 style="text-align:left; color:var(--primary);">المبلغ الإجمالي: <span id="grandTotal">0</span> د.ع</h3>
             <button class="btn" onclick="completeSale()">💾 إتمام وحفظ عملية البيع</button>
         </div>
     </div>
 
-    <!-- 4. قسم تاريخ الصلاحية (الإكسباير والتنبيهات) -->
+    <!-- 4. قسم تاريخ الصلاحية (الإكسباير) -->
     <div id="expiry" class="section">
         <div class="card">
-            <h3>⏳ مراقبة تواريخ الأدوية (الإكسباير) والتنبيهات التلقائية</h3>
-            <p style="color:#64748b; font-size:0.85rem;">هذا القسم يراقب أدوية المخزون ويحذرك فوراً إذا اقترب تاريخ انتهائها.</p>
+            <h3>⏳ مراقبة تواريخ الأدوية (الإكسباير) والتنبيهات</h3>
+            <p style="color:#64748b; font-size:0.85rem;">يراقب أدوية المخزون ويحذرك إذا اقترب تاريخ انتهائها.</p>
         </div>
         <div class="table-container">
             <table>
-                <thead><tr><th>اسم العلاج</th><th>الكود</th><th>تاريخ الإكسباير</th><th>الحالة والتحذير</th></tr></thead>
+                <thead><tr><th>اسم العلاج</th><th>الكود</th><th>تاريخ الإكسباير</th><th>الحالة</th></tr></thead>
                 <tbody id="expiryTable"></tbody>
             </table>
         </div>
@@ -199,19 +201,19 @@
             <div class="form-grid">
                 <div class="form-group"><label>اسم المستفيد / المحتاج:</label><input type="text" id="cName"></div>
                 <div class="form-group"><label>اسم العلاج المقدم:</label><input type="text" id="cMedName"></div>
-                <div class="form-group"><label>قيمة العلاج التقديرية (السعر):</label><input type="number" id="cPrice"></div>
-                <div class="form-group"><label>ملاحظات إضافية:</label><input type="text" id="cNotes"></div>
+                <div class="form-group"><label>قيمة العلاج التقديرية:</label><input type="number" id="cPrice"></div>
+                <div class="form-group"><label>ملاحظات:</label><input type="text" id="cNotes"></div>
             </div>
             <button class="btn btn-success" onclick="saveCharityItem()">💾 حفظ في سجل الخير</button>
         </div>
         <input type="text" class="search-box" id="searchCharity" onkeyup="renderCharity()" placeholder="🔍 ابحث باسم المستفيد...">
         <div class="table-container">
             <table>
-                <thead><tr><th>المستفيد</th><th>العلاج</th><th>السعر التقديري</th><th>الملاحظات</th><th>التاريخ</th><th>إجراء</th></tr></thead>
+                <thead><tr><th>المستفيد</th><th>العلاج</th><th>السعر</th><th>ملاحظات</th><th>التاريخ</th><th>إجراء</th></tr></thead>
                 <tbody id="charityTable"></tbody>
             </table>
         </div>
-        <h3 style="color:var(--success);">إجمالي قيمة أدوية الخير المقدمة: <span id="charityTotal">0</span> د.ع</h3>
+        <h3 style="color:var(--success);">إجمالي قيمة أدوية الخير: <span id="charityTotal">0</span> د.ع</h3>
     </div>
 
     <!-- 6. الديون -->
@@ -227,7 +229,7 @@
             <button class="btn" onclick="saveDebt()">حفظ الدين</button>
         </div>
         <input type="text" class="search-box" id="searchDebt" onkeyup="renderDebts()" placeholder="🔍 ابحث بالاسم...">
-        <div class="table-container" id="dTableBox">
+        <div class="table-container">
             <table>
                 <thead><tr><th>الاسم</th><th>المبلغ</th><th>التفاصيل</th><th>إجراء</th></tr></thead>
                 <tbody id="debtsTable"></tbody>
@@ -249,29 +251,6 @@
         <div class="card">
             <h3>🖨️ طباعة التقارير</h3>
             <button class="btn" style="background:#2563eb;" onclick="window.print()">🖨️ طباعة الصفحة الحالية</button>
-        </div>
-        <div class="card">
-            <h3>🎨 إعدادات المظهر والخطوط</h3>
-            <div class="form-grid">
-                <div class="form-group">
-                    <label>نوع الخط:</label>
-                    <select id="fontSelect" onchange="changeGlobalFont(this.value)">
-                        <option value="'Cairo', sans-serif">Cairo (عربي)</option>
-                        <option value="'Tajawal', sans-serif">Tajawal</option>
-                        <option value="'Amiri', serif">Amiri (تراثي)</option>
-                        <option value="'Roboto', sans-serif">Roboto (English)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>لون الثيم:</label>
-                    <select id="colorSelect" onchange="changeColorTheme(this.value)">
-                        <option value="#0d9488">أخضر طبي</option>
-                        <option value="#2563eb">أزرق ملكي</option>
-                        <option value="#7c3aed">بنفسجي</option>
-                        <option value="#dc2626">أحمر</option>
-                    </select>
-                </div>
-            </div>
         </div>
     </div>
 </div>
@@ -322,15 +301,6 @@
         renderPatients(); renderMeds(); renderDebts(); renderCharity();
         document.getElementById('syncStatus').innerHTML = `<span class="sync-badge">✓ تم الربط (${email})</span>`;
     }
-
-    function changeGlobalFont(f) { document.documentElement.style.setProperty('--font-family', f); localStorage.setItem('ph_font', f); }
-    function changeColorTheme(c) { document.documentElement.style.setProperty('--primary', c); localStorage.setItem('ph_color', c); }
-
-    window.addEventListener('DOMContentLoaded', () => {
-        if(localStorage.getItem('ph_font')) changeGlobalFont(localStorage.getItem('ph_font'));
-        if(localStorage.getItem('ph_color')) changeColorTheme(localStorage.getItem('ph_color'));
-        renderPatients(); renderMeds(); renderDebts(); renderCharity();
-    });
 
     function addMedInputRow(val = '') {
         const container = document.getElementById('medsListContainer');
@@ -405,6 +375,7 @@
         });
     }
 
+    // --- المخزون (مع تفعيل زر التعديل) ---
     function saveMedicine() {
         const editId = document.getElementById('mEditId').value;
         const name = document.getElementById('mName').value;
@@ -444,7 +415,7 @@
         const tb = document.getElementById('medsTable');
         tb.innerHTML = '';
         meds.filter(m => m.name.toLowerCase().includes(q) || (m.code && m.code.toLowerCase().includes(q)) || (m.barcode && m.barcode.includes(q))).forEach(m => {
-            tb.innerHTML += `<tr><td><strong>${m.name}</strong></td><td>${m.code}</td><td>${m.barcode}</td><td>${m.price} د.ع</td><td>${m.expiryDate || 'غير محدد'}</td><td><button class="btn btn-warning" onclick="editMedicine(${m.id})">تعديل</button> <button class="btn btn-danger" onclick="deleteItem('meds', ${m.id})">حذف</button></td></tr>`;
+            tb.innerHTML += `<tr><td><strong>${m.name}</strong></td><td>${m.code || '-'}</td><td>${m.barcode || '-'}</td><td>${m.price || 0} د.ع</td><td>${m.expiryDate || '-'}</td><td><button class="btn btn-warning" onclick="editMedicine(${m.id})">تعديل</button> <button class="btn btn-danger" onclick="deleteItem('meds', ${m.id})">حذف</button></td></tr>`;
         });
     }
 
@@ -510,9 +481,9 @@
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
                 if (diffDays < 0) {
-                    statusHtml = '<span class="badge-expired">منتهي الصلاحية! (إكسباير)</span>';
+                    statusHtml = '<span class="badge-expired">منتهي الصلاحية!</span>';
                 } else if (diffDays <= 60) {
-                    statusHtml = `<span class="badge-warning">قريب جداً من الانتهاء (${diffDays} يوم متبقي)</span>`;
+                    statusHtml = `<span class="badge-warning">قريب جداً (${diffDays} يوم)</span>`;
                 }
             }
             tb.innerHTML += `<tr><td><strong>${m.name}</strong></td><td>${m.code || '-'}</td><td>${m.expiryDate || 'غير محدد'}</td><td>${statusHtml}</td></tr>`;
@@ -590,6 +561,10 @@
         else if (type === 'debts') { debts = debts.filter(i => i.id !== id); autoSaveData(); renderDebts(); }
         else if (type === 'charity') { charity = charity.filter(i => i.id !== id); autoSaveData(); renderCharity(); }
     }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        renderPatients(); renderMeds(); renderDebts(); renderCharity();
+    });
 </script>
 </body>
 </html>
