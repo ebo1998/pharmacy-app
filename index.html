@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام إدارة الصيدلية المتطور</title>
-    <!-- استيراد خطوط عالمية عربية وإنجليزية متعددة -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Readex+Pro:wght@400;600&family=Amiri:wght@400;700&family=Roboto:wght@400;700&family=Montserrat:wght@400;700&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <title>نظام إدارة الصيدلية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #0d9488;
@@ -16,56 +15,22 @@
             --danger: #ef4444;
             --border: #cbd5e1;
             --font-family: 'Cairo', sans-serif;
-            --table-style: 1;
         }
         * { box-sizing: border-box; font-family: var(--font-family); }
-        body { background-color: var(--bg); color: var(--text); margin: 0; padding: 0; transition: 0.3s; }
-        
-        header { background-color: var(--primary); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex-wrap: wrap; gap: 10px; }
+        body { background-color: var(--bg); color: var(--text); margin: 0; padding: 0; }
+        header { background-color: var(--primary); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         header h1 { margin: 0; font-size: 1.4rem; }
-        
-        .header-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
         .lang-select { padding: 8px 12px; border-radius: 6px; border: none; font-weight: bold; background: #fff; color: var(--primary-dark); cursor: pointer; }
-
         .tabs { display: flex; justify-content: center; background: #fff; border-bottom: 2px solid var(--border); position: sticky; top: 0; z-index: 10; overflow-x: auto; }
-        .tab-btn { flex: 1; min-width: 140px; padding: 15px 10px; border: none; background: none; font-size: 0.95rem; font-weight: bold; color: #64748b; cursor: pointer; transition: 0.3s; border-bottom: 3px solid transparent; white-space: nowrap; }
+        .tab-btn { flex: 1; min-width: 130px; padding: 15px 10px; border: none; background: none; font-size: 0.95rem; font-weight: bold; color: #64748b; cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; }
         .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); background-color: #f0fdfa; }
-        
-        .container { max-width: 1000px; margin: 20px auto; padding: 0 15px; }
+        .container { max-width: 950px; margin: 20px auto; padding: 0 15px; }
         .section { display: none; }
         .section.active { display: block; }
-        
         .card { background: var(--card); padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid var(--border); }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
         .form-group { display: flex; flex-direction: column; }
         label { font-weight: bold; margin-bottom: 5px; font-size: 0.9rem; }
-        input, select, textarea { padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 1rem; background: #fff; color: var(--text); }
+        input, select { padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 1rem; background: #fff; color: var(--text); }
         input:focus, select:focus { outline: none; border-color: var(--primary); }
-        
-        .btn { background-color: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 6px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; transition: 0.2s; }
-        .btn:hover { background-color: var(--primary-dark); }
-        .btn-danger { background-color: var(--danger); padding: 6px 12px; font-size: 0.85rem; width: auto; margin: 0; }
-        
-        .search-box { width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid var(--primary); border-radius: 8px; font-size: 1rem; }
-        
-        /* ديناميكية الجداول (أكثر من 10 أنماط) */
-        .table-container { overflow-x: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        table { width: 100%; border-collapse: collapse; background: white; }
-        th, td { padding: 12px; text-align: inherit; border-bottom: 1px solid var(--border); }
-        th { background-color: #f8fafc; font-weight: bold; color: var(--primary-dark); }
-
-        /* أنماط الجداول الـ 10 */
-        .t-style-1 table { border-radius: 0; }
-        .t-style-2 table { border-collapse: separate; border-spacing: 0 8px; background: transparent; }
-        .t-style-2 th, .t-style-2 td { background: #fff; border: 1px solid var(--border); }
-        .t-style-3 table { border: 2px solid var(--primary); }
-        .t-style-3 th { background-color: var(--primary); color: white; }
-        .t-style-4 tr:nth-child(even) { background-color: #f8fafc; }
-        .t-style-5 th { border-bottom: 3px solid var(--primary); }
-        .t-style-6 td { border-bottom: 2px dashed var(--border); }
-        .t-style-7 table { box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-radius: 12px; overflow: hidden; }
-        .t-style-8 th { background: #1e293b; color: #fff; }
-        .t-style-9 td { padding: 6px 10px; font-size: 0.9rem; }
-        .t-style-10 th { text-transform: uppercase; letter-spacing: 1px; background: #f1f5f9; }
-
-        .med-images { display:
+        .btn { background-color: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 6px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 15px; width: 100
