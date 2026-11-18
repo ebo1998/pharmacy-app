@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام إدارة الصيدلية المتطور</title>
+    <title>نظام إدارة الصيدلية المحمي</title>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Tajawal:wght@400;700&family=Amiri:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -15,7 +15,6 @@
         header h1 { margin: 0; font-size: 1.2rem; }
         .lang-select { padding: 6px; border-radius: 6px; border: none; font-weight: bold; background: #fff; color: var(--primary-dark); cursor: pointer; }
         
-        /* تنسيق الأقسام بثبات وعمودي تام (صعود ونزول فقط) */
         .tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; background: #e2e8f0; padding: 8px; width: 100%; box-sizing: border-box; }
         .tab-btn { padding: 10px 5px; border: none; background: #fff; font-size: 0.8rem; font-weight: bold; color: #475569; cursor: pointer; border-radius: 4px; text-align: center; transition: 0.2s; }
         .tab-btn.active { color: white; background-color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
@@ -67,7 +66,7 @@
 <body id="bodyTag">
 
 <header>
-    <h1 id="t_title">💊 صيدليتي المتطور</h1>
+    <h1 id="t_title">💊 صيدليتي المحمية</h1>
     <select class="lang-select" id="langSelect" onchange="changeLanguage(this.value)">
         <option value="ar">العربية</option>
         <option value="ckb">سۆرانی</option>
@@ -85,7 +84,7 @@
     <button class="tab-btn" onclick="openTab('expiry')">⏳ الصلاحية</button>
     <button class="tab-btn" onclick="openTab('charity')">❤️ الخير</button>
     <button class="tab-btn" onclick="openTab('debts')">الديون</button>
-    <button class="tab-btn full-width" onclick="openTab('settings')">الإعدادات</button>
+    <button class="tab-btn full-width" onclick="openTab('settings')">الإعدادات والحماية</button>
 </div>
 
 <div class="container">
@@ -120,7 +119,7 @@
         </div>
     </div>
 
-    <!-- 2. المخزون والباركود (مع زر التعديل المفعل) -->
+    <!-- 2. المخزون والباركود -->
     <div id="inventory" class="section">
         <div class="card">
             <h3>إضافة / تعديل علاج في المخزون</h3>
@@ -150,7 +149,7 @@
         </div>
     </div>
 
-    <!-- 3. قسم المبيعات وشراء الأدوية (الكاشير) -->
+    <!-- 3. المبيعات -->
     <div id="sales" class="section">
         <div class="card">
             <h3>🛒 فاتورة مبيعات / شراء أدوية للمراجعين</h3>
@@ -180,7 +179,7 @@
         </div>
     </div>
 
-    <!-- 4. قسم تاريخ الصلاحية (الإكسباير) -->
+    <!-- 4. الصلاحية -->
     <div id="expiry" class="section">
         <div class="card">
             <h3>⏳ مراقبة تواريخ الأدوية (الإكسباير) والتنبيهات</h3>
@@ -194,7 +193,7 @@
         </div>
     </div>
 
-    <!-- 5. قسم الخير -->
+    <!-- 5. الخير -->
     <div id="charity" class="section">
         <div class="card">
             <h3>❤️ تسجيل علاج خيري (أدوية الخير)</h3>
@@ -237,17 +236,23 @@
         </div>
     </div>
 
-    <!-- 7. الإعدادات -->
+    <!-- 7. الإعدادات وحماية الحسابات بالبريد والرمز السري -->
     <div id="settings" class="section">
-        <div class="card">
-            <h3>☁️ ربط الحساب بالإيميل للحفظ التلقائي</h3>
+        <div class="card" style="border: 2px solid var(--primary);">
+            <h3>🔐 حماية الحساب وربط الإيميل بكلمة مرور خاصة</h3>
+            <p style="color:#64748b; font-size:0.85rem;">لكل إيميل رمز سري خاص به، يدخلك على بيانات صيدليتك المعزولة تماماً.</p>
             <div class="form-group">
                 <label>البريد الإلكتروني:</label>
                 <input type="email" id="userEmailInput" placeholder="example@gmail.com">
             </div>
-            <button class="btn" onclick="saveUserEmail()">ربط واسترجاع البيانات</button>
-            <div id="syncStatus"></div>
+            <div class="form-group" style="margin-top: 8px;">
+                <label>الرمز السري الخاص بهذا الحساب (PIN):</label>
+                <input type="password" id="userPasswordInput" placeholder="أدخل رمز الحماية...">
+            </div>
+            <button class="btn" onclick="loginOrRegisterAccount()">💾 ربط / تسجيل الدخول بالحساب</button>
+            <div id="syncStatus" style="margin-top: 8px;"></div>
         </div>
+
         <div class="card">
             <h3>🖨️ طباعة التقارير</h3>
             <button class="btn" style="background:#2563eb;" onclick="window.print()">🖨️ طباعة الصفحة الحالية</button>
@@ -260,13 +265,53 @@
 <script>
     let currentLang = localStorage.getItem('ph_lang') || 'ar';
     let currentUserEmail = localStorage.getItem('ph_email') || '';
-    if(currentUserEmail) document.getElementById('userEmailInput').value = currentUserEmail;
-
-    let patients = JSON.parse(localStorage.getItem('ph_patients_' + currentUserEmail)) || [];
-    let meds = JSON.parse(localStorage.getItem('ph_meds_' + currentUserEmail)) || [];
-    let debts = JSON.parse(localStorage.getItem('ph_debts_' + currentUserEmail)) || [];
-    let charity = JSON.parse(localStorage.getItem('ph_charity_' + currentUserEmail)) || [];
+    
+    // التحقق من وجود حساب مسجل مسبقاً
+    let patients = [], meds = [], debts = [], charity = [];
     let currentCart = [];
+
+    function loadAccountData(email) {
+        currentUserEmail = email;
+        patients = JSON.parse(localStorage.getItem('ph_patients_' + email)) || [];
+        meds = JSON.parse(localStorage.getItem('ph_meds_' + email)) || [];
+        debts = JSON.parse(localStorage.getItem('ph_debts_' + email)) || [];
+        charity = JSON.parse(localStorage.getItem('ph_charity_' + email)) || [];
+        renderPatients(); renderMeds(); renderDebts(); renderCharity();
+    }
+
+    if(currentUserEmail) {
+        document.getElementById('userEmailInput').value = currentUserEmail;
+        loadAccountData(currentUserEmail);
+    }
+
+    function loginOrRegisterAccount() {
+        const email = document.getElementById('userEmailInput').value.trim().toLowerCase();
+        const pin = document.getElementById('userPasswordInput').value.trim();
+
+        if(!email || !email.includes('@')) { alert('أدخل بريداً إلكترونياً صحيحاً'); return; }
+        if(!pin || pin.length < 3) { alert('الرجاء إدخال رمز سري مكون من 3 خانات على الأقل لحماية الحساب'); return; }
+
+        const savedPinKey = 'ph_pin_' + email;
+        const existingPin = localStorage.getItem(savedPinKey);
+
+        if(existingPin) {
+            // الحساب موجود، نتحقق من الرمز
+            if(existingPin !== pin) {
+                alert('⚠️ الرمز السري غير صحيح لهذا الإيميل! يرجى التحقق من الرمز الخاص بك.');
+                return;
+            }
+            alert('✅ تم تسجيل الدخول بنجاح إلى حساب: ' + email);
+        } else {
+            // حساب جديد، نحفظ الرمز السري له
+            localStorage.setItem(savedPinKey, pin);
+            alert('🎉 تم إنشاء وربط الحساب الجديد بنجاح برمز الحماية الخاص به!');
+        }
+
+        localStorage.setItem('ph_email', email);
+        loadAccountData(email);
+        document.getElementById('syncStatus').innerHTML = `<span class="sync-badge">✓ الحساب نشط ومحمي (${email})</span>`;
+        document.getElementById('userPasswordInput').value = '';
+    }
 
     function openTab(id) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -279,28 +324,14 @@
     }
 
     function autoSaveData() {
-        const k = currentUserEmail ? '_' + currentUserEmail : '';
-        localStorage.setItem('ph_patients' + k, JSON.stringify(patients));
-        localStorage.setItem('ph_meds' + k, JSON.stringify(meds));
-        localStorage.setItem('ph_debts' + k, JSON.stringify(debts));
-        localStorage.setItem('ph_charity' + k, JSON.stringify(charity));
+        if(!currentUserEmail) return;
+        localStorage.setItem('ph_patients_' + currentUserEmail, JSON.stringify(patients));
+        localStorage.setItem('ph_meds_' + currentUserEmail, JSON.stringify(meds));
+        localStorage.setItem('ph_debts_' + currentUserEmail, JSON.stringify(debts));
+        localStorage.setItem('ph_charity_' + currentUserEmail, JSON.stringify(charity));
     }
 
     window.addEventListener('beforeunload', autoSaveData);
-
-    function saveUserEmail() {
-        const email = document.getElementById('userEmailInput').value.trim();
-        if(!email || !email.includes('@')) { alert('أدخل بريداً صحيحاً'); return; }
-        currentUserEmail = email;
-        localStorage.setItem('ph_email', email);
-        if(localStorage.getItem('ph_patients_' + email)) patients = JSON.parse(localStorage.getItem('ph_patients_' + email));
-        if(localStorage.getItem('ph_meds_' + email)) meds = JSON.parse(localStorage.getItem('ph_meds_' + email));
-        if(localStorage.getItem('ph_debts_' + email)) debts = JSON.parse(localStorage.getItem('ph_debts_' + email));
-        if(localStorage.getItem('ph_charity_' + email)) charity = JSON.parse(localStorage.getItem('ph_charity_' + email));
-        autoSaveData();
-        renderPatients(); renderMeds(); renderDebts(); renderCharity();
-        document.getElementById('syncStatus').innerHTML = `<span class="sync-badge">✓ تم الربط (${email})</span>`;
-    }
 
     function addMedInputRow(val = '') {
         const container = document.getElementById('medsListContainer');
@@ -311,6 +342,7 @@
     }
 
     async function savePatient() {
+        if(!currentUserEmail) { alert('⚠️ يرجى تسجيل الدخول بالإيميل والرمز السري من قسم الإعدادات أولاً لحفظ البيانات!'); openTab('settings'); return; }
         const editId = document.getElementById('pEditId').value;
         const name = document.getElementById('pName').value;
         const age = document.getElementById('pAge').value;
@@ -375,8 +407,8 @@
         });
     }
 
-    // --- المخزون (مع تفعيل زر التعديل) ---
     function saveMedicine() {
+        if(!currentUserEmail) { alert('⚠️ يرجى تسجيل الدخول بالإيميل والرمز السري من قسم الإعدادات أولاً!'); openTab('settings'); return; }
         const editId = document.getElementById('mEditId').value;
         const name = document.getElementById('mName').value;
         const code = document.getElementById('mCode').value;
@@ -491,6 +523,7 @@
     }
 
     function saveCharityItem() {
+        if(!currentUserEmail) { alert('⚠️ يرجى تسجيل الدخول بالإيميل والرمز السري من قسم الإعدادات أولاً!'); openTab('settings'); return; }
         const name = document.getElementById('cName').value;
         const medName = document.getElementById('cMedName').value;
         const price = parseFloat(document.getElementById('cPrice').value) || 0;
@@ -516,6 +549,7 @@
     }
 
     function saveDebt() {
+        if(!currentUserEmail) { alert('⚠️ يرجى تسجيل الدخول بالإيميل والرمز السري من قسم الإعدادات أولاً!'); openTab('settings'); return; }
         const editId = document.getElementById('dEditId').value;
         const name = document.getElementById('dName').value;
         const amount = document.getElementById('dAmount').value;
@@ -561,10 +595,6 @@
         else if (type === 'debts') { debts = debts.filter(i => i.id !== id); autoSaveData(); renderDebts(); }
         else if (type === 'charity') { charity = charity.filter(i => i.id !== id); autoSaveData(); renderCharity(); }
     }
-
-    window.addEventListener('DOMContentLoaded', () => {
-        renderPatients(); renderMeds(); renderDebts(); renderCharity();
-    });
 </script>
 </body>
 </html>
