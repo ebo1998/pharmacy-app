@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" id="htmlRoot">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام إدارة الصيدلية</title>
+    <title>نظام إدارة الصيدلية المتطور</title>
+    <!-- استيراد خطوط عالمية عربية وإنجليزية متعددة -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Readex+Pro:wght@400;600&family=Amiri:wght@400;700&family=Roboto:wght@400;700&family=Montserrat:wght@400;700&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #0d9488;
@@ -13,514 +15,57 @@
             --text: #1e293b;
             --danger: #ef4444;
             --border: #cbd5e1;
+            --font-family: 'Cairo', sans-serif;
+            --table-style: 1;
         }
-        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg); color: var(--text); margin: 0; padding: 0; }
-        header { background-color: var(--primary); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex-wrap: wrap; gap: 10px; }
-        header h1 { margin: 0; font-size: 1.5rem; }
+        * { box-sizing: border-box; font-family: var(--font-family); }
+        body { background-color: var(--bg); color: var(--text); margin: 0; padding: 0; transition: 0.3s; }
         
+        header { background-color: var(--primary); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex-wrap: wrap; gap: 10px; }
+        header h1 { margin: 0; font-size: 1.4rem; }
+        
+        .header-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
         .lang-select { padding: 8px 12px; border-radius: 6px; border: none; font-weight: bold; background: #fff; color: var(--primary-dark); cursor: pointer; }
 
-        .tabs { display: flex; justify-content: center; background: #fff; border-bottom: 2px solid var(--border); position: sticky; top: 0; z-index: 10; }
-        .tab-btn { flex: 1; max-width: 200px; padding: 15px 10px; border: none; background: none; font-size: 1rem; font-weight: bold; color: #64748b; cursor: pointer; transition: 0.3s; border-bottom: 3px solid transparent; }
+        .tabs { display: flex; justify-content: center; background: #fff; border-bottom: 2px solid var(--border); position: sticky; top: 0; z-index: 10; overflow-x: auto; }
+        .tab-btn { flex: 1; min-width: 140px; padding: 15px 10px; border: none; background: none; font-size: 0.95rem; font-weight: bold; color: #64748b; cursor: pointer; transition: 0.3s; border-bottom: 3px solid transparent; white-space: nowrap; }
         .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); background-color: #f0fdfa; }
         
-        .container { max-width: 900px; margin: 20px auto; padding: 0 15px; }
+        .container { max-width: 1000px; margin: 20px auto; padding: 0 15px; }
         .section { display: none; }
         .section.active { display: block; }
         
-        .card { background: var(--card); padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .card { background: var(--card); padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid var(--border); }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; }
         .form-group { display: flex; flex-direction: column; }
         label { font-weight: bold; margin-bottom: 5px; font-size: 0.9rem; }
-        input, textarea { padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 1rem; }
-        input:focus { outline: none; border-color: var(--primary); }
+        input, select, textarea { padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 1rem; background: #fff; color: var(--text); }
+        input:focus, select:focus { outline: none; border-color: var(--primary); }
         
-        .btn { background-color: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 6px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; }
+        .btn { background-color: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 6px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; transition: 0.2s; }
         .btn:hover { background-color: var(--primary-dark); }
         .btn-danger { background-color: var(--danger); padding: 6px 12px; font-size: 0.85rem; width: auto; margin: 0; }
         
         .search-box { width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid var(--primary); border-radius: 8px; font-size: 1rem; }
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        th, td { padding: 12px; text-align: right; border-bottom: 1px solid var(--border); }
+        
+        /* ديناميكية الجداول (أكثر من 10 أنماط) */
+        .table-container { overflow-x: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        table { width: 100%; border-collapse: collapse; background: white; }
+        th, td { padding: 12px; text-align: inherit; border-bottom: 1px solid var(--border); }
         th { background-color: #f8fafc; font-weight: bold; color: var(--primary-dark); }
-        
-        .med-images { display: flex; gap: 5px; flex-wrap: wrap; }
-        .med-images img { width: 55px; height: 55px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); cursor: pointer; }
-        
-        .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; }
-        .modal img { max-width: 90%; max-height: 90%; border-radius: 8px; }
-    </style>
-</head>
-<body dir="rtl" id="bodyTag">
 
-<header>
-    <h1 id="t_title">💊 نظام إدارة الصيدلية</h1>
-    <select class="lang-select" id="langSelect" onchange="changeLanguage(this.value)">
-        <option value="ar">العربية</option>
-        <option value="ckb">کوردی (سۆرانی)</option>
-        <option value="kmr">Kurdî (Kurmancî)</option>
-    </select>
-</header>
+        /* أنماط الجداول الـ 10 */
+        .t-style-1 table { border-radius: 0; }
+        .t-style-2 table { border-collapse: separate; border-spacing: 0 8px; background: transparent; }
+        .t-style-2 th, .t-style-2 td { background: #fff; border: 1px solid var(--border); }
+        .t-style-3 table { border: 2px solid var(--primary); }
+        .t-style-3 th { background-color: var(--primary); color: white; }
+        .t-style-4 tr:nth-child(even) { background-color: #f8fafc; }
+        .t-style-5 th { border-bottom: 3px solid var(--primary); }
+        .t-style-6 td { border-bottom: 2px dashed var(--border); }
+        .t-style-7 table { box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-radius: 12px; overflow: hidden; }
+        .t-style-8 th { background: #1e293b; color: #fff; }
+        .t-style-9 td { padding: 6px 10px; font-size: 0.9rem; }
+        .t-style-10 th { text-transform: uppercase; letter-spacing: 1px; background: #f1f5f9; }
 
-<div class="tabs">
-    <button class="tab-btn active" onclick="openTab('patients')" id="tb_patients">المرضى المزمنين</button>
-    <button class="tab-btn" onclick="openTab('inventory')" id="tb_inventory">المخزون والباركود</button>
-    <button class="tab-btn" onclick="openTab('debts')" id="tb_debts">الديون والقروض</button>
-</div>
-
-<div class="container">
-
-    <!-- 1. قسم المرضى -->
-    <div id="patients" class="section active">
-        <div class="card">
-            <h3 id="p_title">إضافة مريض جديد</h3>
-            <div class="form-grid">
-                <div class="form-group">
-                    <label id="l_pName">اسم المريض:</label>
-                    <input type="text" id="pName" placeholder="">
-                </div>
-                <div class="form-group">
-                    <label id="l_pAge">العمر:</label>
-                    <input type="number" id="pAge" placeholder="">
-                </div>
-                <div class="form-group">
-                    <label id="l_pNotes">ملاحظات / أسماء الأدوية:</label>
-                    <input type="text" id="pNotes" placeholder="">
-                </div>
-                <div class="form-group">
-                    <label id="l_pImages">صور الأدوية:</label>
-                    <input type="file" id="pImages" accept="image/*" multiple>
-                </div>
-            </div>
-            <button class="btn" onclick="addPatient()" id="b_savePatient">حفظ بيانات المريض</button>
-        </div>
-
-        <input type="text" class="search-box" id="searchPatient" onkeyup="renderPatients()" placeholder="">
-        <div style="overflow-x:auto;">
-            <table>
-                <thead>
-                    <tr>
-                        <th id="th_pName">الاسم</th>
-                        <th id="th_pAge">العمر</th>
-                        <th id="th_pNotes">الأدوية والملاحظات</th>
-                        <th id="th_pImages">صور الأدوية</th>
-                        <th id="th_pAction">إجراء</th>
-                    </tr>
-                </thead>
-                <tbody id="patientsTable"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- 2. قسم المخزون -->
-    <div id="inventory" class="section">
-        <div class="card">
-            <h3 id="m_title">إضافة علاج للمخزون</h3>
-            <div class="form-grid">
-                <div class="form-group">
-                    <label id="l_mName">اسم العلاج:</label>
-                    <input type="text" id="mName" placeholder="">
-                </div>
-                <div class="form-group">
-                    <label id="l_mCode">الكود الداخلي:</label>
-                    <input type="text" id="mCode" placeholder="">
-                </div>
-                <div class="form-group">
-                    <label id="l_mBarcode">الباركود:</label>
-                    <input type="text" id="mBarcode" placeholder="">
-                </div>
-                <div class="form-group">
-                    <label id="l_mPrice">السعر / الكمية:</label>
-                    <input type="text" id="mPrice" placeholder="">
-                </div>
-            </div>
-            <button class="btn" onclick="addMedicine()" id="b_saveMed">إضافة للمخزون</button>
-        </div>
-
-        <input type="text" class="search-box" id="searchMed" onkeyup="renderMeds()" placeholder="">
-        <div style="overflow-x:auto;">
-            <table>
-                <thead>
-                    <tr>
-                        <th id="th_mName">اسم العلاج</th>
-                        <th id="th_mCode">الكود</th>
-                        <th id="th_mBarcode">الباركود</th>
-                        <th id="th_mPrice">السعر / الكمية</th>
-                        <th id="th_mAction2">إجراء</th>
-                    </tr>
-                </thead>
-                <tbody id="medsTable"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- 3. قسم الديون -->
-    <div id="debts" class="section">
-        <div class="card">
-            <h3 id="d_title">تسجيل دين جديد</h3>
-            <div class="form-grid">
-                <div class="form-group">
-                    <label id="l_dName">اسم الشخص / المديون:</label>
-                    <input type="text" id="dName" placeholder="">
-                </div>
-                <div class="form-group">
-                    <label id="l_dAmount">المبلغ المطلوب:</label>
-                    <input type="number" id="dAmount" placeholder="">
-                </div>
-                <div class="form-group">
-                    <label id="l_dDetails">التفاصيل:</label>
-                    <input type="text" id="dDetails" placeholder="">
-                </div>
-            </div>
-            <button class="btn" onclick="addDebt()" id="b_saveDebt">إضافة للقائمة</button>
-        </div>
-
-        <input type="text" class="search-box" id="searchDebt" onkeyup="renderDebts()" placeholder="">
-        <div style="overflow-x:auto;">
-            <table>
-                <thead>
-                    <tr>
-                        <th id="th_dName">الاسم</th>
-                        <th id="th_dAmount">المبلغ</th>
-                        <th id="th_dDetails">التفاصيل</th>
-                        <th id="th_dAction">إجراء</th>
-                    </tr>
-                </thead>
-                <tbody id="debtsTable"></tbody>
-            </table>
-        </div>
-    </div>
-
-</div>
-
-<div id="imgModal" class="modal" onclick="this.style.display='none'">
-    <img id="modalImg" src="">
-</div>
-
-<script>
-    // قاموس الترجمات (عربي، سوراني، كرمانجي)
-    const translations = {
-        ar: {
-            title: "💊 نظام إدارة الصيدلية",
-            tb_patients: "المرضى المزمنين",
-            tb_inventory: "المخزون والباركود",
-            tb_debts: "الديون والقروض",
-            p_title: "إضافة مريض جديد",
-            l_pName: "اسم المريض:",
-            l_pAge: "العمر:",
-            l_pNotes: "ملاحظات / أسماء الأدوية:",
-            l_pImages: "صور الأدوية:",
-            b_savePatient: "حفظ بيانات المريض",
-            ph_searchP: "🔍 ابحث باسم المريض...",
-            th_pName: "الاسم", th_pAge: "العمر", th_pNotes: "الأدوية والملاحظات", th_pImages: "صور الأدوية", th_pAction: "إجراء",
-            
-            m_title: "إضافة علاج للمخزون",
-            l_mName: "اسم العلاج:",
-            l_mCode: "الكود الداخلي:",
-            l_mBarcode: "الباركود:",
-            l_mPrice: "السعر / الكمية:",
-            b_saveMed: "إضافة للمخزون",
-            ph_searchM: "🔍 ابحث بالاسم، الكود، أو الباركود...",
-            th_mName: "اسم العلاج", th_mCode: "الكود", th_mBarcode: "الباركود", th_mPrice: "السعر / الكمية", th_mAction2: "إجراء",
-            
-            d_title: "تسجيل دين جديد",
-            l_dName: "اسم الشخص / المديون:",
-            l_dAmount: "المبلغ المطلوب:",
-            l_dDetails: "التفاصيل:",
-            b_saveDebt: "إضافة للقائمة",
-            ph_searchD: "🔍 ابحث باسم المديون...",
-            th_dName: "الاسم", th_dAmount: "المبلغ", th_dDetails: "التفاصيل", th_dAction: "إجراء",
-            deleteBtn: "حذف",
-            payBtn: "تسديد / حذف"
-        },
-        ckb: {
-            title: "💊 سیستمی بەڕێوەبردنی دەرمانخانە",
-            tb_patients: "نەخۆشە درێژخایەنەکان",
-            tb_inventory: "کۆگا و بارکۆد",
-            tb_debts: "قەرز و پێشینەکان",
-            p_title: "زیادکردنی نەخۆشی نوێ",
-            l_pName: "ناوی نەخۆش:",
-            l_pAge: "تەمەن:",
-            l_pNotes: "تێبینی / ناوی دەرمانەکان:",
-            l_pImages: "وێنەی دەرمانەکان:",
-            b_savePatient: "پاشەکەوتکردنی زانیاری نەخۆش",
-            ph_searchP: "🔍 گەڕان بەدوای ناوی نەخۆشدا...",
-            th_pName: "ناو", th_pAge: "تەمەن", th_pNotes: "دەرمان و تێبینی", th_pImages: "وێنەکان", th_pAction: "کردار",
-            
-            m_title: "زیادکردنی دەرمان بۆ کۆگا",
-            l_mName: "ناوی دەرمان:",
-            l_mCode: "کۆدی ناوخۆیی:",
-            l_mBarcode: "بارکۆد:",
-            l_mPrice: "نرخ / بڕ:",
-            b_saveMed: "زیادکردن بۆ کۆگا",
-            ph_searchM: "🔍 گەڕان بەدوای دەرماندا...",
-            th_mName: "ناوی دەرمان", th_mCode: "کۆد", th_mBarcode: "بارکۆد", th_mPrice: "نرخ / بڕ", th_mAction2: "کردار",
-            
-            d_title: "تۆمارکردنی قەرزی نوێ",
-            l_dName: "ناوی کەس / قەرزدار:",
-            l_dAmount: "بڕی داواکراو:",
-            l_dDetails: "وردەکاری:",
-            b_saveDebt: "زیادکردن بۆ لیست",
-            ph_searchD: "🔍 گەڕان بەدوای قەرزداردا...",
-            th_dName: "ناو", th_dAmount: "بڕ", th_dDetails: "وردەکاری", th_dAction: "کردار",
-            deleteBtn: "سڕینەوە",
-            payBtn: "دانەوە / سڕینەوە"
-        },
-        kmr: {
-            title: "💊 Sîstema Rêveberiya Dermannoxwê",
-            tb_patients: "Nexweşên Kronîk",
-            tb_inventory: "Stok û Barkod",
-            tb_debts: "Deyn û Qەrz",
-            p_title: "Zêdekirina nexweşek nû",
-            l_pName: "Navê nexweş:",
-            l_pAge: "Temen:",
-            l_pNotes: "Têbînî / Navên dermanan:",
-            l_pImages: "Wêneyên dermanan:",
-            b_savePatient: "Tomarkirina agahdariya nexweş",
-            ph_searchP: "🔍 Lêgerîna bi navê nexweş...",
-            th_pName: "Nav", th_pAge: "Temen", th_pNotes: "Derman û Têbînî", th_pImages: "Wêne", th_pAction: "Cîbicîkirin",
-            
-            m_title: "Zêdekirina derman bo stokê",
-            l_mName: "Navê derman:",
-            l_mCode: "Koda navxweyî:",
-            l_mBarcode: "Barkod:",
-            l_mPrice: "Bihayê / Mîqdar:",
-            b_saveMed: "Lê zêde bike stokê",
-            ph_searchM: "🔍 Lêgerîna derman, kod...",
-            th_mName: "Navê derman", th_mCode: "Kod", th_mBarcode: "Barkod", th_mPrice: "Bihayê / Mîqdar", th_mAction2: "Cîbicîkirin",
-            
-            d_title: "Tomarkirina deyneke nû",
-            l_dName: "Navê kes / deynber:",
-            l_dAmount: "Mîqdara pêwîst:",
-            l_dDetails: "Hûrgilî:",
-            b_saveDebt: "Lê zêde bike lîsteyê",
-            ph_searchD: "🔍 Lêgerîna bi navê deynber...",
-            th_dName: "Nav", th_dAmount: "Mîqdar", th_dDetails: "Hûrgilî", th_dAction: "Cîbicîkirin",
-            deleteBtn: "Jêbirin",
-            payBtn: "دان / Jêbirin"
-        }
-    };
-
-    let currentLang = localStorage.getItem('ph_lang') || 'ar';
-    document.getElementById('langSelect').value = currentLang;
-
-    function changeLanguage(lang) {
-        currentLang = lang;
-        localStorage.setItem('ph_lang', lang);
-        const t = translations[lang];
-        
-        // اتجاه الصفحة
-        document.getElementById('bodyTag').dir = (lang === 'kmr') ? 'ltr' : 'rtl';
-
-        // النصوص العامة
-        document.getElementById('t_title').innerText = t.title;
-        document.getElementById('tb_patients').innerText = t.tb_patients;
-        document.getElementById('tb_inventory').innerText = t.tb_inventory;
-        document.getElementById('tb_debts').innerText = t.tb_debts;
-
-        // قسم المرضى
-        document.getElementById('p_title').innerText = t.p_title;
-        document.getElementById('l_pName').innerText = t.l_pName;
-        document.getElementById('l_pAge').innerText = t.l_pAge;
-        document.getElementById('l_pNotes').innerText = t.l_pNotes;
-        document.getElementById('l_pImages').innerText = t.l_pImages;
-        document.getElementById('b_savePatient').innerText = t.b_savePatient;
-        document.getElementById('searchPatient').placeholder = t.ph_searchP;
-        document.getElementById('th_pName').innerText = t.th_pName;
-        document.getElementById('th_pAge').innerText = t.th_pAge;
-        document.getElementById('th_pNotes').innerText = t.th_pNotes;
-        document.getElementById('th_pImages').innerText = t.th_pImages;
-        document.getElementById('th_pAction').innerText = t.th_pAction;
-
-        // قسم المخزون
-        document.getElementById('m_title').innerText = t.m_title;
-        document.getElementById('l_mName').innerText = t.l_mName;
-        document.getElementById('l_mCode').innerText = t.l_mCode;
-        document.getElementById('l_mBarcode').innerText = t.l_mBarcode;
-        document.getElementById('l_mPrice').innerText = t.l_mPrice;
-        document.getElementById('b_saveMed').innerText = t.b_saveMed;
-        document.getElementById('searchMed').placeholder = t.ph_searchM;
-        document.getElementById('th_mName').innerText = t.th_mName;
-        document.getElementById('th_mCode').innerText = t.th_mCode;
-        document.getElementById('th_mBarcode').innerText = t.th_mBarcode;
-        document.getElementById('th_mPrice').innerText = t.th_mPrice;
-        document.getElementById('th_mAction2').innerText = t.th_mAction2;
-
-        // قسم الديون
-        document.getElementById('d_title').innerText = t.d_title;
-        document.getElementById('l_dName').innerText = t.l_dName;
-        document.getElementById('l_dAmount').innerText = t.l_dAmount;
-        document.getElementById('l_dDetails').innerText = t.l_dDetails;
-        document.getElementById('b_saveDebt').innerText = t.b_saveDebt;
-        document.getElementById('searchDebt').placeholder = t.ph_searchD;
-        document.getElementById('th_dName').innerText = t.th_dName;
-        document.getElementById('th_dAmount').innerText = t.th_dAmount;
-        document.getElementById('th_dDetails').innerText = t.th_dDetails;
-        document.getElementById('th_dAction').innerText = t.th_dAction;
-
-        renderPatients();
-        renderMeds();
-        renderDebts();
-    }
-
-    function openTab(tabId) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
-        event.target.classList.add('active');
-    }
-
-    let patients = JSON.parse(localStorage.getItem('ph_patients')) || [];
-    async function addPatient() {
-        const name = document.getElementById('pName').value;
-        const age = document.getElementById('pAge').value;
-        const notes = document.getElementById('pNotes').value;
-        const files = document.getElementById('pImages').files;
-        if (!name) return alert('خطأ / Error');
-        let imagesBase64 = [];
-        for (let file of files) {
-            const compressed = await compressImage(file);
-            imagesBase64.push(compressed);
-        }
-        patients.push({ id: Date.now(), name, age, notes, images: imagesBase64 });
-        localStorage.setItem('ph_patients', JSON.stringify(patients));
-        document.getElementById('pName').value = '';
-        document.getElementById('pAge').value = '';
-        document.getElementById('pNotes').value = '';
-        document.getElementById('pImages').value = '';
-        renderPatients();
-    }
-
-    function compressImage(file) {
-        return new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = (e) => {
-                const img = new Image();
-                img.src = e.target.result;
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const maxW = 400;
-                    const scale = maxW / img.width;
-                    canvas.width = maxW;
-                    canvas.height = img.height * scale;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    resolve(canvas.toDataURL('image/jpeg', 0.7));
-                };
-            };
-        });
-    }
-
-    function renderPatients() {
-        const t = translations[currentLang];
-        const q = document.getElementById('searchPatient').value.toLowerCase();
-        const tbody = document.getElementById('patientsTable');
-        tbody.innerHTML = '';
-        patients.filter(p => p.name.toLowerCase().includes(q)).forEach(p => {
-            const imgsHtml = p.images.map(src => `<img src="${src}" onclick="showModal('${src}')">`).join('');
-            tbody.innerHTML += `
-                <tr>
-                    <td><strong>${p.name}</strong></td>
-                    <td>${p.age}</td>
-                    <td>${p.notes}</td>
-                    <td><div class="med-images">${imgsHtml}</div></td>
-                    <td><button class="btn btn-danger" onclick="deleteItem('patients', ${p.id})">${t.deleteBtn}</button></td>
-                </tr>`;
-        });
-    }
-
-    function showModal(src) {
-        document.getElementById('modalImg').src = src;
-        document.getElementById('imgModal').style.display = 'flex';
-    }
-
-    let meds = JSON.parse(localStorage.getItem('ph_meds')) || [];
-    function addMedicine() {
-        const name = document.getElementById('mName').value;
-        const code = document.getElementById('mCode').value;
-        const barcode = document.getElementById('mBarcode').value;
-        const price = document.getElementById('mPrice').value;
-        if (!name) return alert('خطأ / Error');
-        meds.push({ id: Date.now(), name, code, barcode, price });
-        localStorage.setItem('ph_meds', JSON.stringify(meds));
-        document.getElementById('mName').value = '';
-        document.getElementById('mCode').value = '';
-        document.getElementById('mBarcode').value = '';
-        document.getElementById('mPrice').value = '';
-        renderMeds();
-    }
-
-    function renderMeds() {
-        const t = translations[currentLang];
-        const q = document.getElementById('searchMed').value.toLowerCase();
-        const tbody = document.getElementById('medsTable');
-        tbody.innerHTML = '';
-        meds.filter(m => m.name.toLowerCase().includes(q) || m.code.toLowerCase().includes(q) || m.barcode.includes(q)).forEach(m => {
-            tbody.innerHTML += `
-                <tr>
-                    <td><strong>${m.name}</strong></td>
-                    <td>${m.code}</td>
-                    <td>${m.barcode}</td>
-                    <td>${m.price}</td>
-                    <td><button class="btn btn-danger" onclick="deleteItem('meds', ${m.id})">${t.deleteBtn}</button></td>
-                </tr>`;
-        });
-    }
-
-    let debts = JSON.parse(localStorage.getItem('ph_debts')) || [];
-    function addDebt() {
-        const name = document.getElementById('dName5') || document.getElementById('dName').value;
-        // Simplified handling for safety
-        const nameVal = document.getElementById('dName').value;
-        const amount = document.getElementById('dAmount').value;
-        const details = document.getElementById('dDetails').value;
-        if (!nameVal || !amount) return alert('خطأ / Error');
-        debts.push({ id: Date.now(), name: nameVal, amount, details });
-        localStorage.setItem('ph_debts', JSON.stringify(debts));
-        document.getElementById('dName').value = '';
-        document.getElementById('dAmount').value = '';
-        document.getElementById('dDetails').value = '';
-        renderDebts();
-    }
-
-    function renderDebts() {
-        const t = translations[currentLang];
-        const q = document.getElementById('searchDebt').value.toLowerCase();
-        const tbody = document.getElementById('debtsTable');
-        tbody.innerHTML = '';
-        debts.filter(d => d.name.toLowerCase().includes(q)).forEach(d => {
-            tbody.innerHTML += `
-                <tr>
-                    <td><strong>${d.name}</strong></td>
-                    <td style="color:#ef4444; font-weight:bold;">${d.amount}</td>
-                    <td>${d.details}</td>
-                    <td><button class="btn btn-danger" onclick="deleteItem('debts', ${d.id})">${t.payBtn}</button></td>
-                </tr>`;
-        });
-    }
-
-    function deleteItem(type, id) {
-        if (!confirm('?')) return;
-        if (type === 'patients') {
-            patients = patients.filter(i => i.id !== id);
-            localStorage.setItem('ph_patients', JSON.stringify(patients));
-            renderPatients();
-        } else if (type === 'meds') {
-            meds = meds.filter(i => i.id !== id);
-            localStorage.setItem('ph_meds', JSON.stringify(meds));
-            renderMeds();
-        } else if (type === 'debts') {
-            debts = debts.filter(i => i.id !== id);
-            localStorage.setItem('ph_debts', JSON.stringify(debts));
-            renderDebts();
-        }
-    }
-
-    // تشغيل اللغة المحفوظة عند فتح التطبيق
-    changeLanguage(currentLang);
-</script>
-
-</body>
-</html>
+        .med-images { display:
