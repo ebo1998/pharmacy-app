@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة الصيدلية</title>
+    <style>
+        :root {
+            --primary: #0d9488;
+            --primary-dark: #0f766e;
+            --bg: #f1f5f9;
+            --card: #ffffff;
+            --text: #1e293b;
+            --danger: #ef4444;
+            --border: #cbd5e1;
+        }
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); margin: 0; padding: 0; }
+        header { background-color: var(--primary); color: white; padding: 15px 20px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        header h1 { margin: 0; font-size: 1.5rem; }
+        
+        /* شريط التبويبات */
+        .tabs { display: flex; justify-content: center; background: #fff; border-bottom: 2px solid var(--border); position: sticky; top: 0; z-index: 10; }
+        .tab-btn { flex: 1; max-width: 200px; padding: 15px 10px; border: none; background: none; font-size: 1rem; font-weight: bold; color: #64748b; cursor: pointer; transition: 0.3s; border-bottom: 3px solid transparent; }
+        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); background-color: #f0fdfa; }
+        
+        .container { max-width: 900px; margin: 20px auto; padding: 0 15px; }
+        .section { display: none; }
+        .section.active { display: block; }
+        
+        /* البطاقات والنماذج */
+        .card { background: var(--card); padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
