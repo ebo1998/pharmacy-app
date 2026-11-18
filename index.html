@@ -6,7 +6,7 @@
     <title>نظام إدارة الصيدلية</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #0d9488; --primary-dark: #0f766e; --bg: #f1f5f9; --card: #ffffff; --text: #1e293b; --danger: #ef4444; --border: #cbd5e1; --font-family: 'Cairo', sans-serif; }
+        :root { --primary: #0d9488; --primary-dark: #0f766e; --bg: #f1f5f9; --card: #ffffff; --text: #1e293b; --danger: #ef4444; --warning: #f59e0b; --border: #cbd5e1; --font-family: 'Cairo', sans-serif; }
         * { box-sizing: border-box; font-family: var(--font-family); }
         body { background-color: var(--bg); color: var(--text); margin: 0; padding: 0; }
         header { background-color: var(--primary); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
@@ -15,7 +15,7 @@
         .tabs { display: flex; justify-content: center; background: #fff; border-bottom: 2px solid var(--border); position: sticky; top: 0; z-index: 10; overflow-x: auto; }
         .tab-btn { flex: 1; min-width: 110px; padding: 12px 8px; border: none; background: none; font-size: 0.9rem; font-weight: bold; color: #64748b; cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; }
         .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); background-color: #f0fdfa; }
-        .container { max-width: 900px; margin: 15px auto; padding: 0 10px; }
+        .container { max-width: 950px; margin: 15px auto; padding: 0 10px; }
         .section { display: none; }
         .section.active { display: block; }
         .card { background: var(--card); padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 15px; border: 1px solid var(--border); }
@@ -23,13 +23,33 @@
         .form-group { display: flex; flex-direction: column; }
         label { font-weight: bold; margin-bottom: 4px; font-size: 0.85rem; }
         input, select { padding: 8px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.95rem; background: #fff; color: var(--text); }
-        .btn { background-color: var(--primary); color: white; border: none; padding: 10px; border-radius: 6px; font-size: 0.95rem; font-weight: bold; cursor: pointer; margin-top: 10px; width: 100%; }
+        .btn { background-color: var(--primary); color: white; border: none; padding: 10px; border-radius: 6px; font-size: 0.95rem; font-weight: bold; cursor: pointer; margin-top: 10px; width: 100%; transition: 0.2s; }
+        .btn:hover { background-color: var(--primary-dark); }
         .btn-danger { background-color: var(--danger); padding: 5px 10px; font-size: 0.8rem; width: auto; }
+        .btn-warning { background-color: var(--warning); color: white; padding: 5px 10px; font-size: 0.8rem; width: auto; }
         .search-box { width: 100%; padding: 10px; margin-bottom: 10px; border: 2px solid var(--primary); border-radius: 6px; font-size: 0.95rem; }
-        .table-container { overflow-x: auto; border-radius: 6px; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        
+        /* حاوية الجداول والأنماط الـ 12 */
+        .table-container { overflow-x: auto; border-radius: 6px; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 20px; }
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 10px; text-align: inherit; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
         th { background-color: #f8fafc; color: var(--primary-dark); }
+
+        /* الأنماط المختلفة للجداول */
+        .style-1 table { border-style: solid; }
+        .style-2 table { border-collapse: separate; border-spacing: 0 6px; background: transparent; }
+        .style-2 th, .style-2 td { background: white; border: 1px solid var(--border); }
+        .style-3 th { background-color: var(--primary); color: white; }
+        .style-4 tr:nth-child(even) { background-color: #f8fafc; }
+        .style-5 th { border-bottom: 3px solid var(--primary); }
+        .style-6 td { border-bottom: 2px dashed var(--border); }
+        .style-7 table { box-shadow: 0 8px 20px rgba(0,0,0,0.08); border-radius: 10px; overflow: hidden; }
+        .style-8 th { background: #1e293b; color: white; }
+        .style-9 td { padding: 5px 8px; font-size: 0.85rem; }
+        .style-10 th { text-transform: uppercase; letter-spacing: 1px; background: #e2e8f0; color: #0f172a; }
+        .style-11 table { border: 2px solid var(--primary); border-radius: 8px; }
+        .style-12 th { background: #ffe4e6; color: #9f1239; }
+
         .med-images { display: flex; gap: 4px; flex-wrap: wrap; }
         .med-images img { width: 45px; height: 45px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border); cursor: pointer; }
         .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; }
@@ -63,16 +83,17 @@
     <div id="patients" class="section active">
         <div class="card">
             <h3 id="p_title">إضافة مريض</h3>
+            <input type="hidden" id="pEditId">
             <div class="form-grid">
                 <div class="form-group"><label id="l_pName">الاسم:</label><input type="text" id="pName"></div>
                 <div class="form-group"><label id="l_pAge">العمر:</label><input type="number" id="pAge"></div>
                 <div class="form-group"><label id="l_pNotes">الأدوية:</label><input type="text" id="pNotes"></div>
                 <div class="form-group"><label id="l_pImages">صور الأدوية:</label><input type="file" id="pImages" accept="image/*" multiple></div>
             </div>
-            <button class="btn" onclick="addPatient()" id="b_savePatient">حفظ المريض</button>
+            <button class="btn" onclick="savePatient()" id="b_savePatient">حفظ المريض</button>
         </div>
         <input type="text" class="search-box" id="searchPatient" onkeyup="renderPatients()" placeholder="">
-        <div class="table-container">
+        <div class="table-container" id="pTableBox">
             <table>
                 <thead><tr><th id="th_pName">الاسم</th><th id="th_pAge">العمر</th><th id="th_pNotes">الأدوية</th><th id="th_pImages">صور</th><th id="th_pAction">إجراء</th></tr></thead>
                 <tbody id="patientsTable"></tbody>
@@ -84,16 +105,17 @@
     <div id="inventory" class="section">
         <div class="card">
             <h3 id="m_title">إضافة علاج</h3>
+            <input type="hidden" id="mEditId">
             <div class="form-grid">
                 <div class="form-group"><label id="l_mName">اسم العلاج:</label><input type="text" id="mName"></div>
                 <div class="form-group"><label id="l_mCode">الكود:</label><input type="text" id="mCode"></div>
                 <div class="form-group"><label id="l_mBarcode">الباركود:</label><input type="text" id="mBarcode"></div>
                 <div class="form-group"><label id="l_mPrice">السعر:</label><input type="text" id="mPrice"></div>
             </div>
-            <button class="btn" onclick="addMedicine()" id="b_saveMed">إضافة للمخزون</button>
+            <button class="btn" onclick="saveMedicine()" id="b_saveMed">إضافة للمخزون</button>
         </div>
         <input type="text" class="search-box" id="searchMed" onkeyup="renderMeds()" placeholder="">
-        <div class="table-container">
+        <div class="table-container" id="mTableBox">
             <table>
                 <thead><tr><th id="th_mName">العلاج</th><th id="th_mCode">الكود</th><th id="th_mBarcode">الباركود</th><th id="th_mPrice">السعر</th><th id="th_mAction2">إجراء</th></tr></thead>
                 <tbody id="medsTable"></tbody>
@@ -105,15 +127,16 @@
     <div id="debts" class="section">
         <div class="card">
             <h3 id="d_title">تسجيل دين</h3>
+            <input type="hidden" id="dEditId">
             <div class="form-grid">
                 <div class="form-group"><label id="l_dName">الاسم:</label><input type="text" id="dName"></div>
                 <div class="form-group"><label id="l_dAmount">المبلغ:</label><input type="number" id="dAmount"></div>
                 <div class="form-group"><label id="l_dDetails">التفاصيل:</label><input type="text" id="dDetails"></div>
             </div>
-            <button class="btn" onclick="addDebt()" id="b_saveDebt">إضافة للقائمة</button>
+            <button class="btn" onclick="saveDebt()" id="b_saveDebt">إضافة للقائمة</button>
         </div>
         <input type="text" class="search-box" id="searchDebt" onkeyup="renderDebts()" placeholder="">
-        <div class="table-container">
+        <div class="table-container" id="dTableBox">
             <table>
                 <thead><tr><th id="th_dName">الاسم</th><th id="th_dAmount">المبلغ</th><th id="th_dDetails">التفاصيل</th><th id="th_dAction">إجراء</th></tr></thead>
                 <tbody id="debtsTable"></tbody>
@@ -125,24 +148,41 @@
     <div id="settings" class="section">
         <div class="card">
             <h3 id="st_cloudTitle">☁️ ربط الحساب بالإيميل</h3>
-            <p id="st_cloudDesc" style="color:#64748b; font-size:0.85rem;">أدخل إيميلك لحفظ واسترجاع بياناتك تلقائياً.</p>
+            <p style="color:#64748b; font-size:0.85rem;">أدخل إيميلك لحفظ واسترجاع بياناتك تلقائياً.</p>
             <div class="form-group">
-                <label id="l_userEmail">البريد الإلكتروني:</label>
+                <label>البريد الإلكتروني:</label>
                 <input type="email" id="userEmailInput" placeholder="example@gmail.com">
             </div>
-            <button class="btn" onclick="saveUserEmail()" id="b_syncEmail">ربط واسترجاع البيانات</button>
+            <button class="btn" onclick="saveUserEmail()">ربط واسترجاع البيانات</button>
             <div id="syncStatus"></div>
         </div>
         <div class="card">
-            <h3 id="st_themeTitle">🎨 إعدادات المظهر</h3>
+            <h3 id="st_themeTitle">🎨 إعدادات المظهر والجداول</h3>
             <div class="form-grid">
                 <div class="form-group">
-                    <label id="l_colorSelect">لون الثيم:</label>
+                    <label>لون الثيم:</label>
                     <select id="colorSelect" onchange="changeColorTheme(this.value)">
                         <option value="#0d9488">أخضر طبي</option>
                         <option value="#2563eb">أزرق ملكي</option>
                         <option value="#7c3aed">بنفسجي</option>
                         <option value="#dc2626">أحمر</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>شكل ونمط الجداول (أكثر من 10 أنماط):</label>
+                    <select id="tableStyleSelect" onchange="changeTableStyle(this.value)">
+                        <option value="style-1">النمط 1: قياسي بسيط</option>
+                        <option value="style-2">النمط 2: جداول منفصلة (Cards)</option>
+                        <option value="style-3">النمط 3: رأس ملون أساسي</option>
+                        <option value="style-4">النمط 4: صفوف مخططة متباينة (Zebra)</option>
+                        <option value="style-5">النمط 5: خط سفلي عريض للرأس</option>
+                        <option value="style-6">النمط 6: خطوط أفقية متقطعة (Dashed)</option>
+                        <option value="style-7">النمط 7: زوايا دائرية مع ظل عميق</option>
+                        <option value="style-8">النمط 8: رأس داكن وأنيق</option>
+                        <option value="style-9">النمط 9: جدول مضغوط ومصغر</option>
+                        <option value="style-10">النمط 10: أحرف كبيرة وبارزة</option>
+                        <option value="style-11">النمط 11: إطار كامل متصل</option>
+                        <option value="style-12">النمط 12: رأس وردي مميز</option>
                     </select>
                 </div>
             </div>
@@ -154,12 +194,12 @@
 
 <script>
     const translations = {
-        ar: { title: "💊 نظام صيدليتي", tb_patients: "المرضى", tb_inventory: "المخزون", tb_debts: "الديون", tb_settings: "الإعدادات", p_title: "إضافة مريض", l_pName: "الاسم:", l_pAge: "العمر:", l_pNotes: "الأدوية:", l_pImages: "صور:", b_savePatient: "حفظ المريض", ph_searchP: "🔍 ابحث...", th_pName: "الاسم", th_pAge: "العمر", th_pNotes: "الأدوية", th_pImages: "صور", th_pAction: "إجراء", m_title: "إضافة علاج", l_mName: "العلاج:", l_mCode: "الكود:", l_mBarcode: "باركود:", l_mPrice: "السعر:", b_saveMed: "إضافة", ph_searchM: "🔍 ابحث...", th_mName: "العلاج", th_mCode: "الكود", th_mBarcode: "باركود", th_mPrice: "السعر", th_mAction2: "إجراء", d_title: "دين", l_dName: "الاسم:", l_dAmount: "المبلغ:", l_dDetails: "التفاصيل:", b_saveDebt: "إضافة", ph_searchD: "🔍 ابحث...", th_dName: "الاسم", th_dAmount: "المبلغ", th_dDetails: "التفاصيل", th_dAction: "إجراء", st_cloudTitle: "☁️ ربط الحساب", st_cloudDesc: "أدخل بريدك لحفظ البيانات.", l_userEmail: "البريد:", b_syncEmail: "ربط واسترجاع", st_themeTitle: "🎨 المظهر", l_colorSelect: "اللون:", deleteBtn: "حذف", payBtn: "تسديد" },
-        ckb: { title: "💊 دەرمانخانە", tb_patients: "نەخۆش", tb_inventory: "کۆگا", tb_debts: "قەرز", tb_settings: "ڕێکخستن", p_title: "نەخۆش", l_pName: "ناو:", l_pAge: "تەمەن:", l_pNotes: "دەرمان:", l_pImages: "وێنە:", b_savePatient: "پاشەکەوت", ph_searchP: "🔍 گەڕان...", th_pName: "ناو", th_pAge: "تەمەن", th_pNotes: "دەرمان", th_pImages: "وێنە", th_pAction: "کردار", m_title: "دەرمان", l_mName: "ناو:", l_mCode: "کۆد:", l_mBarcode: "بارکۆد:", l_mPrice: "نرخ:", b_saveMed: "زیادکردن", ph_searchM: "🔍 گەڕان...", th_mName: "ناو", th_mCode: "کۆد", th_mBarcode: "بارکۆد", th_mPrice: "نرخ", th_mAction2: "کردار", d_title: "قەرز", l_dName: "ناو:", l_dAmount: "بڕ:", l_dDetails: "وردەکاری:", b_saveDebt: "زیادکردن", ph_searchD: "🔍 گەڕان...", th_dName: "ناو", th_dAmount: "بڕ", th_dDetails: "وردەکاری", th_dAction: "کردار", st_cloudTitle: "☁️ بەستنەوە", st_cloudDesc: "پۆست بۆ پاراستن.", l_userEmail: "پۆست:", b_syncEmail: "بەستنەوە", st_themeTitle: "🎨 ڕوکار", l_colorSelect: "ڕەنگ:", deleteBtn: "سڕینەوە", payBtn: "دانەوە" },
-        kmr: { title: "💊 Dermannoxwê", tb_patients: "Nexweş", tb_inventory: "Stok", tb_debts: "Deyn", tb_settings: "Mîheng", p_title: "Nexweş", l_pName: "Nav:", l_pAge: "Temen:", l_pNotes: "Derman:", l_pImages: "Wêne:", b_savePatient: "Tomar", ph_searchP: "🔍 Lêgerîn...", th_pName: "Nav", th_pAge: "Temen", th_pNotes: "Derman", th_pImages: "Wêne", th_pAction: "Cîbicîkirin", m_title: "Derman", l_mName: "Nav:", l_mCode: "Kod:", l_mBarcode: "Barkod:", l_mPrice: "Bihayê:", b_saveMed: "Lê zêde bike", ph_searchM: "🔍 Lêgerîn...", th_pName: "Nav", th_pCode: "Kod", th_pBarcode: "Barkod", th_pPrice: "Bihayê", th_mAction2: "Cîbicîkirin", d_title: "Deyn", l_dName: "Nav:", l_dAmount: "Mîqdar:", l_dDetails: "Hûrgilî:", b_saveDebt: "Lê zêde bike", ph_searchD: "🔍 Lêgerîn...", th_dName: "Nav", th_dAmount: "Mîqdar", th_dDetails: "Hûrgilî", th_dAction: "Cîbicîkirin", st_cloudTitle: "☁️ Girêdan", st_cloudDesc: "E-name.", l_userEmail: "E-name:", b_syncEmail: "Girêdan", st_themeTitle: "🎨 Mîheng", l_colorSelect: "Reng:", deleteBtn: "Jêbirin", payBtn: "Dan" },
-        bad: { title: "💊 دەرمانخانە", tb_patients: "نەخۆش", tb_inventory: "کۆگا", tb_debts: "قەرز", tb_settings: "رێکخستن", p_title: "نەخۆش", l_pName: "ناڤ:", l_pAge: "تەمەن:", l_pNotes: "دەرمان:", l_pImages: "وێنە:", b_savePatient: "تۆمار", ph_searchP: "🔍 لێگەریان...", th_pName: "ناڤ", th_pAge: "تەمەن", th_pNotes: "دەرمان", th_pImages: "وێنە", th_pAction: "کریار", m_title: "دەرمان", l_mName: "ناڤ:", l_mCode: "کۆد:", l_mBarcode: "بارکۆد:", l_mPrice: "بها:", b_saveMed: "زیادکرن", ph_searchM: "🔍 لێگەریان...", th_mName: "ناڤ", th_mCode: "کۆد", th_mBarcode: "بارکۆد", th_mPrice: "بها", th_mAction2: "کریار", d_title: "قەرز", l_dName: "ناڤ:", l_dAmount: "مقدار:", l_dDetails: "وردەکاری:", b_saveDebt: "زیادکرن", ph_searchD: "🔍 لێگەریان...", th_dName: "ناڤ", th_dAmount: "مقدار", th_dDetails: "وردەکاری", th_dAction: "کریار", st_cloudTitle: "☁️ گرێدان", st_cloudDesc: "ئیمەیل.", l_userEmail: "ئیمەیل:", b_syncEmail: "گرێدان", st_themeTitle: "🎨 ڕوکار", l_colorSelect: "رەنگ:", deleteBtn: "ژێبرن", payBtn: "دان" },
-        trk: { title: "💊 Eczane", tb_patients: "Hastalar", tb_inventory: "Stok", tb_debts: "Borçlar", tb_settings: "Ayarlar", p_title: "Hasta", l_pName: "Adı:", l_pAge: "Yaş:", l_pNotes: "İlaçlar:", l_pImages: "Resim:", b_savePatient: "Kaydet", ph_searchP: "🔍 Ara...", th_pName: "Adı", th_pAge: "Yaş", th_pNotes: "İlaçlar", th_pImages: "Resim", th_pAction: "İşlem", m_title: "İlaç", l_mName: "Adı:", l_mCode: "Kod:", l_mBarcode: "Barkod:", l_mPrice: "Fiyat:", b_saveMed: "Ekle", ph_searchM: "🔍 Ara...", th_mName: "Adı", th_mCode: "Kod", th_mBarcode: "Barkod", th_mPrice: "Fiyat", th_mAction2: "İşlem", d_title: "Borç", l_dName: "Adı:", l_dAmount: "Tutar:", l_dDetails: "Detay:", b_saveDebt: "Ekle", ph_searchD: "🔍 Ara...", th_dName: "Adı", th_dAmount: "Tutar", th_dDetails: "Detay", th_dAction: "İşlem", st_cloudTitle: "☁️ Bulut", st_cloudDesc: "E-posta.", l_userEmail: "E-posta:", b_syncEmail: "Bağla", st_themeTitle: "🎨 Görünüm", l_colorSelect: "Renk:", deleteBtn: "Sil", payBtn: "Öde" },
-        en: { title: "💊 Pharmacy", tb_patients: "Patients", tb_inventory: "Inventory", tb_debts: "Debts", tb_settings: "Settings", p_title: "Patient", l_pName: "Name:", l_pAge: "Age:", l_pNotes: "Notes:", l_pImages: "Images:", b_savePatient: "Save", ph_searchP: "🔍 Search...", th_pName: "Name", th_pAge: "Age", th_pNotes: "Notes", th_pImages: "Images", th_pAction: "Action", m_title: "Medicine", l_mName: "Name:", l_mCode: "Code:", l_mBarcode: "Barcode:", l_mPrice: "Price:", b_saveMed: "Add", ph_searchM: "🔍 Search...", th_mName: "Name", th_mCode: "Code", th_mBarcode: "Barcode", th_mPrice: "Price", th_mAction2: "Action", d_title: "Debt", l_dName: "Name:", l_dAmount: "Amount:", l_dDetails: "Details:", b_saveDebt: "Add", ph_searchD: "🔍 Search...", th_dName: "Name", th_dAmount: "Amount", th_dDetails: "Details", th_dAction: "Action", st_cloudTitle: "☁️ Cloud", st_cloudDesc: "Email backup.", l_userEmail: "Email:", b_syncEmail: "Connect", st_themeTitle: "🎨 Theme", l_colorSelect: "Color:", deleteBtn: "Delete", payBtn: "Pay" }
+        ar: { title: "💊 نظام صيدليتي", tb_patients: "المرضى", tb_inventory: "المخزون", tb_debts: "الديون", tb_settings: "الإعدادات", p_title: "إضافة / تعديل مريض", l_pName: "الاسم:", l_pAge: "العمر:", l_pNotes: "الأدوية:", l_pImages: "صور:", b_savePatient: "حفظ المريض", ph_searchP: "🔍 ابحث...", th_pName: "الاسم", th_pAge: "العمر", th_pNotes: "الأدوية", th_pImages: "صور", th_pAction: "إجراء", m_title: "إضافة / تعديل علاج", l_mName: "العلاج:", l_mCode: "الكود:", l_mBarcode: "باركود:", l_mPrice: "السعر:", b_saveMed: "حفظ العلاج", ph_searchM: "🔍 ابحث...", th_mName: "العلاج", th_mCode: "الكود", th_mBarcode: "باركود", th_mPrice: "السعر", th_mAction2: "إجراء", d_title: "تسجيل / تعديل دين", l_dName: "الاسم:", l_dAmount: "المبلغ:", l_dDetails: "التفاصيل:", b_saveDebt: "حفظ الدين", ph_searchD: "🔍 ابحث...", th_dName: "الاسم", th_dAmount: "المبلغ", th_dDetails: "التفاصيل", th_dAction: "إجراء", st_cloudTitle: "☁️ ربط الحساب", st_themeTitle: "🎨 المظهر والجداول", deleteBtn: "حذف", editBtn: "تعديل", payBtn: "تسديد" },
+        ckb: { title: "💊 دەرمانخانە", tb_patients: "نەخۆش", tb_inventory: "کۆگا", tb_debts: "قەرز", tb_settings: "ڕێکخستن", p_title: "نەخۆش", l_pName: "ناو:", l_pAge: "تەمەن:", l_pNotes: "دەرمان:", l_pImages: "وێنە:", b_savePatient: "پاشەکەوت", ph_searchP: "🔍 گەڕان...", th_pName: "ناو", th_pAge: "تەمەن", th_pNotes: "دەرمان", th_pImages: "وێنە", th_pAction: "کردار", m_title: "دەرمان", l_mName: "ناو:", l_mCode: "کۆد:", l_mBarcode: "بارکۆد:", l_mPrice: "نرخ:", b_saveMed: "پاشەکەوت", ph_searchM: "🔍 گەڕان...", th_mName: "ناو", th_mCode: "کۆد", th_mBarcode: "بارکۆد", th_mPrice: "نرخ", th_mAction2: "کردار", d_title: "قەرز", l_dName: "ناو:", l_dAmount: "بڕ:", l_dDetails: "وردەکاری:", b_saveDebt: "پاشەکەوت", ph_searchD: "🔍 گەڕان...", th_dName: "ناو", th_dAmount: "بڕ", th_dDetails: "وردەکاری", th_dAction: "کردار", st_cloudTitle: "☁️ بەستنەوە", st_themeTitle: "🎨 ڕوکار و خشتە", deleteBtn: "سڕینەوە", editBtn: "دەستکاری", payBtn: "دانەوە" },
+        kmr: { title: "💊 Dermannoxwê", tb_patients: "Nexweş", tb_inventory: "Stok", tb_debts: "Deyn", tb_settings: "Mîheng", p_title: "Nexweş", l_pName: "Nav:", l_pAge: "Temen:", l_pNotes: "Derman:", l_pImages: "Wêne:", b_savePatient: "Tomar", ph_searchP: "🔍 Lêgerîn...", th_pName: "Nav", th_pAge: "Temen", th_pNotes: "Derman", th_pImages: "Wêne", th_pAction: "Cîbicîkirin", m_title: "Derman", l_mName: "Nav:", l_mCode: "Kod:", l_mBarcode: "Barkod:", l_mPrice: "Bihayê:", b_saveMed: "Tomar", ph_searchM: "🔍 Lêgerîn...", th_mName: "Nav", th_mCode: "Kod", th_mBarcode: "Barkod", th_mPrice: "Bihayê", th_mAction2: "Cîbicîkirin", d_title: "Deyn", l_dName: "Nav:", l_dAmount: "Mîqdar:", l_dDetails: "Hûrgilî:", b_saveDebt: "Tomar", ph_searchD: "🔍 Lêgerîn...", th_dName: "Nav", th_dAmount: "Mîqdar", th_dDetails: "Hûrgilî", th_dAction: "Cîbicîkirin", st_cloudTitle: "☁️ Girêdan", st_themeTitle: "🎨 Mîheng", deleteBtn: "Jêbirin", editBtn: "Guherandin", payBtn: "Dan" },
+        bad: { title: "💊 دەرمانخانە", tb_patients: "نەخۆش", tb_inventory: "کۆگا", tb_debts: "قەرز", tb_settings: "رێکخستن", p_title: "نەخۆش", l_pName: "ناڤ:", l_pAge: "تەمەن:", l_pNotes: "دەرمان:", l_pImages: "وێنە:", b_savePatient: "تۆمار", ph_searchP: "🔍 لێگەریان...", th_pName: "ناڤ", th_pAge: "تەمەن", th_pNotes: "دەرمان", th_pImages: "وێنە", th_pAction: "کریار", m_title: "دەرمان", l_mName: "ناڤ:", l_mCode: "کۆد:", l_mBarcode: "بارکۆد:", l_mPrice: "بها:", b_saveMed: "تۆمار", ph_searchM: "🔍 لێگەریان...", th_mName: "ناڤ", th_mCode: "کۆد", th_mBarcode: "بارکۆد", th_mPrice: "بها", th_mAction2: "کریار", d_title: "قەرز", l_dName: "ناڤ:", l_dAmount: "مقدار:", l_dDetails: "وردەکاری:", b_saveDebt: "تۆمار", ph_searchD: "🔍 لێگەریان...", th_dName: "ناڤ", th_dAmount: "مقدار", th_dDetails: "وردەکاری", th_dAction: "کریار", st_cloudTitle: "☁️ گرێدان", st_themeTitle: "🎨 ڕوکار", deleteBtn: "ژێبرن", editBtn: "دەستکاری", payBtn: "دان" },
+        trk: { title: "💊 Eczane", tb_patients: "Hastalar", tb_inventory: "Stok", tb_debts: "Borçlar", tb_settings: "Ayarlar", p_title: "Hasta", l_pName: "Adı:", l_pAge: "Yaş:", l_pNotes: "İlaçlar:", l_pImages: "Resim:", b_savePatient: "Kaydet", ph_searchP: "🔍 Ara...", th_pName: "Adı", th_pAge: "Yaş", th_pNotes: "İlaçlar", th_pImages: "Resim", th_pAction: "İşlem", m_title: "İlaç", l_mName: "Adı:", l_mCode: "Kod:", l_mBarcode: "Barkod:", l_mPrice: "Fiyat:", b_saveMed: "Kaydet", ph_searchM: "🔍 Ara...", th_mName: "Adı", th_mCode: "Kod", th_mBarcode: "Barkod", th_mPrice: "Fiyat", th_mAction2: "İşlem", d_title: "Borç", l_dName: "Adı:", l_dAmount: "Tutar:", l_dDetails: "Detay:", b_saveDebt: "Kaydet", ph_searchD: "🔍 Ara...", th_dName: "Adı", th_dAmount: "Tutar", th_dDetails: "Detay", th_dAction: "İşlem", st_cloudTitle: "☁️ Bulut", st_themeTitle: "🎨 Görünüm", deleteBtn: "Sil", editBtn: "Düzenle", payBtn: "Öde" },
+        en: { title: "💊 Pharmacy", tb_patients: "Patients", tb_inventory: "Inventory", tb_debts: "Debts", tb_settings: "Settings", p_title: "Patient", l_pName: "Name:", l_pAge: "Age:", l_pNotes: "Notes:", l_pImages: "Images:", b_savePatient: "Save", ph_searchP: "🔍 Search...", th_pName: "Name", th_pAge: "Age", th_pNotes: "Notes", th_pImages: "Images", th_pAction: "Action", m_title: "Medicine", l_mName: "Name:", l_mCode: "Code:", l_mBarcode: "Barcode:", l_mPrice: "Price:", b_saveMed: "Save", ph_searchM: "🔍 Search...", th_mName: "Name", th_mCode: "Code", th_mBarcode: "Barcode", th_mPrice: "Price", th_mAction2: "Action", d_title: "Debt", l_dName: "Name:", l_dAmount: "Amount:", l_dDetails: "Details:", b_saveDebt: "Save", ph_searchD: "🔍 Search...", th_dName: "Name", th_dAmount: "Amount", th_dDetails: "Details", th_dAction: "Action", st_cloudTitle: "☁️ Cloud", st_themeTitle: "🎨 Theme & Tables", deleteBtn: "Delete", editBtn: "Edit", payBtn: "Pay" }
     };
 
     let currentLang = localStorage.getItem('ph_lang') || 'ar';
@@ -223,11 +263,7 @@
         document.getElementById('th_dAction').innerText = t.th_dAction;
 
         document.getElementById('st_cloudTitle').innerText = t.st_cloudTitle;
-        document.getElementById('st_cloudDesc').innerText = t.st_cloudDesc;
-        document.getElementById('l_userEmail').innerText = t.l_userEmail;
-        document.getElementById('b_syncEmail').innerText = t.b_syncEmail;
         document.getElementById('st_themeTitle').innerText = t.st_themeTitle;
-        document.getElementById('l_colorSelect').innerText = t.l_colorSelect;
 
         renderPatients(); renderMeds(); renderDebts();
     }
@@ -262,24 +298,61 @@
     }
 
     function changeColorTheme(c) { document.documentElement.style.setProperty('--primary', c); localStorage.setItem('ph_color', c); }
+    
+    function changeTableStyle(styleClass) {
+        ['pTableBox', 'mTableBox', 'dTableBox'].forEach(boxId => {
+            const el = document.getElementById(boxId);
+            el.className = 'table-container ' + styleClass;
+        });
+        localStorage.setItem('ph_tstyle', styleClass);
+    }
 
     window.addEventListener('DOMContentLoaded', () => {
         if(localStorage.getItem('ph_color')) changeColorTheme(localStorage.getItem('ph_color'));
+        if(localStorage.getItem('ph_tstyle')) {
+            changeTableStyle(localStorage.getItem('ph_tstyle'));
+            document.getElementById('tableStyleSelect').value = localStorage.getItem('ph_tstyle');
+        }
         changeLanguage(currentLang);
     });
 
-    async function addPatient() {
+    // --- المرضى (إضافة وتعديل) ---
+    async function savePatient() {
+        const editId = document.getElementById('pEditId').value;
         const name = document.getElementById('pName').value;
         const age = document.getElementById('pAge').value;
         const notes = document.getElementById('pNotes').value;
         const files = document.getElementById('pImages').files;
         if (!name) return alert('أدخل اسم المريض');
+
         let imgs = [];
         for (let f of files) imgs.push(await compressImage(f));
-        patients.push({ id: Date.now(), name, age, notes, images: imgs });
+
+        if (editId) {
+            let p = patients.find(i => i.id == editId);
+            if (p) {
+                p.name = name; p.age = age; p.notes = notes;
+                if (imgs.length > 0) p.images = p.images.concat(imgs);
+            }
+            document.getElementById('pEditId').value = '';
+        } else {
+            patients.push({ id: Date.now(), name, age, notes, images: imgs });
+        }
         autoSaveData();
         document.getElementById('pName').value = ''; document.getElementById('pAge').value = ''; document.getElementById('pNotes').value = ''; document.getElementById('pImages').value = '';
         renderPatients();
+    }
+
+    function editPatient(id) {
+        let p = patients.find(i => i.id == id);
+        if (p) {
+            document.getElementById('pEditId').value = p.id;
+            document.getElementById('pName').value = p.name;
+            document.getElementById('pAge').value = p.age;
+            document.getElementById('pNotes').value = p.notes;
+            openTab('patients');
+            window.scrollTo(0,0);
+        }
     }
 
     function compressImage(file) {
@@ -307,22 +380,44 @@
         tb.innerHTML = '';
         patients.filter(p => p.name.toLowerCase().includes(q)).forEach(p => {
             const imgs = (p.images || []).map(s => `<img src="${s}" onclick="showModal('${s}')">`).join('');
-            tb.innerHTML += `<tr><td><strong>${p.name}</strong></td><td>${p.age}</td><td>${p.notes}</td><td><div class="med-images">${imgs}</div></td><td><button class="btn btn-danger" onclick="deleteItem('patients', ${p.id})">${t.deleteBtn}</button></td></tr>`;
+            tb.innerHTML += `<tr><td><strong>${p.name}</strong></td><td>${p.age}</td><td>${p.notes}</td><td><div class="med-images">${imgs}</div></td><td><button class="btn btn-warning" onclick="editPatient(${p.id})">${t.editBtn}</button> <button class="btn btn-danger" onclick="deleteItem('patients', ${p.id})">${t.deleteBtn}</button></td></tr>`;
         });
     }
 
     function showModal(s) { document.getElementById('modalImg').src = s; document.getElementById('imgModal').style.display = 'flex'; }
 
-    function addMedicine() {
+    // --- المخزون (إضافة وتعديل) ---
+    function saveMedicine() {
+        const editId = document.getElementById('mEditId').value;
         const name = document.getElementById('mName').value;
         const code = document.getElementById('mCode').value;
         const barcode = document.getElementById('mBarcode').value;
         const price = document.getElementById('mPrice').value;
         if (!name) return alert('أدخل اسم العلاج');
-        meds.push({ id: Date.now(), name, code, barcode, price });
+
+        if (editId) {
+            let m = meds.find(i => i.id == editId);
+            if (m) { m.name = name; m.code = code; m.barcode = barcode; m.price = price; }
+            document.getElementById('mEditId').value = '';
+        } else {
+            meds.push({ id: Date.now(), name, code, barcode, price });
+        }
         autoSaveData();
         document.getElementById('mName').value = ''; document.getElementById('mCode').value = ''; document.getElementById('mBarcode').value = ''; document.getElementById('mPrice').value = '';
         renderMeds();
+    }
+
+    function editMedicine(id) {
+        let m = meds.find(i => i.id == id);
+        if (m) {
+            document.getElementById('mEditId').value = m.id;
+            document.getElementById('mName').value = m.name;
+            document.getElementById('mCode').value = m.code;
+            document.getElementById('mBarcode').value = m.barcode;
+            document.getElementById('mPrice').value = m.price;
+            openTab('inventory');
+            window.scrollTo(0,0);
+        }
     }
 
     function renderMeds() {
@@ -331,19 +426,40 @@
         const tb = document.getElementById('medsTable');
         tb.innerHTML = '';
         meds.filter(m => m.name.toLowerCase().includes(q) || (m.code && m.code.toLowerCase().includes(q)) || (m.barcode && m.barcode.includes(q))).forEach(m => {
-            tb.innerHTML += `<tr><td><strong>${m.name}</strong></td><td>${m.code}</td><td>${m.barcode}</td><td>${m.price}</td><td><button class="btn btn-danger" onclick="deleteItem('meds', ${m.id})">${t.deleteBtn}</button></td></tr>`;
+            tb.innerHTML += `<tr><td><strong>${m.name}</strong></td><td>${m.code}</td><td>${m.barcode}</td><td>${m.price}</td><td><button class="btn btn-warning" onclick="editMedicine(${m.id})">${t.editBtn}</button> <button class="btn btn-danger" onclick="deleteItem('meds', ${m.id})">${t.deleteBtn}</button></td></tr>`;
         });
     }
 
-    function addDebt() {
+    // --- الديون (إضافة وتعديل) ---
+    function saveDebt() {
+        const editId = document.getElementById('dEditId').value;
         const name = document.getElementById('dName').value;
         const amount = document.getElementById('dAmount').value;
         const details = document.getElementById('dDetails').value;
         if (!name || !amount) return alert('أدخل الاسم والمبلغ');
-        debts.push({ id: Date.now(), name, amount, details });
+
+        if (editId) {
+            let d = debts.find(i => i.id == editId);
+            if (d) { d.name = name; d.amount = amount; d.details = details; }
+            document.getElementById('dEditId').value = '';
+        } else {
+            debts.push({ id: Date.now(), name, amount, details });
+        }
         autoSaveData();
         document.getElementById('dName').value = ''; document.getElementById('dAmount').value = ''; document.getElementById('dDetails').value = '';
         renderDebts();
+    }
+
+    function editDebt(id) {
+        let d = debts.find(i => i.id == id);
+        if (d) {
+            document.getElementById('dEditId').value = d.id;
+            document.getElementById('dName').value = d.name;
+            document.getElementById('dAmount').value = d.amount;
+            document.getElementById('dDetails').value = d.details;
+            openTab('debts');
+            window.scrollTo(0,0);
+        }
     }
 
     function renderDebts() {
@@ -352,7 +468,7 @@
         const tb = document.getElementById('debtsTable');
         tb.innerHTML = '';
         debts.filter(d => d.name.toLowerCase().includes(q)).forEach(d => {
-            tb.innerHTML += `<tr><td><strong>${d.name}</strong></td><td style="color:#ef4444;font-weight:bold;">${d.amount}</td><td>${d.details}</td><td><button class="btn btn-danger" onclick="deleteItem('debts', ${d.id})">${t.payBtn}</button></td></tr>`;
+            tb.innerHTML += `<tr><td><strong>${d.name}</strong></td><td style="color:#ef4444;font-weight:bold;">${d.amount}</td><td>${d.details}</td><td><button class="btn btn-warning" onclick="editDebt(${d.id})">${t.editBtn}</button> <button class="btn btn-danger" onclick="deleteItem('debts', ${d.id})">${t.payBtn}</button></td></tr>`;
         });
     }
 
