@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>نظام إدارة الصيدلية والمذاخر الاحترافي</title>
+    <title>نظام إدارة الصيدلية والديون والمذاخر</title>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@400;600;700;800&family=Changa:wght@400;600;700&family=El+Messiri:wght@400;600;700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=Lateef&family=Lalezar&family=Lemonada:wght@400;600;700&family=Mada:wght@400;600;700&family=Markazi+Text:wght@400;600;700&family=Mirza:wght@400;700&family=Noto+Kufi+Arabic:wght@400;600;700&family=Noto+Naskh+Arabic:wght@400;600;700&family=Noto+Sans+Arabic:wght@400;600;700&family=Rakkas&family=Readex+Pro:wght@400;600;700&family=Reem+Kufi:wght@400;600;700&family=Rubik:wght@400;600;700&family=Scheherazade+New:wght@400;700&family=Tajawal:wght@400;500;700;800&family=Vazirmatn:wght@400;600;700&display=swap" rel="stylesheet">
     
@@ -58,7 +58,6 @@
             touch-action: pan-y;
         }
 
-        /* Header يضم العنوان والأدوات وأزرار الأقسام في الأعلى */
         header {
             background: linear-gradient(135deg, var(--primary-dark), var(--primary));
             color: white;
@@ -92,7 +91,6 @@
             flex-wrap: wrap;
         }
 
-        /* أزرار الأقسام المدمجة أعلى الصفحة */
         .header-nav {
             display: flex;
             flex-wrap: wrap;
@@ -151,7 +149,6 @@
         .btn-warning { background: var(--warning); color: white; }
         .btn-success { background: var(--success); color: white; }
 
-        /* Container */
         .container {
             width: 100%;
             max-width: 1380px;
@@ -165,7 +162,6 @@
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Cards */
         .card {
             background: var(--card);
             border-radius: 10px;
@@ -188,7 +184,6 @@
             gap: 8px;
         }
 
-        /* Barcode Scanner Hero */
         .scanner-hero {
             background: linear-gradient(135deg, rgba(15, 118, 110, 0.08), rgba(2, 132, 199, 0.08));
             border: 1.5px solid var(--primary);
@@ -266,7 +261,27 @@
         .scan-item span { display: block; font-size: 0.75rem; color: var(--text-muted); }
         .scan-item strong { font-size: 0.92rem; color: var(--text); }
 
-        /* Form Grid */
+        .pos-box {
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            padding: 14px;
+            background: var(--card);
+            margin-bottom: 14px;
+        }
+
+        .pos-total-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            background: var(--bg);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 1px solid var(--border);
+        }
+
         .form-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -292,7 +307,59 @@
             font-size: 0.88rem;
         }
 
-        /* Media Upload Box (Camera / Gallery / PDF) */
+        .alpha-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin: 10px 0 14px;
+        }
+
+        .alpha-btn {
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text);
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .alpha-btn.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .debtor-card {
+            border: 1px solid var(--border);
+            border-right: 4px solid var(--warning);
+            border-radius: 9px;
+            padding: 12px;
+            margin-bottom: 12px;
+            background: var(--bg);
+        }
+
+        .debtor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 8px;
+        }
+
+        .batch-box {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            padding: 8px 10px;
+            margin-bottom: 8px;
+            font-size: 0.83rem;
+        }
+
         .media-upload-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -340,7 +407,6 @@
             margin-bottom: 4px;
         }
 
-        /* Tables */
         .table-responsive {
             overflow-x: auto;
             border-radius: 7px;
@@ -473,35 +539,34 @@
 
 <header class="no-print">
     <div class="header-top">
-        <h1>💊 نظام إدارة الصيدلية والمذاخر</h1>
+        <h1>💊 نظام إدارة الصيدلية والديون والمذاخر</h1>
         <div class="header-actions">
             <button class="btn btn-light" onclick="window.print()">🖨️ طباعة</button>
             <button class="btn btn-light" onclick="toggleTheme()">🌓 ليلي / نهاري</button>
         </div>
     </div>
 
-    <!-- الأقسام منقولة إلى أعلى الهيدر لتفتح أسفله مباشرة -->
     <nav class="header-nav">
-        <button class="nav-pill active" onclick="switchTab('page1', this)">1️⃣ الصيدلية والباركود</button>
-        <button class="nav-pill" onclick="switchTab('page2', this)">2️⃣ أرشيف القوائم والأسعار</button>
-        <button class="nav-pill" onclick="switchTab('page3', this)">3️⃣ إضافة القوائم (كاميرا / صور / PDF)</button>
-        <button class="nav-pill" onclick="switchTab('page4', this)">
+        <button class="nav-pill active" onclick="switchTab('page1', this)">1️⃣ الباركود والبيع (نقد / دين)</button>
+        <button class="nav-pill" onclick="switchTab('page2', this)">2️⃣ سجل المديونين (أ - ي)</button>
+        <button class="nav-pill" onclick="switchTab('page3', this)">3️⃣ أرشيف القوائم والأسعار</button>
+        <button class="nav-pill" onclick="switchTab('page4', this)">4️⃣ إضافة القوائم</button>
+        <button class="nav-pill" onclick="switchTab('page5', this)">
             ⚠️ التنبيهات <span class="badge" id="alertBadge">0</span>
         </button>
-        <button class="nav-pill" onclick="switchTab('page5', this)">⚙️ الإعدادات</button>
+        <button class="nav-pill" onclick="switchTab('page6', this)">⚙️ الإعدادات</button>
     </nav>
 </header>
 
 <div class="container">
 
-    <!-- ==================== 1. الصيدلية والباركود ==================== -->
     <div id="page1" class="page active">
         <div class="scanner-hero no-print">
-            <div class="scanner-status-indicator">🟢 مستشعر الباركود جاهز للاستلام الفوري</div>
-            <h2>اقرأ الباركود بالجهاز أو بالكاميرا أو من صورة ليظهر العلاج فوراً</h2>
+            <div class="scanner-status-indicator">🟢 مستشعر الباركود جاهز (كل ضربة باركود تضاف للقائمة)</div>
+            <h2>اضرب الباركود أو افتح الكاميرا ليظهر العلاج وسعر البيع ويُضاف لقائمة البيع</h2>
             <div class="scanner-controls">
-                <input type="text" id="barcodeScanInput" placeholder="⚡ اضرب الباركود بالجهاز هنا..." autofocus oninput="autoDetectBarcode()">
-                <button class="btn btn-secondary" onclick="startCameraScanner()">📷 مسح بالكاميرا</button>
+                <input type="text" id="barcodeScanInput" placeholder="⚡ اضرب الباركود أو اكتب اسم العلاج..." autofocus oninput="autoDetectBarcode()">
+                <button class="btn btn-secondary" onclick="startCameraScanner()">📷 الكاميرا</button>
                 <label class="btn btn-primary" style="cursor:pointer; margin:0;">
                     🖼️ صورة باركود
                     <input type="file" accept="image/*" style="display:none;" onchange="scanBarcodeFromImage(event)">
@@ -518,25 +583,72 @@
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
                     <h3 id="resName" style="color:var(--primary); font-size:1.05rem;">-</h3>
                     <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                        <button class="btn btn-warning" onclick="dispenseOneItem()">➖ صرف (1)</button>
-                        <button class="btn btn-secondary" onclick="openEditModal(currentScannedId)">✏️ تعديل</button>
+                        <button class="btn btn-success" onclick="addCurrentScannedToCart()">➕ إضافة لقائمة البيع</button>
+                        <button class="btn btn-secondary" onclick="openEditModal(currentScannedId)">✏️ تعديل السعر / البيانات</button>
                         <button class="btn btn-light" style="color:var(--text); border-color:var(--border);" onclick="clearScanResult()">✕</button>
                     </div>
                 </div>
                 <div class="scan-grid">
+                    <div class="scan-item"><span>سعر البيع المحدد:</span><strong id="resSalePrice" style="color:var(--success);">-</strong></div>
                     <div class="scan-item"><span>الباركود:</span><strong id="resBarcode">-</strong></div>
                     <div class="scan-item"><span>النوع / القسم:</span><strong id="resType">-</strong></div>
                     <div class="scan-item"><span>الشركة:</span><strong id="resCompany">-</strong></div>
                     <div class="scan-item"><span>الانتهاء:</span><strong id="resExpiry">-</strong></div>
-                    <div class="scan-item"><span>كارتون / كمية:</span><strong id="resQty">-</strong></div>
-                    <div class="scan-item"><span>البونص:</span><strong id="resBonus">-</strong></div>
+                    <div class="scan-item"><span>المتوفر بالصيدلية:</span><strong id="resQty">-</strong></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="pos-box no-print">
+            <div class="card-title">
+                <span>🛒 قائمة البيع الحالية (العلاجات المضروبة ورا بعض)</span>
+                <button class="btn btn-danger" onclick="clearCart()">🗑️ تفريغ القائمة</button>
+            </div>
+
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>العلاج</th>
+                            <th>سعر البيع (د.ع)</th>
+                            <th>العدد</th>
+                            <th>مجموع المادة (د.ع)</th>
+                            <th>حذف</th>
+                        </tr>
+                    </thead>
+                    <tbody id="posCartBody">
+                        <tr><td colspan="6" style="text-align:center; color:var(--text-muted);">اضرب باركود أي علاج ليظهر هنا ويُحسب سعره ومجموعه تلقائياً</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pos-total-bar">
+                <div>
+                    <span style="font-size:0.85rem; color:var(--text-muted);">المجموع الكلي للقائمة:</span>
+                    <strong id="posGrandTotal" style="font-size:1.25rem; color:var(--primary); display:block;">0 د.ع</strong>
+                </div>
+
+                <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+                    <select id="paymentTypeSelect" onchange="toggleDebtorSelect()" style="max-width:140px; font-weight:700;">
+                        <option value="cash">💵 نقد (كاش)</option>
+                        <option value="credit">📒 دين (آجل)</option>
+                    </select>
+
+                    <select id="posDebtorSelect" style="display:none; max-width:210px;">
+                        <option value="">اختر اسم المديون...</option>
+                    </select>
+
+                    <input type="text" id="posNewDebtorName" placeholder="أو اكتب اسم مديون جديد..." style="display:none; max-width:190px;">
+
+                    <button class="btn btn-success" onclick="checkoutSale()">✅ إتمام وحفظ القائمة</button>
                 </div>
             </div>
         </div>
 
         <div class="card no-print">
             <div class="card-title">
-                <span>➕ إضافة علاج جديد وربطه بالباركود</span>
+                <span>➕ إضافة علاج جديد وتحديد سعر البيع بالصيدلية</span>
                 <label class="btn btn-secondary" style="cursor:pointer;">
                     📷 باركود من صورة
                     <input type="file" accept="image/*" style="display:none;" onchange="fillInputBarcodeFromImage(event, 'inBarcode')">
@@ -549,11 +661,15 @@
                         <input type="text" id="inBarcode" placeholder="اضرب الباركود...">
                     </div>
                     <div class="form-group">
-                        <label>اسم المادة</label>
+                        <label>اسم المادة (العلاج)</label>
                         <input type="text" id="inName" placeholder="اسم العلاج" required>
                     </div>
                     <div class="form-group">
-                        <label>نوع المادة / القسم</label>
+                        <label>سعر البيع بالصيدلية (د.ع)</label>
+                        <input type="number" id="inSalePrice" placeholder="مثال: 2500" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label>النوع / القسم</label>
                         <input type="text" id="inType" placeholder="Tablet, Syrup..." required>
                     </div>
                     <div class="form-group">
@@ -565,11 +681,11 @@
                         <input type="date" id="inExpiry" required>
                     </div>
                     <div class="form-group">
-                        <label>كارتون / كمية</label>
+                        <label>الكمية / كارتون</label>
                         <input type="number" id="inQty" value="1" min="0" required>
                     </div>
                     <div class="form-group">
-                        <label>البونص</label>
+                        <label>بونص</label>
                         <input type="number" id="inBonus" value="0" min="0">
                     </div>
                     <div class="form-group">
@@ -581,8 +697,8 @@
 
         <div class="card">
             <div class="card-title">
-                <span>📋 مواد الصيدلية (بدون أسعار)</span>
-                <input type="text" id="filterPage1" placeholder="بحث سريع..." style="max-width:240px;" onkeyup="renderTables()">
+                <span>📋 علاجات الصيدلية وأسعار البيع المحددة</span>
+                <input type="text" id="filterPage1" placeholder="بحث بالاسم أو الباركود أو الشركة..." style="max-width:250px;" onkeyup="renderTables()">
             </div>
             <div class="table-responsive">
                 <table>
@@ -591,11 +707,11 @@
                             <th>#</th>
                             <th>الباركود</th>
                             <th>اسم المادة</th>
+                            <th>سعر البيع</th>
                             <th>النوع / القسم</th>
                             <th>الشركة</th>
                             <th>الانتهاء</th>
-                            <th>كارتون</th>
-                            <th>بونص</th>
+                            <th>المتوفر</th>
                             <th class="no-print">تعديل</th>
                         </tr>
                     </thead>
@@ -605,8 +721,61 @@
         </div>
     </div>
 
-    <!-- ==================== 2. أرشيف القوائم والأسعار ==================== -->
     <div id="page2" class="page">
+        <div class="stats-grid">
+            <div class="stat-box">
+                <h3>عدد المديونين</h3>
+                <div class="num" id="statDebtorsCount">0</div>
+            </div>
+            <div class="stat-box" style="border-right-color: var(--danger);">
+                <h3>إجمالي الديون المستحقة (د.ع)</h3>
+                <div class="num" id="statTotalDebts" style="color:var(--danger);">0 د.ع</div>
+            </div>
+        </div>
+
+        <div class="card no-print">
+            <div class="card-title"><span>➕ إضافة اسم مديون جديد أو تسجيل وجبة دين</span></div>
+            <form onsubmit="addManualDebtorOrBatch(event)">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>اسم المديون الثلاثي</label>
+                        <input type="text" id="debtorNameInput" placeholder="مثال: أحمد علي محمود" required>
+                    </div>
+                    <div class="form-group">
+                        <label>رقم الهاتف (اختياري)</label>
+                        <input type="text" id="debtorPhoneInput" placeholder="0770...">
+                    </div>
+                    <div class="form-group">
+                        <label>التاريخ</label>
+                        <input type="date" id="debtorDateInput" required>
+                    </div>
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label>العلاجات المأخوذة في هذه الوجبة</label>
+                        <input type="text" id="debtorItemsInput" placeholder="مثال: Atacand 16mg (1) + Adol Supp (2)">
+                    </div>
+                    <div class="form-group">
+                        <label>مبلغ الوجبة (د.ع)</label>
+                        <input type="number" id="debtorAmountInput" value="0" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success" style="width:100%; justify-content:center; height:36px;">💾 حفظ في سجل الديون</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                <span>📒 قائمة المديونين وتفاصيل الوجبات والمبالغ</span>
+                <input type="text" id="debtorSearchInput" placeholder="ابحث عن اسم مديون..." style="max-width:240px;" oninput="renderDebtors()">
+            </div>
+
+            <div class="alpha-bar" id="alphaFilterBar"></div>
+            <div id="debtorsListContainer"></div>
+        </div>
+    </div>
+
+    <div id="page3" class="page">
         <div class="stats-grid">
             <div class="stat-box">
                 <h3>عدد المواد</h3>
@@ -624,7 +793,7 @@
 
         <div class="card">
             <div class="card-title">
-                <span>🧾 أرشيف القوائم والأسعار</span>
+                <span>🧾 أرشيف قوائم المذاخر والأسعار</span>
                 <div style="display:flex; gap:8px; flex-wrap:wrap;">
                     <select id="invoiceFilter" onchange="renderTables()" style="max-width:220px;">
                         <option value="ALL">كل القوائم</option>
@@ -656,19 +825,14 @@
         </div>
     </div>
 
-    <!-- ==================== 3. إضافة القوائم (كاميرا / صور / PDF) ==================== -->
-    <div id="page3" class="page">
+    <div id="page4" class="page">
         <div class="card" style="border-right: 4px solid var(--secondary);">
             <div class="card-title" style="color: var(--secondary);">
                 <span>📸 رفع القوائم بالكاميرا أو من المعرض أو ملف PDF</span>
             </div>
-            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;">
-                التقط صورة للقائمة بكاميرا الموبايل مباشرة، أو اختر صوراً من المعرض، أو حمّل ملف PDF، واحفظها كقائمة جديدة في النظام:
-            </p>
-
             <div class="form-group" style="margin-bottom:12px;">
                 <label>اسم المذخر / رقم القائمة والتاريخ</label>
-                <input type="text" id="uploadInvoiceName" placeholder="مثال: مذخر الفردوس - قائمة جديدة (22/11/2026)" list="existingInvoicesList">
+                <input type="text" id="uploadInvoiceName" placeholder="مثال: مذخر الفردوس - قائمة جديدة" list="existingInvoicesList">
                 <datalist id="existingInvoicesList"></datalist>
             </div>
 
@@ -694,11 +858,11 @@
 
             <div id="mediaPreviewArea" class="media-preview-list"></div>
             <div id="pdfViewerArea" style="display:none; margin-top:12px;">
-                <iframe id="pdfFrame" style="width:100%; height:320px; border:1px solid var(--border); border-radius:8px;"></iframe>
+                <iframe id="pdfFrame" style="width:100%; height:300px; border:1px solid var(--border); border-radius:8px;"></iframe>
             </div>
 
             <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
-                <button class="btn btn-success" onclick="saveUploadedListRecord()">💾 حفظ القائمة المرفقة في الأرشيف</button>
+                <button class="btn btn-success" onclick="saveUploadedListRecord()">💾 حفظ القائمة المرفقة</button>
                 <button class="btn btn-danger" onclick="clearUploadedMedia()">🗑️ مسح المرفقات</button>
             </div>
         </div>
@@ -720,6 +884,10 @@
                     <div class="form-group">
                         <label>اسم المادة</label>
                         <input type="text" id="invNameInput" required>
+                    </div>
+                    <div class="form-group">
+                        <label>سعر البيع بالصيدلية (د.ع)</label>
+                        <input type="number" id="invSalePriceInput" value="0" min="0">
                     </div>
                     <div class="form-group">
                         <label>النوع / القسم</label>
@@ -760,8 +928,7 @@
         </div>
     </div>
 
-    <!-- ==================== 4. التنبيهات ==================== -->
-    <div id="page4" class="page">
+    <div id="page5" class="page">
         <div class="card" style="border-right: 4px solid var(--danger);">
             <div class="card-title" style="color: var(--danger);"><span>⏳ تنبيهات تاريخ الانتهاء</span></div>
             <div class="table-responsive">
@@ -801,8 +968,7 @@
         </div>
     </div>
 
-    <!-- ==================== 5. الإعدادات ==================== -->
-    <div id="page5" class="page">
+    <div id="page6" class="page">
         <div class="settings-grid">
             <div class="card">
                 <div class="card-title">🔤 الخطوط وحجم التصغير والتكبير</div>
@@ -909,11 +1075,10 @@
 
 </div>
 
-<!-- نافذة التعديل الشامل -->
 <div id="editDrugModal" class="modal">
     <div class="modal-content">
         <div class="card-title">
-            <span>✏️ تعديل المادة والباركود والقائمة</span>
+            <span>✏️ تعديل المادة وسعر البيع والباركود</span>
             <button class="btn btn-danger" onclick="closeEditModal()">✕</button>
         </div>
         <form id="editDrugForm" onsubmit="saveEditedDrug(event)">
@@ -939,6 +1104,10 @@
                     <input type="text" id="editName" required>
                 </div>
                 <div class="form-group">
+                    <label>سعر البيع بالصيدلية (د.ع)</label>
+                    <input type="number" id="editSalePrice" min="0" required>
+                </div>
+                <div class="form-group">
                     <label>النوع / القسم</label>
                     <input type="text" id="editType" required>
                 </div>
@@ -951,7 +1120,7 @@
                     <input type="date" id="editExpiry" required>
                 </div>
                 <div class="form-group">
-                    <label>كارتون</label>
+                    <label>المتوفر / كارتون</label>
                     <input type="number" id="editQty" min="0" required>
                 </div>
                 <div class="form-group">
@@ -959,7 +1128,7 @@
                     <input type="number" id="editBonus" min="0">
                 </div>
                 <div class="form-group">
-                    <label>سعر المفرد</label>
+                    <label>سعر الشراء / المفرد</label>
                     <input type="number" id="editPrice" min="0">
                 </div>
                 <div class="form-group">
@@ -975,573 +1144,856 @@
     </div>
 </div>
 
-<script>
-    const initialAlferdosData = [
-        { id: 1, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "بارستول حب", type: "Vial", company: "-", expiry: "2028-07-01", qty: 10, bonus: 0, price: 3762, total: 37620 },
-        { id: 2, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "باندج قهوائي 10سم", type: "BANDAGE", company: "CHINA", expiry: "2028-01-01", qty: 4, bonus: 0, price: 7200, total: 28800 },
-        { id: 3, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "حب بارستول ازرق", type: "Tablet", company: "-", expiry: "2029-06-01", qty: 14, bonus: 0, price: 3300, total: 46200 },
-        { id: 4, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "حفاضه اولويز ازرق", type: "مستلزمات", company: "TURKEY", expiry: "2027-07-01", qty: 12, bonus: 0, price: 1300, total: 15600 },
-        { id: 5, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "خافضة لسان", type: "مستلزمات", company: "CHINA", expiry: "2028-01-01", qty: 5, bonus: 0, price: 1333, total: 6665 },
-        { id: 6, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "راس ممة ثنائي", type: "مستلزمات", company: "CHINA", expiry: "2030-01-01", qty: 10, bonus: 0, price: 500, total: 5000 },
-        { id: 7, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "زنك كاستراويل 25 غم سامراء", type: "Cream", company: "SDI / IRAQ", expiry: "2028-10-01", qty: 25, bonus: 0, price: 1425, total: 35625 },
-        { id: 8, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "سرنج انسولين 0.5 good", type: "Syringe", company: "good / Turkey", expiry: "2030-01-01", qty: 4, bonus: 0, price: 6900, total: 27600 },
-        { id: 9, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "كمام اسود صيني", type: "Mask", company: "CHINA", expiry: "2028-01-01", qty: 5, bonus: 0, price: 1500, total: 7500 },
-        { id: 10, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "كمامة اطفال", type: "Mask", company: "TURKEY", expiry: "2028-01-01", qty: 1, bonus: 0, price: 2500, total: 2500 },
-        { id: 11, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "لزقة الالام شفاء صيني", type: "Patch", company: "unknown", expiry: "2029-12-01", qty: 24, bonus: 0, price: 371, total: 8904 },
-        { id: 12, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "لفاف ابيض بانجي 10 سم", type: "PLASTER", company: "CHINA", expiry: "2028-01-01", qty: 4, bonus: 0, price: 3354, total: 13416 },
-        { id: 13, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "هايدرو فيال ازرق", type: "Vial", company: "-", expiry: "2029-01-01", qty: 20, bonus: 0, price: 1539, total: 30780 },
-        { id: 14, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Acuaiss ULTRA ( 10 ml )", type: "Drops", company: "DISOP / Spain", expiry: "2029-02-01", qty: 2, bonus: 0, price: 17055, total: 34110 },
-        { id: 15, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Adol ( Paracetamol 250 mg ) 10 Supp", type: "Suppositories", company: "Julphar", expiry: "2027-05-01", qty: 10, bonus: 0, price: 2332, total: 23320 },
-        { id: 16, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Afrafast ( 30 Sachets )", type: "Sachets", company: "APC / IRAQ", expiry: "2028-03-01", qty: 10, bonus: 0, price: 9000, total: 90000 },
-        { id: 17, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "ALLERCEN 10MG (10AMP)", type: "Ampoule", company: "ocean", expiry: "2027-10-01", qty: 4, bonus: 0, price: 6607, total: 26428 },
-        { id: 18, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Anginovag Spray 10 ml", type: "Spray", company: "ferrer / ESP", expiry: "2028-04-01", qty: 2, bonus: 0, price: 8512, total: 17024 },
-        { id: 19, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Angiosar-Plus ( 160/5/12.5mg ) 30 tab", type: "Tablet", company: "Dar Al Dawa", expiry: "2028-11-01", qty: 5, bonus: 0, price: 15151, total: 75755 },
-        { id: 20, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Aqdexa (10Ampoules)", type: "Ampoule", company: "AQUALAB", expiry: "2028-05-01", qty: 6, bonus: 0, price: 5130, total: 30780 },
-        { id: 21, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "AS-Aslavox CREAM", type: "Cream", company: "ASWAR", expiry: "2029-04-01", qty: 15, bonus: 0, price: 544, total: 8160 },
-        { id: 22, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "AS-Betnosun cream", type: "Cream", company: "ASWAR", expiry: "2029-04-01", qty: 15, bonus: 0, price: 513, total: 7695 },
-        { id: 23, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "AS-Dermodeem Cream", type: "Cream", company: "ASWAR", expiry: "2029-04-01", qty: 25, bonus: 0, price: 493, total: 12325 },
-        { id: 24, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "AS-DERMODEEM OINTMENT", type: "Ointment", company: "ASWAR", expiry: "2029-04-01", qty: 25, bonus: 0, price: 590, total: 14750 },
-        { id: 25, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "As-Fugidin Cream", type: "Cream", company: "ASWAR", expiry: "2028-02-01", qty: 15, bonus: 0, price: 483, total: 7245 },
-        { id: 26, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "As-Hydrocortison Cream", type: "Cream", company: "ASWAR", expiry: "2027-05-01", qty: 15, bonus: 0, price: 749, total: 11235 },
-        { id: 27, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "AS-NYESTOCORT OINTMENT", type: "Ointment", company: "ASWAR", expiry: "2028-09-01", qty: 25, bonus: 0, price: 1029, total: 25725 },
-        { id: 28, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "ASALORMINE SYRUP ASWAR", type: "Syrup", company: "ASWAR", expiry: "2029-04-01", qty: 20, bonus: 0, price: 491, total: 9820 },
-        { id: 29, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "ASMAFORT ( Ketotifen 1 mg ) 100 ml", type: "Syrup", company: "Julphar", expiry: "2028-08-01", qty: 15, bonus: 0, price: 3250, total: 48750 },
-        { id: 30, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "ASWARFOCEN Ointment", type: "Ointment", company: "ASWAR", expiry: "2029-06-01", qty: 12, bonus: 0, price: 1406, total: 16872 },
-        { id: 31, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Atacand 16 mg ( 28 tab ) اصلي", type: "Tablet", company: "ASTRAZENECA", expiry: "2028-01-01", qty: 2, bonus: 0, price: 14295, total: 28590 },
-        { id: 32, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Atacand 8 mg ( 28 tab ) اصلي", type: "Tablet", company: "ASTRAZENECA", expiry: "2028-04-01", qty: 2, bonus: 0, price: 11028, total: 22056 },
-        { id: 33, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Atacand Plus ( 16/12.5 mg ) 28 tab اصلي", type: "Tablet", company: "ASTRAZENECA", expiry: "2028-07-01", qty: 2, bonus: 0, price: 14320, total: 28640 },
-        { id: 34, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "راس ممة ثنائي AVEAT", type: "مستلزمات", company: "AVEAT", expiry: "2028-01-01", qty: 10, bonus: 0, price: 1653, total: 16530 }
-    ];
+<script src="app.js"></script>
+</body>
+</html>
+const initialAlferdosData = [
+    { id: 1, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "بارستول حب", salePrice: 5000, type: "Vial", company: "-", expiry: "2028-07-01", qty: 10, bonus: 0, price: 3762, total: 37620 },
+    { id: 2, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "باندج قهوائي 10سم", salePrice: 8500, type: "BANDAGE", company: "CHINA", expiry: "2028-01-01", qty: 4, bonus: 0, price: 7200, total: 28800 },
+    { id: 3, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "حب بارستول ازرق", salePrice: 4000, type: "Tablet", company: "-", expiry: "2029-06-01", qty: 14, bonus: 0, price: 3300, total: 46200 },
+    { id: 4, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "حفاضه اولويز ازرق", salePrice: 2000, type: "مستلزمات", company: "TURKEY", expiry: "2027-07-01", qty: 12, bonus: 0, price: 1300, total: 15600 },
+    { id: 5, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "خافضة لسان", salePrice: 2000, type: "مستلزمات", company: "CHINA", expiry: "2028-01-01", qty: 5, bonus: 0, price: 1333, total: 6665 },
+    { id: 6, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "راس ممة ثنائي", salePrice: 1000, type: "مستلزمات", company: "CHINA", expiry: "2030-01-01", qty: 10, bonus: 0, price: 500, total: 5000 },
+    { id: 7, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "زنك كاستراويل 25 غم سامراء", salePrice: 2000, type: "Cream", company: "SDI / IRAQ", expiry: "2028-10-01", qty: 25, bonus: 0, price: 1425, total: 35625 },
+    { id: 8, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "سرنج انسولين 0.5 good", salePrice: 8000, type: "Syringe", company: "good / Turkey", expiry: "2030-01-01", qty: 4, bonus: 0, price: 6900, total: 27600 },
+    { id: 9, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "كمام اسود صيني", salePrice: 2000, type: "Mask", company: "CHINA", expiry: "2028-01-01", qty: 5, bonus: 0, price: 1500, total: 7500 },
+    { id: 10, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "كمامة اطفال", salePrice: 3000, type: "Mask", company: "TURKEY", expiry: "2028-01-01", qty: 1, bonus: 0, price: 2500, total: 2500 },
+    { id: 11, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "لزقة الالام شفاء صيني", salePrice: 500, type: "Patch", company: "unknown", expiry: "2029-12-01", qty: 24, bonus: 0, price: 371, total: 8904 },
+    { id: 12, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "لفاف ابيض بانجي 10 سم", salePrice: 4000, type: "PLASTER", company: "CHINA", expiry: "2028-01-01", qty: 4, bonus: 0, price: 3354, total: 13416 },
+    { id: 13, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "هايدرو فيال ازرق", salePrice: 2500, type: "Vial", company: "-", expiry: "2029-01-01", qty: 20, bonus: 0, price: 1539, total: 30780 },
+    { id: 14, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Acuaiss ULTRA ( 10 ml )", salePrice: 20000, type: "Drops", company: "DISOP / Spain", expiry: "2029-02-01", qty: 2, bonus: 0, price: 17055, total: 34110 },
+    { id: 15, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Adol ( Paracetamol 250 mg ) 10 Supp", salePrice: 3500, type: "Suppositories", company: "Julphar", expiry: "2027-05-01", qty: 10, bonus: 0, price: 2332, total: 23320 },
+    { id: 16, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Afrafast ( 30 Sachets )", salePrice: 11000, type: "Sachets", company: "APC / IRAQ", expiry: "2028-03-01", qty: 10, bonus: 0, price: 9000, total: 90000 },
+    { id: 17, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "ALLERCEN 10MG (10AMP)", salePrice: 8000, type: "Ampoule", company: "ocean", expiry: "2027-10-01", qty: 4, bonus: 0, price: 6607, total: 26428 },
+    { id: 18, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Anginovag Spray 10 ml", salePrice: 10000, type: "Spray", company: "ferrer / ESP", expiry: "2028-04-01", qty: 2, bonus: 0, price: 8512, total: 17024 },
+    { id: 19, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Angiosar-Plus ( 160/5/12.5mg ) 30 tab", salePrice: 18000, type: "Tablet", company: "Dar Al Dawa", expiry: "2028-11-01", qty: 5, bonus: 0, price: 15151, total: 75755 },
+    { id: 20, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Aqdexa (10Ampoules)", salePrice: 6500, type: "Ampoule", company: "AQUALAB", expiry: "2028-05-01", qty: 6, bonus: 0, price: 5130, total: 30780 },
+    { id: 21, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "AS-Aslavox CREAM", salePrice: 1000, type: "Cream", company: "ASWAR", expiry: "2029-04-01", qty: 15, bonus: 0, price: 544, total: 8160 },
+    { id: 22, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "AS-Betnosun cream", salePrice: 1000, type: "Cream", company: "ASWAR", expiry: "2029-04-01", qty: 15, bonus: 0, price: 513, total: 7695 },
+    { id: 23, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "AS-Dermodeem Cream", salePrice: 1000, type: "Cream", company: "ASWAR", expiry: "2029-04-01", qty: 25, bonus: 0, price: 493, total: 12325 },
+    { id: 24, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "AS-DERMODEEM OINTMENT", salePrice: 1000, type: "Ointment", company: "ASWAR", expiry: "2029-04-01", qty: 25, bonus: 0, price: 590, total: 14750 },
+    { id: 25, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "As-Fugidin Cream", salePrice: 1000, type: "Cream", company: "ASWAR", expiry: "2028-02-01", qty: 15, bonus: 0, price: 483, total: 7245 },
+    { id: 26, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "As-Hydrocortison Cream", salePrice: 1250, type: "Cream", company: "ASWAR", expiry: "2027-05-01", qty: 15, bonus: 0, price: 749, total: 11235 },
+    { id: 27, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "AS-NYESTOCORT OINTMENT", salePrice: 1500, type: "Ointment", company: "ASWAR", expiry: "2028-09-01", qty: 25, bonus: 0, price: 1029, total: 25725 },
+    { id: 28, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "ASALORMINE SYRUP ASWAR", salePrice: 1000, type: "Syrup", company: "ASWAR", expiry: "2029-04-01", qty: 20, bonus: 0, price: 491, total: 9820 },
+    { id: 29, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "ASMAFORT ( Ketotifen 1 mg ) 100 ml", salePrice: 4500, type: "Syrup", company: "Julphar", expiry: "2028-08-01", qty: 15, bonus: 0, price: 3250, total: 48750 },
+    { id: 30, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "ASWARFOCEN Ointment", salePrice: 2000, type: "Ointment", company: "ASWAR", expiry: "2029-06-01", qty: 12, bonus: 0, price: 1406, total: 16872 },
+    { id: 31, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Atacand 16 mg ( 28 tab ) اصلي", salePrice: 17000, type: "Tablet", company: "ASTRAZENECA", expiry: "2028-01-01", qty: 2, bonus: 0, price: 14295, total: 28590 },
+    { id: 32, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Atacand 8 mg ( 28 tab ) اصلي", salePrice: 13500, type: "Tablet", company: "ASTRAZENECA", expiry: "2028-04-01", qty: 2, bonus: 0, price: 11028, total: 22056 },
+    { id: 33, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Atacand Plus ( 16/12.5 mg ) 28 tab اصلي", salePrice: 17000, type: "Tablet", company: "ASTRAZENECA", expiry: "2028-07-01", qty: 2, bonus: 0, price: 14320, total: 28640 },
+    { id: 34, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "راس ممة ثنائي AVEAT", salePrice: 2500, type: "مستلزمات", company: "AVEAT", expiry: "2028-01-01", qty: 10, bonus: 0, price: 1653, total: 16530 }
+];
 
-    let inventory = JSON.parse(localStorage.getItem('pharmacy_inventory_v4')) || initialAlferdosData;
-    let uploadedLists = JSON.parse(localStorage.getItem('pharmacy_uploaded_lists_v4')) || [];
-    let userSettings = JSON.parse(localStorage.getItem('pharmacy_settings_v4')) || {
-        fontFamily: "'Cairo', sans-serif",
-        fontSize: "13.5",
-        primary: "#0f766e",
-        primaryDark: "#115e59",
-        theme: "light",
-        tablePadding: "8px",
-        tableBorders: "1px",
-        lowStockLimit: 3,
-        expiryMonths: 6
-    };
+const arabicLetters = ["الكل", "أ", "ب", "ت", "ث", "ج", "ح", "خ", "د", "ذ", "ر", "ز", "س", "ش", "ص", "ض", "ط", "ظ", "ع", "غ", "ف", "ق", "ك", "ل", "م", "ن", "هـ", "و", "ي"];
 
-    let currentScannedId = null;
-    let html5QrCode = null;
-    let scanTimeout = null;
-    let pendingImages = [];
-    let pendingPdfUrl = null;
-    let pendingPdfName = null;
+let inventory = JSON.parse(localStorage.getItem('pharmacy_inventory_v6')) || initialAlferdosData;
+let debtors = JSON.parse(localStorage.getItem('pharmacy_debtors_v6')) || [];
+let uploadedLists = JSON.parse(localStorage.getItem('pharmacy_uploaded_lists_v6')) || [];
+let userSettings = JSON.parse(localStorage.getItem('pharmacy_settings_v6')) || {
+    fontFamily: "'Cairo', sans-serif",
+    fontSize: "13.5",
+    primary: "#0f766e",
+    primaryDark: "#115e59",
+    theme: "light",
+    tablePadding: "8px",
+    tableBorders: "1px",
+    lowStockLimit: 3,
+    expiryMonths: 6
+};
 
-    function loadSettingsToUI() {
-        document.getElementById('settingFontFamily').value = userSettings.fontFamily;
-        document.getElementById('settingFontSize').value = userSettings.fontSize;
-        document.getElementById('fontSizeVal').textContent = userSettings.fontSize;
-        document.getElementById('settingThemeMode').value = userSettings.theme;
-        document.getElementById('settingTablePadding').value = userSettings.tablePadding;
-        document.getElementById('settingTableBorders').value = userSettings.tableBorders;
-        document.getElementById('settingLowStockLimit').value = userSettings.lowStockLimit;
-        document.getElementById('settingExpiryMonths').value = userSettings.expiryMonths;
-        applySettings(false);
+let salesCart = [];
+let currentScannedId = null;
+let html5QrCode = null;
+let isCameraRunning = false;
+let scanTimeout = null;
+let activeLetter = "الكل";
+let pendingImages = [];
+let pendingPdfUrl = null;
+let pendingPdfName = null;
+
+document.getElementById('debtorDateInput').value = new Date().toISOString().slice(0, 10);
+
+function loadSettingsToUI() {
+    document.getElementById('settingFontFamily').value = userSettings.fontFamily;
+    document.getElementById('settingFontSize').value = userSettings.fontSize;
+    document.getElementById('fontSizeVal').textContent = userSettings.fontSize;
+    document.getElementById('settingThemeMode').value = userSettings.theme;
+    document.getElementById('settingTablePadding').value = userSettings.tablePadding;
+    document.getElementById('settingTableBorders').value = userSettings.tableBorders;
+    document.getElementById('settingLowStockLimit').value = userSettings.lowStockLimit;
+    document.getElementById('settingExpiryMonths').value = userSettings.expiryMonths;
+    applySettings(false);
+}
+
+function applySettings(save = true) {
+    userSettings.fontFamily = document.getElementById('settingFontFamily').value;
+    userSettings.fontSize = document.getElementById('settingFontSize').value;
+    document.getElementById('fontSizeVal').textContent = userSettings.fontSize;
+    userSettings.theme = document.getElementById('settingThemeMode').value;
+    userSettings.tablePadding = document.getElementById('settingTablePadding').value;
+    userSettings.tableBorders = document.getElementById('settingTableBorders').value;
+    userSettings.lowStockLimit = parseInt(document.getElementById('settingLowStockLimit').value) || 3;
+    userSettings.expiryMonths = parseInt(document.getElementById('settingExpiryMonths').value) || 6;
+
+    const root = document.documentElement;
+    root.style.setProperty('--app-font', userSettings.fontFamily);
+    root.style.setProperty('--font-size', userSettings.fontSize + 'px');
+    root.style.setProperty('--primary', userSettings.primary);
+    root.style.setProperty('--primary-dark', userSettings.primaryDark);
+    root.style.setProperty('--cell-pad', userSettings.tablePadding);
+    root.style.setProperty('--table-border-width', userSettings.tableBorders);
+    document.body.setAttribute('data-theme', userSettings.theme);
+
+    if (save) {
+        localStorage.setItem('pharmacy_settings_v6', JSON.stringify(userSettings));
+        renderTables();
+        updateAlerts();
     }
+}
 
-    function applySettings(save = true) {
-        userSettings.fontFamily = document.getElementById('settingFontFamily').value;
-        userSettings.fontSize = document.getElementById('settingFontSize').value;
-        document.getElementById('fontSizeVal').textContent = userSettings.fontSize;
-        userSettings.theme = document.getElementById('settingThemeMode').value;
-        userSettings.tablePadding = document.getElementById('settingTablePadding').value;
-        userSettings.tableBorders = document.getElementById('settingTableBorders').value;
-        userSettings.lowStockLimit = parseInt(document.getElementById('settingLowStockLimit').value) || 3;
-        userSettings.expiryMonths = parseInt(document.getElementById('settingExpiryMonths').value) || 6;
+function setPrimaryColor(primary, dark, el) {
+    userSettings.primary = primary;
+    userSettings.primaryDark = dark;
+    document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+    if (el) el.classList.add('active');
+    applySettings(true);
+}
 
-        const root = document.documentElement;
-        root.style.setProperty('--app-font', userSettings.fontFamily);
-        root.style.setProperty('--font-size', userSettings.fontSize + 'px');
-        root.style.setProperty('--primary', userSettings.primary);
-        root.style.setProperty('--primary-dark', userSettings.primaryDark);
-        root.style.setProperty('--cell-pad', userSettings.tablePadding);
-        root.style.setProperty('--table-border-width', userSettings.tableBorders);
-        document.body.setAttribute('data-theme', userSettings.theme);
+function toggleTheme() {
+    userSettings.theme = userSettings.theme === 'dark' ? 'light' : 'dark';
+    document.getElementById('settingThemeMode').value = userSettings.theme;
+    applySettings(true);
+}
 
-        if (save) {
-            localStorage.setItem('pharmacy_settings_v4', JSON.stringify(userSettings));
-            renderTables();
-            updateAlerts();
+function switchTab(pageId, btn) {
+    if (isCameraRunning) stopCameraScanner();
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-pill').forEach(b => b.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+    btn.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (pageId === 'page1') {
+        setTimeout(() => document.getElementById('barcodeScanInput').focus(), 120);
+    }
+}
+
+function autoDetectBarcode() {
+    clearTimeout(scanTimeout);
+    scanTimeout = setTimeout(() => {
+        const val = document.getElementById('barcodeScanInput').value.trim();
+        if (val.length >= 2) executeBarcodeLookup(val, true);
+    }, 160);
+}
+
+function executeBarcodeLookup(codeOrName, autoAddIfBarcode = false) {
+    const query = codeOrName.trim().toLowerCase();
+    const box = document.getElementById('scanResultBox');
+    if (!query) { box.style.display = 'none'; return; }
+
+    const exactBarcode = inventory.find(d => d.barcode && d.barcode.toLowerCase() === query);
+    const item = exactBarcode || inventory.find(d => d.name.toLowerCase().includes(query));
+
+    if (item) {
+        currentScannedId = item.id;
+        const salePrice = Number(item.salePrice || item.price || 0);
+        document.getElementById('resName').textContent = item.name;
+        document.getElementById('resSalePrice').textContent = salePrice.toLocaleString() + ' د.ع';
+        document.getElementById('resBarcode').textContent = item.barcode || 'غير مربوط';
+        document.getElementById('resType').textContent = item.type;
+        document.getElementById('resCompany').textContent = item.company;
+        document.getElementById('resExpiry').textContent = item.expiry;
+        document.getElementById('resQty').textContent = item.qty;
+        box.style.display = 'block';
+
+        if (autoAddIfBarcode && exactBarcode) {
+            addDrugToCartById(item.id);
+            document.getElementById('barcodeScanInput').value = '';
         }
+    } else {
+        currentScannedId = null;
+        box.style.display = 'none';
+    }
+}
+
+function addCurrentScannedToCart() {
+    if (currentScannedId) addDrugToCartById(currentScannedId);
+}
+
+function addDrugToCartById(id) {
+    const drug = inventory.find(d => d.id === id);
+    if (!drug) return;
+    const unitPrice = Number(drug.salePrice || drug.price || 0);
+    const existing = salesCart.find(c => c.id === id);
+    if (existing) {
+        existing.count += 1;
+    } else {
+        salesCart.push({ id: drug.id, name: drug.name, price: unitPrice, count: 1 });
+    }
+    renderCart();
+}
+
+function changeCartQty(idx, delta) {
+    if (!salesCart[idx]) return;
+    salesCart[idx].count += delta;
+    if (salesCart[idx].count <= 0) salesCart.splice(idx, 1);
+    renderCart();
+}
+
+function removeCartItem(idx) {
+    salesCart.splice(idx, 1);
+    renderCart();
+}
+
+function clearCart() {
+    salesCart = [];
+    renderCart();
+}
+
+function renderCart() {
+    const tbody = document.getElementById('posCartBody');
+    tbody.innerHTML = '';
+    let grandTotal = 0;
+
+    if (!salesCart.length) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">اضرب باركود أي علاج ليظهر هنا ويُحسب سعره ومجموعه تلقائياً</td></tr>';
+        document.getElementById('posGrandTotal').textContent = '0 د.ع';
+        return;
     }
 
-    function setPrimaryColor(primary, dark, el) {
-        userSettings.primary = primary;
-        userSettings.primaryDark = dark;
-        document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
-        if (el) el.classList.add('active');
-        applySettings(true);
+    salesCart.forEach((c, idx) => {
+        const sub = c.price * c.count;
+        grandTotal += sub;
+        tbody.innerHTML += `
+            <tr>
+                <td>${idx + 1}</td>
+                <td><strong>${c.name}</strong></td>
+                <td>${c.price.toLocaleString()} د.ع</td>
+                <td>
+                    <button class="btn btn-light" style="color:var(--text); border-color:var(--border); padding:2px 7px;" onclick="changeCartQty(${idx}, -1)">-</button>
+                    <strong style="margin:0 6px;">${c.count}</strong>
+                    <button class="btn btn-light" style="color:var(--text); border-color:var(--border); padding:2px 7px;" onclick="changeCartQty(${idx}, 1)">+</button>
+                </td>
+                <td><strong>${sub.toLocaleString()} د.ع</strong></td>
+                <td><button class="btn btn-danger" style="padding:2px 7px;" onclick="removeCartItem(${idx})">✕</button></td>
+            </tr>
+        `;
+    });
+
+    document.getElementById('posGrandTotal').textContent = grandTotal.toLocaleString() + ' د.ع';
+}
+
+function toggleDebtorSelect() {
+    const isCredit = document.getElementById('paymentTypeSelect').value === 'credit';
+    document.getElementById('posDebtorSelect').style.display = isCredit ? 'inline-block' : 'none';
+    document.getElementById('posNewDebtorName').style.display = isCredit ? 'inline-block' : 'none';
+}
+
+function checkoutSale() {
+    if (!salesCart.length) {
+        alert('أضف علاجاً واحداً على الأقل إلى قائمة البيع أولاً.');
+        return;
     }
 
-    function toggleTheme() {
-        userSettings.theme = userSettings.theme === 'dark' ? 'light' : 'dark';
-        document.getElementById('settingThemeMode').value = userSettings.theme;
-        applySettings(true);
-    }
+    const totalAmount = salesCart.reduce((s, c) => s + (c.price * c.count), 0);
+    const payType = document.getElementById('paymentTypeSelect').value;
 
-    function switchTab(pageId, btn) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.nav-pill').forEach(b => b.classList.remove('active'));
-        document.getElementById(pageId).classList.add('active');
-        btn.classList.add('active');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        if (pageId === 'page1') {
-            setTimeout(() => document.getElementById('barcodeScanInput').focus(), 120);
-        }
-    }
+    salesCart.forEach(c => {
+        const item = inventory.find(d => d.id === c.id);
+        if (item && item.qty > 0) item.qty = Math.max(0, item.qty - c.count);
+    });
 
-    // رفع الصور والكاميرا والـ PDF
-    function handleMediaFiles(event, sourceType) {
-        const files = Array.from(event.target.files || []);
-        files.forEach(file => {
-            const reader = new FileReader();
-            reader.onload = e => {
-                pendingImages.push({ name: file.name, src: sourceType, dataUrl: e.target.result });
-                renderMediaPreview();
-            };
-            reader.readAsDataURL(file);
-        });
-        event.target.value = '';
-    }
-
-    function handlePdfFile(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-        pendingPdfName = file.name;
-        pendingPdfUrl = URL.createObjectURL(file);
-        document.getElementById('pdfViewerArea').style.display = 'block';
-        document.getElementById('pdfFrame').src = pendingPdfUrl;
-        event.target.value = '';
-    }
-
-    function renderMediaPreview() {
-        const area = document.getElementById('mediaPreviewArea');
-        area.innerHTML = '';
-        pendingImages.forEach(img => {
-            area.innerHTML += `
-                <div class="media-thumb">
-                    <img src="${img.dataUrl}" alt="${img.name}">
-                    <div>${img.src === 'camera' ? '📷 كاميرا' : '🖼️ معرض'}</div>
-                </div>
-            `;
-        });
-    }
-
-    function clearUploadedMedia() {
-        pendingImages = [];
-        pendingPdfUrl = null;
-        pendingPdfName = null;
-        document.getElementById('mediaPreviewArea').innerHTML = '';
-        document.getElementById('pdfFrame').src = '';
-        document.getElementById('pdfViewerArea').style.display = 'none';
-    }
-
-    function saveUploadedListRecord() {
-        const title = document.getElementById('uploadInvoiceName').value.trim() || `قائمة مرفقة (${new Date().toLocaleDateString('ar-IQ')})`;
-        if (!pendingImages.length && !pendingPdfName) {
-            alert('التقط صورة بالكاميرا أو اختر صوراً من المعرض أو حمّل ملف PDF أولاً.');
+    if (payType === 'credit') {
+        const chosenName = document.getElementById('posNewDebtorName').value.trim() || document.getElementById('posDebtorSelect').value;
+        if (!chosenName) {
+            alert('اختر اسم المديون أو اكتب اسماً جديداً لإضافة الدين عليه.');
             return;
         }
-        uploadedLists.unshift({
-            id: Date.now(),
-            title,
-            imagesCount: pendingImages.length,
-            pdfName: pendingPdfName || '—',
-            date: new Date().toLocaleDateString('ar-IQ')
-        });
-        localStorage.setItem('pharmacy_uploaded_lists_v4', JSON.stringify(uploadedLists));
-        clearUploadedMedia();
-        document.getElementById('uploadInvoiceName').value = '';
-        renderInvoicesSummary();
-        alert('تم حفظ القائمة المرفقة بنجاح!');
+        const summaryText = salesCart.map(c => `${c.name} (${c.count})`).join(' + ');
+        addDebtEntry(chosenName, "", new Date().toISOString().slice(0, 10), summaryText, totalAmount);
+        alert(`تم تسجيل القائمة بالدين على (${chosenName}) بمبلغ ${totalAmount.toLocaleString()} د.ع.`);
+    } else {
+        alert(`تم إتمام البيع النقدي بنجاح بمجموع ${totalAmount.toLocaleString()} د.ع.`);
     }
 
-    // الباركود الفوري والكاميرا والصور
-    function autoDetectBarcode() {
-        clearTimeout(scanTimeout);
-        scanTimeout = setTimeout(() => {
-            const val = document.getElementById('barcodeScanInput').value.trim();
-            if (val.length >= 2) executeBarcodeLookup(val);
-        }, 150);
-    }
+    salesCart = [];
+    document.getElementById('posNewDebtorName').value = '';
+    renderCart();
+    saveData();
+}
 
-    function executeBarcodeLookup(codeOrName) {
-        const query = codeOrName.trim().toLowerCase();
-        const box = document.getElementById('scanResultBox');
-        if (!query) { box.style.display = 'none'; return; }
+function clearScanResult() {
+    document.getElementById('scanResultBox').style.display = 'none';
+    const inp = document.getElementById('barcodeScanInput');
+    inp.value = '';
+    inp.focus();
+}
 
-        let item = inventory.find(d => d.barcode && d.barcode.toLowerCase() === query);
-        if (!item) item = inventory.find(d => d.name.toLowerCase().includes(query));
-
-        if (item) {
-            currentScannedId = item.id;
-            document.getElementById('resName').textContent = item.name;
-            document.getElementById('resBarcode').textContent = item.barcode || 'غير مربوط';
-            document.getElementById('resType').textContent = item.type;
-            document.getElementById('resCompany').textContent = item.company;
-            document.getElementById('resExpiry').textContent = item.expiry;
-            document.getElementById('resQty').textContent = item.qty;
-            document.getElementById('resBonus').textContent = item.bonus;
-            box.style.display = 'block';
-        } else {
-            currentScannedId = null;
-            box.style.display = 'none';
+async function startCameraScanner() {
+    const container = document.getElementById('cameraReaderContainer');
+    container.style.display = 'block';
+    try {
+        if (html5QrCode && isCameraRunning) {
+            await html5QrCode.stop();
+            isCameraRunning = false;
         }
-    }
-
-    function clearScanResult() {
-        document.getElementById('scanResultBox').style.display = 'none';
-        const inp = document.getElementById('barcodeScanInput');
-        inp.value = '';
-        inp.focus();
-    }
-
-    function startCameraScanner() {
-        const container = document.getElementById('cameraReaderContainer');
-        container.style.display = 'block';
         html5QrCode = new Html5Qrcode("reader");
-        html5QrCode.start(
+        await html5QrCode.start(
             { facingMode: "environment" },
-            { fps: 10, qrbox: { width: 240, height: 140 } },
+            { fps: 10, qrbox: { width: 230, height: 130 } },
             (decodedText) => {
                 document.getElementById('barcodeScanInput').value = decodedText;
-                executeBarcodeLookup(decodedText);
+                executeBarcodeLookup(decodedText, true);
                 stopCameraScanner();
             },
             () => {}
-        ).catch(err => {
-            alert("تعذر فتح الكاميرا: " + err);
-            container.style.display = 'none';
+        );
+        isCameraRunning = true;
+    } catch (err) {
+        container.style.display = 'none';
+        isCameraRunning = false;
+        alert("تعذر تشغيل الكاميرا، يمكنك استخدام زر (صورة باركود) أو قارئ الباركود مباشرة.");
+    }
+}
+
+async function stopCameraScanner() {
+    const container = document.getElementById('cameraReaderContainer');
+    if (html5QrCode && isCameraRunning) {
+        try { await html5QrCode.stop(); } catch {}
+    }
+    isCameraRunning = false;
+    container.style.display = 'none';
+}
+
+function scanBarcodeFromImage(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const fileScanner = new Html5Qrcode("fileReaderHidden");
+    fileScanner.scanFile(file, true)
+        .then(decodedText => {
+            document.getElementById('barcodeScanInput').value = decodedText;
+            executeBarcodeLookup(decodedText, true);
+        })
+        .catch(() => {
+            alert("لم يظهر باركود واضح في الصورة، جرب صورة أقرب للباركود.");
         });
-    }
+    event.target.value = '';
+}
 
-    function stopCameraScanner() {
-        if (html5QrCode) {
-            html5QrCode.stop().then(() => {
-                document.getElementById('cameraReaderContainer').style.display = 'none';
-            }).catch(() => {
-                document.getElementById('cameraReaderContainer').style.display = 'none';
-            });
-        } else {
-            document.getElementById('cameraReaderContainer').style.display = 'none';
-        }
-    }
+function fillInputBarcodeFromImage(event, targetInputId) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const fileScanner = new Html5Qrcode("fileReaderHidden");
+    fileScanner.scanFile(file, true)
+        .then(decodedText => { document.getElementById(targetInputId).value = decodedText; })
+        .catch(() => alert("تعذر استخراج الباركود من الصورة."));
+    event.target.value = '';
+}
 
-    function scanBarcodeFromImage(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-        const fileScanner = new Html5Qrcode("fileReaderHidden");
-        fileScanner.scanFile(file, true)
-            .then(decodedText => {
-                document.getElementById('barcodeScanInput').value = decodedText;
-                executeBarcodeLookup(decodedText);
-            })
-            .catch(() => alert("لم يتم العثور على باركود واضح في الصورة."));
-        event.target.value = '';
-    }
+function normalizeArabicFirstLetter(name) {
+    const first = (name || "").trim().charAt(0);
+    if (["أ", "إ", "آ", "ا"].includes(first)) return "أ";
+    if (first === "ه") return "هـ";
+    return first || "أ";
+}
 
-    function fillInputBarcodeFromImage(event, targetInputId) {
-        const file = event.target.files[0];
-        if (!file) return;
-        const fileScanner = new Html5Qrcode("fileReaderHidden");
-        fileScanner.scanFile(file, true)
-            .then(decodedText => { document.getElementById(targetInputId).value = decodedText; })
-            .catch(() => alert("تعذر قراءة الباركود من الصورة."));
-        event.target.value = '';
-    }
-
-    function openEditModal(id) {
-        const item = inventory.find(d => d.id === id);
-        if (!item) return;
-        document.getElementById('editId').value = item.id;
-        document.getElementById('editInvoice').value = item.invoice || '';
-        document.getElementById('editBarcode').value = item.barcode || '';
-        document.getElementById('editName').value = item.name || '';
-        document.getElementById('editType').value = item.type || '';
-        document.getElementById('editCompany').value = item.company || '';
-        document.getElementById('editExpiry').value = item.expiry || '';
-        document.getElementById('editQty').value = item.qty ?? 0;
-        document.getElementById('editBonus').value = item.bonus ?? 0;
-        document.getElementById('editPrice').value = item.price ?? 0;
-        document.getElementById('editTotal').value = item.total ?? 0;
-        document.getElementById('editDrugModal').style.display = 'flex';
-    }
-
-    function closeEditModal() { document.getElementById('editDrugModal').style.display = 'none'; }
-
-    function saveEditedDrug(e) {
-        e.preventDefault();
-        const id = Number(document.getElementById('editId').value);
-        const idx = inventory.findIndex(d => d.id === id);
-        if (idx === -1) return;
-        inventory[idx] = {
-            ...inventory[idx],
-            invoice: document.getElementById('editInvoice').value.trim(),
-            barcode: document.getElementById('editBarcode').value.trim(),
-            name: document.getElementById('editName').value.trim(),
-            type: document.getElementById('editType').value.trim(),
-            company: document.getElementById('editCompany').value.trim(),
-            expiry: document.getElementById('editExpiry').value,
-            qty: parseInt(document.getElementById('editQty').value) || 0,
-            bonus: parseInt(document.getElementById('editBonus').value) || 0,
-            price: parseInt(document.getElementById('editPrice').value) || 0,
-            total: parseInt(document.getElementById('editTotal').value) || 0
+function addDebtEntry(name, phone, date, itemsText, amount) {
+    const cleanName = name.trim();
+    let debtor = debtors.find(d => d.name === cleanName);
+    if (!debtor) {
+        debtor = {
+            id: Date.now() + Math.floor(Math.random() * 100),
+            name: cleanName,
+            phone: phone || "",
+            batches: []
         };
-        saveData();
-        closeEditModal();
-        if (currentScannedId === id) executeBarcodeLookup(inventory[idx].barcode || inventory[idx].name);
+        debtors.push(debtor);
+    }
+    if (phone && !debtor.phone) debtor.phone = phone;
+    debtor.batches.unshift({
+        id: Date.now(),
+        date: date || new Date().toISOString().slice(0, 10),
+        items: itemsText || "وجبة علاج بالدين",
+        amount: Number(amount) || 0
+    });
+    debtors.sort((a, b) => a.name.localeCompare(b.name, 'ar'));
+    localStorage.setItem('pharmacy_debtors_v6', JSON.stringify(debtors));
+    renderDebtors();
+    updateDebtorDropdown();
+}
+
+function addManualDebtorOrBatch(e) {
+    e.preventDefault();
+    const name = document.getElementById('debtorNameInput').value.trim();
+    const phone = document.getElementById('debtorPhoneInput').value.trim();
+    const date = document.getElementById('debtorDateInput').value;
+    const items = document.getElementById('debtorItemsInput').value.trim() || "وجبة علاج بالدين";
+    const amount = parseInt(document.getElementById('debtorAmountInput').value) || 0;
+    if (!name) return;
+    addDebtEntry(name, phone, date, items, amount);
+    document.getElementById('debtorNameInput').value = '';
+    document.getElementById('debtorPhoneInput').value = '';
+    document.getElementById('debtorItemsInput').value = '';
+    document.getElementById('debtorAmountInput').value = 0;
+    alert('تم حفظ اسم المديون والوجبة بنجاح!');
+}
+
+function payDebtAmount(debtorId) {
+    const debtor = debtors.find(d => d.id === debtorId);
+    if (!debtor) return;
+    const currentTotal = debtor.batches.reduce((s, b) => s + Number(b.amount || 0), 0);
+    const inputVal = prompt(`المطلوب الحالي على (${debtor.name}): ${currentTotal.toLocaleString()} د.ع\nأدخل المبلغ المسدد بالدينار (أو اكتب المبلغ الكامل للتصفير):`, currentTotal);
+    if (inputVal === null) return;
+    const paid = parseInt(inputVal);
+    if (isNaN(paid) || paid <= 0) return;
+
+    debtor.batches.push({
+        id: Date.now(),
+        date: new Date().toISOString().slice(0, 10),
+        items: "تسديد دفعة نقدية من الدين",
+        amount: -paid
+    });
+    localStorage.setItem('pharmacy_debtors_v6', JSON.stringify(debtors));
+    renderDebtors();
+}
+
+function deleteDebtor(debtorId) {
+    if (confirm('حذف سجل هذا المديون نهائياً؟')) {
+        debtors = debtors.filter(d => d.id !== debtorId);
+        localStorage.setItem('pharmacy_debtors_v6', JSON.stringify(debtors));
+        renderDebtors();
+        updateDebtorDropdown();
+    }
+}
+
+function buildAlphaBar() {
+    const bar = document.getElementById('alphaFilterBar');
+    bar.innerHTML = '';
+    arabicLetters.forEach(ltr => {
+        const btn = document.createElement('button');
+        btn.className = 'alpha-btn' + (activeLetter === ltr ? ' active' : '');
+        btn.textContent = ltr;
+        btn.onclick = () => {
+            activeLetter = ltr;
+            buildAlphaBar();
+            renderDebtors();
+        };
+        bar.appendChild(btn);
+    });
+}
+
+function renderDebtors() {
+    const search = (document.getElementById('debtorSearchInput').value || '').trim().toLowerCase();
+    const container = document.getElementById('debtorsListContainer');
+    container.innerHTML = '';
+
+    let totalAllDebts = 0;
+    debtors.forEach(d => {
+        totalAllDebts += d.batches.reduce((s, b) => s + Number(b.amount || 0), 0);
+    });
+    document.getElementById('statDebtorsCount').textContent = debtors.length;
+    document.getElementById('statTotalDebts').textContent = totalAllDebts.toLocaleString() + ' د.ع';
+
+    const filtered = debtors.filter(d => {
+        const matchSearch = !search || d.name.toLowerCase().includes(search) || (d.phone && d.phone.includes(search));
+        const matchLetter = activeLetter === "الكل" || normalizeArabicFirstLetter(d.name) === activeLetter;
+        return matchSearch && matchLetter;
+    });
+
+    if (!filtered.length) {
+        container.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding:14px;">لا توجد أسماء مديونين مطابقة للبحث أو الحرف المختار.</p>';
+        return;
     }
 
-    function saveData() {
-        localStorage.setItem('pharmacy_inventory_v4', JSON.stringify(inventory));
-        renderTables();
-        updateAlerts();
-        updateInvoiceDropdown();
-        renderInvoicesSummary();
-    }
-
-    function dispenseOneItem() {
-        if (!currentScannedId) return;
-        const idx = inventory.findIndex(d => d.id === currentScannedId);
-        if (idx !== -1 && inventory[idx].qty > 0) {
-            inventory[idx].qty -= 1;
-            saveData();
-            executeBarcodeLookup(inventory[idx].barcode || inventory[idx].name);
-        } else {
-            alert('الكمية نفدت!');
-        }
-    }
-
-    function addNewDrug(e) {
-        e.preventDefault();
-        inventory.unshift({
-            id: Date.now(),
-            invoice: "إدخال مباشر للصيدلية",
-            barcode: document.getElementById('inBarcode').value.trim(),
-            name: document.getElementById('inName').value.trim(),
-            type: document.getElementById('inType').value.trim(),
-            company: document.getElementById('inCompany').value.trim(),
-            expiry: document.getElementById('inExpiry').value,
-            qty: parseInt(document.getElementById('inQty').value) || 0,
-            bonus: parseInt(document.getElementById('inBonus').value) || 0,
-            price: 0,
-            total: 0
-        });
-        saveData();
-        document.getElementById('addDrugForm').reset();
-    }
-
-    function autoCalcInvoiceTotal() {
-        const q = parseFloat(document.getElementById('invQtyInput').value) || 0;
-        const p = parseFloat(document.getElementById('invPriceInput').value) || 0;
-        document.getElementById('invTotalInput').value = Math.round(q * p);
-    }
-
-    function addItemToSpecificInvoice(e) {
-        e.preventDefault();
-        inventory.unshift({
-            id: Date.now(),
-            invoice: document.getElementById('invTitleInput').value.trim(),
-            barcode: document.getElementById('invBarcodeInput').value.trim(),
-            name: document.getElementById('invNameInput').value.trim(),
-            type: document.getElementById('invTypeInput').value.trim(),
-            company: document.getElementById('invCompanyInput').value.trim(),
-            expiry: document.getElementById('invExpiryInput').value,
-            qty: parseInt(document.getElementById('invQtyInput').value) || 0,
-            bonus: parseInt(document.getElementById('invBonusInput').value) || 0,
-            price: parseInt(document.getElementById('invPriceInput').value) || 0,
-            total: parseInt(document.getElementById('invTotalInput').value) || 0
-        });
-        saveData();
-        ['invBarcodeInput', 'invNameInput', 'invTypeInput', 'invCompanyInput', 'invExpiryInput'].forEach(id => document.getElementById(id).value = '');
-        document.getElementById('invQtyInput').value = 1;
-        document.getElementById('invBonusInput').value = 0;
-        document.getElementById('invPriceInput').value = 0;
-        document.getElementById('invTotalInput').value = 0;
-        alert('تمت إضافة المادة وحفظها في القائمة!');
-    }
-
-    function renderInvoicesSummary() {
-        const container = document.getElementById('invoicesSummaryCards');
-        const datalist = document.getElementById('existingInvoicesList');
-        container.innerHTML = '';
-        datalist.innerHTML = '';
-
-        const map = new Map();
-        inventory.forEach(item => {
-            const key = item.invoice || 'قائمة عامة';
-            if (!map.has(key)) map.set(key, { count: 0, sum: 0 });
-            const cur = map.get(key);
-            cur.count += 1;
-            cur.sum += Number(item.total || 0);
-        });
-
-        map.forEach((val, key) => {
-            datalist.innerHTML += `<option value="${key}">`;
-            container.innerHTML += `
-                <div class="invoice-chip">
-                    <div>
-                        <strong style="display:block; font-size:0.86rem;">${key}</strong>
-                        <span style="font-size:0.76rem; color:var(--text-muted);">${val.count} مادة</span>
+    filtered.forEach(d => {
+        const balance = d.batches.reduce((s, b) => s + Number(b.amount || 0), 0);
+        let batchesHtml = '';
+        d.batches.forEach(b => {
+            const isPayment = Number(b.amount) < 0;
+            batchesHtml += `
+                <div class="batch-box">
+                    <div style="display:flex; justify-content:space-between; gap:8px;">
+                        <span>📅 <strong>${b.date}</strong> — ${b.items}</span>
+                        <strong style="color:${isPayment ? 'var(--success)' : 'var(--danger)'};">
+                            ${isPayment ? 'تسديد: ' + Math.abs(b.amount).toLocaleString() + ' د.ع' : Number(b.amount).toLocaleString() + ' د.ع'}
+                        </strong>
                     </div>
-                    <strong style="color:var(--primary); font-size:0.86rem;">${val.sum.toLocaleString()} د.ع</strong>
                 </div>
             `;
         });
 
-        uploadedLists.forEach(ul => {
-            container.innerHTML += `
-                <div class="invoice-chip" style="border-right-color: var(--success);">
+        container.innerHTML += `
+            <div class="debtor-card">
+                <div class="debtor-header">
                     <div>
-                        <strong style="display:block; font-size:0.86rem;">${ul.title}</strong>
-                        <span style="font-size:0.75rem; color:var(--text-muted);">صور: ${ul.imagesCount} | PDF: ${ul.pdfName}</span>
+                        <strong style="font-size:1rem;">👤 ${d.name}</strong>
+                        ${d.phone ? `<span style="font-size:0.8rem; color:var(--text-muted); margin-right:8px;">📞 ${d.phone}</span>` : ''}
                     </div>
-                    <span class="status-pill pill-success">${ul.date}</span>
+                    <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+                        <span class="status-pill ${balance > 0 ? 'pill-danger' : 'pill-success'}">المطلوب: ${balance.toLocaleString()} د.ع</span>
+                        <button class="btn btn-success" style="padding:3px 8px; font-size:0.78rem;" onclick="payDebtAmount(${d.id})">💵 تسديد</button>
+                        <button class="btn btn-danger" style="padding:3px 8px; font-size:0.78rem;" onclick="deleteDebtor(${d.id})">🗑️</button>
+                    </div>
                 </div>
-            `;
-        });
+                ${batchesHtml || '<div style="font-size:0.8rem; color:var(--text-muted);">لا توجد وجبات مسجلة</div>'}
+            </div>
+        `;
+    });
+}
+
+function updateDebtorDropdown() {
+    const sel = document.getElementById('posDebtorSelect');
+    sel.innerHTML = '<option value="">اختر اسم المديون...</option>';
+    debtors.forEach(d => {
+        sel.innerHTML += `<option value="${d.name}">${d.name}</option>`;
+    });
+}
+
+function openEditModal(id) {
+    const item = inventory.find(d => d.id === id);
+    if (!item) return;
+    document.getElementById('editId').value = item.id;
+    document.getElementById('editInvoice').value = item.invoice || '';
+    document.getElementById('editBarcode').value = item.barcode || '';
+    document.getElementById('editName').value = item.name || '';
+    document.getElementById('editSalePrice').value = item.salePrice ?? item.price ?? 0;
+    document.getElementById('editType').value = item.type || '';
+    document.getElementById('editCompany').value = item.company || '';
+    document.getElementById('editExpiry').value = item.expiry || '';
+    document.getElementById('editQty').value = item.qty ?? 0;
+    document.getElementById('editBonus').value = item.bonus ?? 0;
+    document.getElementById('editPrice').value = item.price ?? 0;
+    document.getElementById('editTotal').value = item.total ?? 0;
+    document.getElementById('editDrugModal').style.display = 'flex';
+}
+
+function closeEditModal() { document.getElementById('editDrugModal').style.display = 'none'; }
+
+function saveEditedDrug(e) {
+    e.preventDefault();
+    const id = Number(document.getElementById('editId').value);
+    const idx = inventory.findIndex(d => d.id === id);
+    if (idx === -1) return;
+    inventory[idx] = {
+        ...inventory[idx],
+        invoice: document.getElementById('editInvoice').value.trim(),
+        barcode: document.getElementById('editBarcode').value.trim(),
+        name: document.getElementById('editName').value.trim(),
+        salePrice: parseInt(document.getElementById('editSalePrice').value) || 0,
+        type: document.getElementById('editType').value.trim(),
+        company: document.getElementById('editCompany').value.trim(),
+        expiry: document.getElementById('editExpiry').value,
+        qty: parseInt(document.getElementById('editQty').value) || 0,
+        bonus: parseInt(document.getElementById('editBonus').value) || 0,
+        price: parseInt(document.getElementById('editPrice').value) || 0,
+        total: parseInt(document.getElementById('editTotal').value) || 0
+    };
+    saveData();
+    closeEditModal();
+    if (currentScannedId === id) executeBarcodeLookup(inventory[idx].barcode || inventory[idx].name, false);
+}
+
+function saveData() {
+    localStorage.setItem('pharmacy_inventory_v6', JSON.stringify(inventory));
+    renderTables();
+    updateAlerts();
+    updateInvoiceDropdown();
+    renderInvoicesSummary();
+    renderDebtors();
+    updateDebtorDropdown();
+}
+
+function addNewDrug(e) {
+    e.preventDefault();
+    inventory.unshift({
+        id: Date.now(),
+        invoice: "إدخال مباشر للصيدلية",
+        barcode: document.getElementById('inBarcode').value.trim(),
+        name: document.getElementById('inName').value.trim(),
+        salePrice: parseInt(document.getElementById('inSalePrice').value) || 0,
+        type: document.getElementById('inType').value.trim(),
+        company: document.getElementById('inCompany').value.trim(),
+        expiry: document.getElementById('inExpiry').value,
+        qty: parseInt(document.getElementById('inQty').value) || 0,
+        bonus: parseInt(document.getElementById('inBonus').value) || 0,
+        price: 0,
+        total: 0
+    });
+    saveData();
+    document.getElementById('addDrugForm').reset();
+}
+
+function autoCalcInvoiceTotal() {
+    const q = parseFloat(document.getElementById('invQtyInput').value) || 0;
+    const p = parseFloat(document.getElementById('invPriceInput').value) || 0;
+    document.getElementById('invTotalInput').value = Math.round(q * p);
+}
+
+function addItemToSpecificInvoice(e) {
+    e.preventDefault();
+    const unitPrice = parseInt(document.getElementById('invPriceInput').value) || 0;
+    const salePrice = parseInt(document.getElementById('invSalePriceInput').value) || unitPrice;
+    inventory.unshift({
+        id: Date.now(),
+        invoice: document.getElementById('invTitleInput').value.trim(),
+        barcode: document.getElementById('invBarcodeInput').value.trim(),
+        name: document.getElementById('invNameInput').value.trim(),
+        salePrice: salePrice,
+        type: document.getElementById('invTypeInput').value.trim(),
+        company: document.getElementById('invCompanyInput').value.trim(),
+        expiry: document.getElementById('invExpiryInput').value,
+        qty: parseInt(document.getElementById('invQtyInput').value) || 0,
+        bonus: parseInt(document.getElementById('invBonusInput').value) || 0,
+        price: unitPrice,
+        total: parseInt(document.getElementById('invTotalInput').value) || 0
+    });
+    saveData();
+    ['invBarcodeInput', 'invNameInput', 'invTypeInput', 'invCompanyInput', 'invExpiryInput'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('invSalePriceInput').value = 0;
+    document.getElementById('invQtyInput').value = 1;
+    document.getElementById('invBonusInput').value = 0;
+    document.getElementById('invPriceInput').value = 0;
+    document.getElementById('invTotalInput').value = 0;
+    alert('تمت إضافة المادة وحفظها في القائمة!');
+}
+
+function handleMediaFiles(event, sourceType) {
+    const files = Array.from(event.target.files || []);
+    files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = e => {
+            pendingImages.push({ name: file.name, src: sourceType, dataUrl: e.target.result });
+            renderMediaPreview();
+        };
+        reader.readAsDataURL(file);
+    });
+    event.target.value = '';
+}
+
+function handlePdfFile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    pendingPdfName = file.name;
+    pendingPdfUrl = URL.createObjectURL(file);
+    document.getElementById('pdfViewerArea').style.display = 'block';
+    document.getElementById('pdfFrame').src = pendingPdfUrl;
+    event.target.value = '';
+}
+
+function renderMediaPreview() {
+    const area = document.getElementById('mediaPreviewArea');
+    area.innerHTML = '';
+    pendingImages.forEach(img => {
+        area.innerHTML += `
+            <div class="media-thumb">
+                <img src="${img.dataUrl}" alt="${img.name}">
+                <div>${img.src === 'camera' ? '📷 كاميرا' : '🖼️ معرض'}</div>
+            </div>
+        `;
+    });
+}
+
+function clearUploadedMedia() {
+    pendingImages = [];
+    pendingPdfUrl = null;
+    pendingPdfName = null;
+    document.getElementById('mediaPreviewArea').innerHTML = '';
+    document.getElementById('pdfFrame').src = '';
+    document.getElementById('pdfViewerArea').style.display = 'none';
+}
+
+function saveUploadedListRecord() {
+    const title = document.getElementById('uploadInvoiceName').value.trim() || `قائمة مرفقة (${new Date().toLocaleDateString('ar-IQ')})`;
+    if (!pendingImages.length && !pendingPdfName) {
+        alert('التقط صورة بالكاميرا أو اختر صوراً من المعرض أو حمّل ملف PDF أولاً.');
+        return;
     }
+    uploadedLists.unshift({
+        id: Date.now(),
+        title,
+        imagesCount: pendingImages.length,
+        pdfName: pendingPdfName || '—',
+        date: new Date().toLocaleDateString('ar-IQ')
+    });
+    localStorage.setItem('pharmacy_uploaded_lists_v6', JSON.stringify(uploadedLists));
+    clearUploadedMedia();
+    document.getElementById('uploadInvoiceName').value = '';
+    renderInvoicesSummary();
+    alert('تم حفظ القائمة المرفقة بنجاح!');
+}
 
-    function renderTables() {
-        const q1 = document.getElementById('filterPage1').value.toLowerCase();
-        const q2 = document.getElementById('filterPage2').value.toLowerCase();
-        const invFilter = document.getElementById('invoiceFilter').value;
-        const limit = userSettings.lowStockLimit;
+function renderInvoicesSummary() {
+    const container = document.getElementById('invoicesSummaryCards');
+    const datalist = document.getElementById('existingInvoicesList');
+    container.innerHTML = '';
+    datalist.innerHTML = '';
 
-        const tbody1 = document.getElementById('tablePage1Body');
-        tbody1.innerHTML = '';
-        inventory.filter(d =>
-            d.name.toLowerCase().includes(q1) ||
-            d.company.toLowerCase().includes(q1) ||
-            d.type.toLowerCase().includes(q1) ||
-            (d.barcode && d.barcode.toLowerCase().includes(q1))
-        ).forEach((item, index) => {
-            const qtyBadge = item.qty <= limit ? `<span class="status-pill pill-danger">${item.qty}</span>` : `<span class="status-pill pill-success">${item.qty}</span>`;
-            tbody1.innerHTML += `
-                <tr>
-                    <td>${index + 1}</td>
-                    <td><strong>${item.barcode || '—'}</strong></td>
-                    <td><strong>${item.name}</strong></td>
-                    <td>${item.type}</td>
-                    <td>${item.company}</td>
-                    <td>${item.expiry}</td>
-                    <td>${qtyBadge}</td>
-                    <td>${item.bonus}</td>
-                    <td class="no-print"><button class="btn btn-secondary" style="padding:3px 8px; font-size:0.76rem;" onclick="openEditModal(${item.id})">✏️</button></td>
-                </tr>
-            `;
-        });
+    const map = new Map();
+    inventory.forEach(item => {
+        const key = item.invoice || 'قائمة عامة';
+        if (!map.has(key)) map.set(key, { count: 0, sum: 0 });
+        const cur = map.get(key);
+        cur.count += 1;
+        cur.sum += Number(item.total || 0);
+    });
 
-        const tbody2 = document.getElementById('tablePage2Body');
-        tbody2.innerHTML = '';
-        let totalSum = 0;
-        const filtered2 = inventory.filter(d => {
-            const matchInv = invFilter === 'ALL' || d.invoice === invFilter;
-            const matchText = d.name.toLowerCase().includes(q2) || d.company.toLowerCase().includes(q2) || d.type.toLowerCase().includes(q2);
-            return matchInv && matchText;
-        });
+    map.forEach((val, key) => {
+        datalist.innerHTML += `<option value="${key}">`;
+        container.innerHTML += `
+            <div class="invoice-chip">
+                <div>
+                    <strong style="display:block; font-size:0.86rem;">${key}</strong>
+                    <span style="font-size:0.76rem; color:var(--text-muted);">${val.count} مادة</span>
+                </div>
+                <strong style="color:var(--primary); font-size:0.86rem;">${val.sum.toLocaleString()} د.ع</strong>
+            </div>
+        `;
+    });
 
-        filtered2.forEach((item, index) => {
-            totalSum += Number(item.total || 0);
-            tbody2.innerHTML += `
-                <tr>
-                    <td>${index + 1}</td>
-                    <td style="font-size:0.78rem; color:var(--text-muted);">${item.invoice}</td>
-                    <td><strong>${item.barcode || '—'}</strong></td>
-                    <td><strong>${item.name}</strong></td>
-                    <td>${item.type}</td>
-                    <td>${item.company}</td>
-                    <td>${item.expiry}</td>
-                    <td>${item.qty}</td>
-                    <td>${item.bonus}</td>
-                    <td>${Number(item.price).toLocaleString()}</td>
-                    <td><strong>${Number(item.total).toLocaleString()}</strong></td>
-                    <td class="no-print">
-                        <button class="btn btn-secondary" style="padding:2px 6px; font-size:0.75rem;" onclick="openEditModal(${item.id})">✏️</button>
-                        <button class="btn btn-danger" style="padding:2px 6px; font-size:0.75rem;" onclick="deleteItem(${item.id})">🗑️</button>
-                    </td>
-                </tr>
-            `;
-        });
+    uploadedLists.forEach(ul => {
+        container.innerHTML += `
+            <div class="invoice-chip" style="border-right-color: var(--success);">
+                <div>
+                    <strong style="display:block; font-size:0.86rem;">${ul.title}</strong>
+                    <span style="font-size:0.75rem; color:var(--text-muted);">صور: ${ul.imagesCount} | PDF: ${ul.pdfName}</span>
+                </div>
+                <span class="status-pill pill-success">${ul.date}</span>
+            </div>
+        `;
+    });
+}
 
-        document.getElementById('statTotalItems').textContent = filtered2.length;
-        document.getElementById('statTotalCost').textContent = totalSum.toLocaleString() + ' د.ع';
-    }
+function renderTables() {
+    const q1 = document.getElementById('filterPage1').value.toLowerCase();
+    const q2 = document.getElementById('filterPage2').value.toLowerCase();
+    const invFilter = document.getElementById('invoiceFilter').value;
+    const limit = userSettings.lowStockLimit;
 
-    function updateAlerts() {
-        const expBody = document.getElementById('expiryAlertBody');
-        const lowBody = document.getElementById('lowStockAlertBody');
-        expBody.innerHTML = '';
-        lowBody.innerHTML = '';
+    const tbody1 = document.getElementById('tablePage1Body');
+    tbody1.innerHTML = '';
+    inventory.filter(d =>
+        d.name.toLowerCase().includes(q1) ||
+        d.company.toLowerCase().includes(q1) ||
+        d.type.toLowerCase().includes(q1) ||
+        (d.barcode && d.barcode.toLowerCase().includes(q1))
+    ).forEach((item, index) => {
+        const sPrice = Number(item.salePrice || item.price || 0);
+        const qtyBadge = item.qty <= limit ? `<span class="status-pill pill-danger">${item.qty}</span>` : `<span class="status-pill pill-success">${item.qty}</span>`;
+        tbody1.innerHTML += `
+            <tr>
+                <td>${index + 1}</td>
+                <td><strong>${item.barcode || '—'}</strong></td>
+                <td><strong>${item.name}</strong></td>
+                <td><strong style="color:var(--success);">${sPrice.toLocaleString()} د.ع</strong></td>
+                <td>${item.type}</td>
+                <td>${item.company}</td>
+                <td>${item.expiry}</td>
+                <td>${qtyBadge}</td>
+                <td class="no-print"><button class="btn btn-secondary" style="padding:3px 8px; font-size:0.76rem;" onclick="openEditModal(${item.id})">✏️</button></td>
+            </tr>
+        `;
+    });
 
-        let alertCount = 0;
-        const today = new Date();
-        const alertDateLimit = new Date();
-        alertDateLimit.setMonth(today.getMonth() + userSettings.expiryMonths);
+    const tbody2 = document.getElementById('tablePage2Body');
+    tbody2.innerHTML = '';
+    let totalSum = 0;
+    const filtered2 = inventory.filter(d => {
+        const matchInv = invFilter === 'ALL' || d.invoice === invFilter;
+        const matchText = d.name.toLowerCase().includes(q2) || d.company.toLowerCase().includes(q2) || d.type.toLowerCase().includes(q2);
+        return matchInv && matchText;
+    });
 
-        inventory.forEach(item => {
-            if (item.expiry) {
-                const expDate = new Date(item.expiry);
-                if (expDate <= alertDateLimit) {
-                    alertCount++;
-                    const isExpired = expDate < today;
-                    expBody.innerHTML += `
-                        <tr>
-                            <td><strong>${item.name}</strong></td>
-                            <td>${item.company}</td>
-                            <td>${item.expiry}</td>
-                            <td><span class="status-pill ${isExpired ? 'pill-danger' : 'pill-warning'}">${isExpired ? 'منتهي' : 'قريب'}</span></td>
-                            <td>${item.qty}</td>
-                            <td class="no-print"><button class="btn btn-secondary" style="padding:2px 6px; font-size:0.75rem;" onclick="openEditModal(${item.id})">✏️</button></td>
-                        </tr>
-                    `;
-                }
-            }
+    filtered2.forEach((item, index) => {
+        totalSum += Number(item.total || 0);
+        tbody2.innerHTML += `
+            <tr>
+                <td>${index + 1}</td>
+                <td style="font-size:0.78rem; color:var(--text-muted);">${item.invoice}</td>
+                <td><strong>${item.barcode || '—'}</strong></td>
+                <td><strong>${item.name}</strong></td>
+                <td>${item.type}</td>
+                <td>${item.company}</td>
+                <td>${item.expiry}</td>
+                <td>${item.qty}</td>
+                <td>${item.bonus}</td>
+                <td>${Number(item.price).toLocaleString()}</td>
+                <td><strong>${Number(item.total).toLocaleString()}</strong></td>
+                <td class="no-print">
+                    <button class="btn btn-secondary" style="padding:2px 6px; font-size:0.75rem;" onclick="openEditModal(${item.id})">✏️</button>
+                    <button class="btn btn-danger" style="padding:2px 6px; font-size:0.75rem;" onclick="deleteItem(${item.id})">🗑️</button>
+                </td>
+            </tr>
+        `;
+    });
 
-            if (item.qty <= userSettings.lowStockLimit) {
+    document.getElementById('statTotalItems').textContent = filtered2.length;
+    document.getElementById('statTotalCost').textContent = totalSum.toLocaleString() + ' د.ع';
+}
+
+function updateAlerts() {
+    const expBody = document.getElementById('expiryAlertBody');
+    const lowBody = document.getElementById('lowStockAlertBody');
+    expBody.innerHTML = '';
+    lowBody.innerHTML = '';
+
+    let alertCount = 0;
+    const today = new Date();
+    const alertDateLimit = new Date();
+    alertDateLimit.setMonth(today.getMonth() + userSettings.expiryMonths);
+
+    inventory.forEach(item => {
+        if (item.expiry) {
+            const expDate = new Date(item.expiry);
+            if (expDate <= alertDateLimit) {
                 alertCount++;
-                lowBody.innerHTML += `
+                const isExpired = expDate < today;
+                expBody.innerHTML += `
                     <tr>
                         <td><strong>${item.name}</strong></td>
-                        <td>${item.type}</td>
                         <td>${item.company}</td>
-                        <td><span class="status-pill pill-danger">${item.qty}</span></td>
-                        <td>${item.invoice}</td>
+                        <td>${item.expiry}</td>
+                        <td><span class="status-pill ${isExpired ? 'pill-danger' : 'pill-warning'}">${isExpired ? 'منتهي' : 'قريب'}</span></td>
+                        <td>${item.qty}</td>
                         <td class="no-print"><button class="btn btn-secondary" style="padding:2px 6px; font-size:0.75rem;" onclick="openEditModal(${item.id})">✏️</button></td>
                     </tr>
                 `;
             }
-        });
-
-        document.getElementById('alertBadge').textContent = alertCount;
-    }
-
-    function updateInvoiceDropdown() {
-        const select = document.getElementById('invoiceFilter');
-        const current = select.value;
-        const invoices = [...new Set(inventory.map(i => i.invoice))];
-        select.innerHTML = '<option value="ALL">كل القوائم</option>';
-        invoices.forEach(inv => { select.innerHTML += `<option value="${inv}">${inv}</option>`; });
-        select.value = current || 'ALL';
-        if (invoices.length > 0) document.getElementById('statLastInvoice').textContent = invoices[0];
-    }
-
-    function deleteItem(id) {
-        if (confirm('حذف هذه المادة؟')) {
-            inventory = inventory.filter(i => i.id !== id);
-            saveData();
         }
-    }
 
-    loadSettingsToUI();
-    saveData();
-</script>
-</body>
-</html>
+        if (item.qty <= userSettings.lowStockLimit) {
+            alertCount++;
+            lowBody.innerHTML += `
+                <tr>
+                    <td><strong>${item.name}</strong></td>
+                    <td>${item.type}</td>
+                    <td>${item.company}</td>
+                    <td><span class="status-pill pill-danger">${item.qty}</span></td>
+                    <td>${item.invoice}</td>
+                    <td class="no-print"><button class="btn btn-secondary" style="padding:2px 6px; font-size:0.75rem;" onclick="openEditModal(${item.id})">✏️</button></td>
+                </tr>
+            `;
+        }
+    });
+
+    document.getElementById('alertBadge').textContent = alertCount;
+}
+
+function updateInvoiceDropdown() {
+    const select = document.getElementById('invoiceFilter');
+    const current = select.value;
+    const invoices = [...new Set(inventory.map(i => i.invoice))];
+    select.innerHTML = '<option value="ALL">كل القوائم</option>';
+    invoices.forEach(inv => { select.innerHTML += `<option value="${inv}">${inv}</option>`; });
+    select.value = current || 'ALL';
+    if (invoices.length > 0) document.getElementById('statLastInvoice').textContent = invoices[0];
+}
+
+function deleteItem(id) {
+    if (confirm('حذف هذه المادة؟')) {
+        inventory = inventory.filter(i => i.id !== id);
+        saveData();
+    }
+}
+
+buildAlphaBar();
+loadSettingsToUI();
+saveData();
