@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نظام إدارة الصيدلية والمذاخر الاحترافي</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- مكتبة قراءة الباركود بالكاميرا والصور -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <!-- باقة خطوط Google Fonts المتنوعة -->
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@400;600;700;800&family=Changa:wght@400;600;700&family=El+Messiri:wght@400;600;700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=Lateef&family=Lalezar&family=Lemonada:wght@400;600;700&family=Mada:wght@400;600;700&family=Markazi+Text:wght@400;600;700&family=Mirza:wght@400;700&family=Noto+Kufi+Arabic:wght@400;600;700&family=Noto+Naskh+Arabic:wght@400;600;700&family=Noto+Sans+Arabic:wght@400;600;700&family=Rakkas&family=Readex+Pro:wght@400;600;700&family=Reem+Kufi:wght@400;600;700&family=Rubik:wght@400;600;700&family=Scheherazade+New:wght@400;700&family=Tajawal:wght@400;500;700;800&family=Vazirmatn:wght@400;600;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             --primary: #0f766e;
@@ -14,16 +18,17 @@
             --card: #ffffff;
             --text: #1e293b;
             --text-muted: #64748b;
-            --border: #e2e8f0;
+            --border: #cbd5e1;
             --danger: #dc2626;
             --warning: #d97706;
             --success: #16a34a;
+            --app-font: 'Cairo', sans-serif;
+            --font-size: 15px;
+            --cell-pad: 10px;
+            --table-border-width: 1px;
         }
 
         [data-theme="dark"] {
-            --primary: #14b8a6;
-            --primary-dark: #0d9488;
-            --secondary: #38bdf8;
             --bg: #0f172a;
             --card: #1e293b;
             --text: #f8fafc;
@@ -33,16 +38,18 @@
 
         * {
             box-sizing: border-box;
-            font-family: 'Cairo', sans-serif;
+            font-family: var(--app-font);
             margin: 0;
             padding: 0;
         }
 
+        html { font-size: var(--font-size); }
+
         body {
             background-color: var(--bg);
             color: var(--text);
-            transition: 0.3s;
-            padding-bottom: 50px;
+            transition: background 0.3s, color 0.3s;
+            padding-bottom: 60px;
             overflow-x: hidden;
         }
 
@@ -56,11 +63,11 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
         }
 
         header h1 {
-            font-size: 1.4rem;
+            font-size: 1.35rem;
             font-weight: 800;
             display: flex;
             align-items: center;
@@ -69,12 +76,12 @@
 
         .header-actions {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
         }
 
         .btn {
-            padding: 8px 16px;
+            padding: 8px 14px;
             border: none;
             border-radius: 8px;
             cursor: pointer;
@@ -86,10 +93,10 @@
             transition: 0.2s;
         }
 
-        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn:hover { opacity: 0.92; transform: translateY(-1px); }
         .btn-primary { background: var(--primary); color: white; }
         .btn-secondary { background: var(--secondary); color: white; }
-        .btn-light { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); }
+        .btn-light { background: rgba(255,255,255,0.18); color: white; border: 1px solid rgba(255,255,255,0.3); }
         .btn-danger { background: var(--danger); color: white; }
         .btn-warning { background: var(--warning); color: white; }
         .btn-success { background: var(--success); color: white; }
@@ -99,21 +106,20 @@
             display: flex;
             background: var(--card);
             padding: 10px 20px;
-            gap: 10px;
+            gap: 8px;
             border-bottom: 2px solid var(--border);
             overflow-x: auto;
         }
 
         .tab-btn {
-            padding: 10px 20px;
+            padding: 10px 18px;
             border: none;
             background: transparent;
             color: var(--text-muted);
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 0.98rem;
             cursor: pointer;
             border-radius: 8px;
-            position: relative;
             white-space: nowrap;
         }
 
@@ -133,17 +139,17 @@
 
         /* Container */
         .container {
-            max-width: 1400px;
+            max-width: 1420px;
             margin: 20px auto;
             padding: 0 15px;
         }
 
         .page { display: none; }
-        .page.active { display: block; animation: fadeIn 0.3s; }
+        .page.active { display: block; animation: fadeIn 0.25s; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Cards & Grids */
+        /* Cards */
         .card {
             background: var(--card);
             border-radius: 12px;
@@ -165,56 +171,87 @@
             gap: 10px;
         }
 
-        /* Barcode Scanner Box */
+        /* Barcode Scanner Hero */
         .scanner-hero {
-            background: linear-gradient(135deg, rgba(15, 118, 110, 0.1), rgba(2, 132, 199, 0.1));
-            border: 2px dashed var(--primary);
-            border-radius: 12px;
-            padding: 20px;
+            background: linear-gradient(135deg, rgba(15, 118, 110, 0.08), rgba(2, 132, 199, 0.08));
+            border: 2px solid var(--primary);
+            border-radius: 14px;
+            padding: 22px;
             text-align: center;
             margin-bottom: 20px;
         }
 
-        .scanner-input-group {
+        .scanner-status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--success);
+            color: white;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.5); }
+            70% { box-shadow: 0 0 0 10px rgba(22, 163, 74, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
+        }
+
+        .scanner-controls {
             display: flex;
-            max-width: 600px;
+            max-width: 780px;
             margin: 12px auto 0;
             gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
-        input, select, textarea {
-            width: 100%;
-            padding: 10px 14px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            background: var(--bg);
-            color: var(--text);
-            font-size: 0.95rem;
+        .scanner-controls input {
+            flex: 1;
+            min-width: 240px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            text-align: center;
+            border: 2px solid var(--primary);
         }
 
-        input:focus, select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
+        #cameraReaderContainer {
+            display: none;
+            max-width: 450px;
+            margin: 15px auto;
+            background: var(--card);
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px solid var(--secondary);
         }
 
         /* Scanned Result Card */
         .scan-result {
             display: none;
             background: var(--card);
-            border-right: 5px solid var(--success);
-            padding: 15px 20px;
-            border-radius: 8px;
-            margin-top: 15px;
+            border-right: 6px solid var(--success);
+            padding: 18px 22px;
+            border-radius: 10px;
+            margin-top: 18px;
             text-align: right;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.1);
         }
 
         .scan-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 12px;
-            margin-top: 10px;
+            margin-top: 12px;
+        }
+
+        .scan-item {
+            background: var(--bg);
+            padding: 8px 12px;
+            border-radius: 8px;
         }
 
         .scan-item span { display: block; font-size: 0.8rem; color: var(--text-muted); }
@@ -223,7 +260,7 @@
         /* Form Grid */
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
             gap: 12px;
             align-items: end;
         }
@@ -236,40 +273,58 @@
             color: var(--text-muted);
         }
 
+        input, select, textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
+        }
+
         /* Tables */
         .table-responsive {
             overflow-x: auto;
             border-radius: 8px;
-            border: 1px solid var(--border);
+            border: var(--table-border-width) solid var(--border);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             text-align: right;
-            font-size: 0.92rem;
+            font-size: 0.94rem;
         }
 
         th {
             background: var(--primary);
             color: white;
-            padding: 12px 10px;
+            padding: var(--cell-pad);
             font-weight: 700;
             white-space: nowrap;
+            border: var(--table-border-width) solid rgba(255,255,255,0.2);
         }
 
         td {
-            padding: 10px;
-            border-bottom: 1px solid var(--border);
+            padding: var(--cell-pad);
+            border: var(--table-border-width) solid var(--border);
             white-space: nowrap;
         }
 
-        tr:hover { background-color: rgba(15, 118, 110, 0.04); }
+        tr:nth-child(even) { background-color: rgba(148, 163, 184, 0.05); }
+        tr:hover { background-color: rgba(15, 118, 110, 0.08); }
 
         .status-pill {
-            padding: 3px 8px;
+            padding: 3px 9px;
             border-radius: 6px;
-            font-size: 0.8rem;
+            font-size: 0.82rem;
             font-weight: 700;
         }
 
@@ -277,7 +332,7 @@
         .pill-warning { background: #fef3c7; color: #b45309; }
         .pill-success { background: #dcfce7; color: #15803d; }
 
-        /* Stats Row */
+        /* Stats & Invoice Cards */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -294,14 +349,59 @@
         }
 
         .stat-box h3 { font-size: 0.85rem; color: var(--text-muted); }
-        .stat-box .num { font-size: 1.6rem; font-weight: 800; margin-top: 5px; }
+        .stat-box .num { font-size: 1.5rem; font-weight: 800; margin-top: 5px; }
+
+        .invoice-summary-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 12px;
+        }
+
+        .invoice-chip {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-right: 4px solid var(--secondary);
+            padding: 12px 15px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Settings Grid */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .color-swatches {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .swatch {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: 0.2s;
+        }
+
+        .swatch.active {
+            border-color: var(--text);
+            transform: scale(1.15);
+        }
 
         /* Modal */
         .modal {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0,0,0,0.65);
             z-index: 1000;
             justify-content: center;
             align-items: center;
@@ -311,11 +411,12 @@
         .modal-content {
             background: var(--card);
             padding: 25px;
-            border-radius: 12px;
-            max-width: 650px;
+            border-radius: 14px;
+            max-width: 720px;
             width: 100%;
-            max-height: 90vh;
+            max-height: 92vh;
             overflow-y: auto;
+            border: 1px solid var(--border);
         }
 
         @media print {
@@ -328,21 +429,22 @@
 <body>
 
 <header>
-    <h1>💊 نظام إدارة الصيدلية الذكي (كركوك)</h1>
+    <h1>💊 نظام إدارة الصيدلية والمذاخر الاحترافي</h1>
     <div class="header-actions no-print">
-        <button class="btn btn-light" onclick="openImportModal()">📥 استيراد قائمة جديدة</button>
-        <button class="btn btn-light" onclick="exportBackup()">💾 حفظ نسخة احتياطية</button>
+        <button class="btn btn-light" onclick="openImportModal()">📥 استيراد كود قائمة</button>
         <button class="btn btn-light" onclick="window.print()">🖨️ طباعة</button>
-        <button class="btn btn-light" onclick="toggleTheme()">🌓 المظهر</button>
+        <button class="btn btn-light" onclick="toggleTheme()">🌓 ليلي / نهاري</button>
     </div>
 </header>
 
 <div class="nav-tabs no-print">
     <button class="tab-btn active" onclick="switchTab('page1', this)">1️⃣ واجهة الصيدلية والباركود (بدون أسعار)</button>
     <button class="tab-btn" onclick="switchTab('page2', this)">2️⃣ أرشيف قوائم المذاخر والفواتير (مع الأسعار)</button>
-    <button class="tab-btn" onclick="switchTab('page3', this)">
+    <button class="tab-btn" onclick="switchTab('page3', this)">3️⃣ إدارة وإضافة القوائم الجديدة</button>
+    <button class="tab-btn" onclick="switchTab('page4', this)">
         ⚠️ التنبيهات والنواقص والإكسباير <span class="badge" id="alertBadge">0</span>
     </button>
+    <button class="tab-btn" onclick="switchTab('page5', this)">⚙️ الإعدادات والخطوط والجداول</button>
 </div>
 
 <div class="container">
@@ -350,24 +452,38 @@
     <!-- ==================== الصفحة الأولى: واجهة الصيدلية والباركود ==================== -->
     <div id="page1" class="page active">
         
-        <!-- قسم قارئ الباركود -->
         <div class="scanner-hero no-print">
-            <h2>🔍 فحص العلاج السريع بجهاز الباركود</h2>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">اضغط داخل المربع وامسح باركود العلاج بالجهاز أو اكتب اسم المادة للبحث الفوري</p>
-            <div class="scanner-input-group">
-                <input type="text" id="barcodeScanInput" placeholder="امسح الباركود هنا (Barcode) أو ابحث بالاسم..." autofocus onkeyup="handleBarcodeSearch(event)">
-                <button class="btn btn-primary" onclick="searchBarcodeManual()">بحث</button>
+            <div class="scanner-status-indicator">🟢 مستشعر الباركود جاهز للاستلام الفوري</div>
+            <h2>اقرأ الباركود بالجهاز أو بالكاميرا/الصورة ليظهر العلاج فوراً</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">اضرب الباركود بجهاز القارئ مباشرة، أو افتح الكاميرا / اختر صورة باركود من جهازك</p>
+            
+            <div class="scanner-controls">
+                <input type="text" id="barcodeScanInput" placeholder="⚡ اضرب الباركود بالجهاز هنا (استلام تلقائي)..." autofocus oninput="autoDetectBarcode()">
+                <button class="btn btn-secondary" onclick="startCameraScanner()">📷 فتح الكاميرا للمسح</button>
+                <label class="btn btn-primary" style="cursor:pointer; margin:0;">
+                    🖼️ قراءة باركود من صورة
+                    <input type="file" id="barcodeImageFile" accept="image/*" style="display:none;" onchange="scanBarcodeFromImage(event)">
+                </label>
             </div>
 
-            <!-- نتيجة المسح -->
+            <div id="cameraReaderContainer">
+                <div id="reader" style="width:100%;"></div>
+                <button class="btn btn-danger" style="margin-top:10px; width:100%; justify-content:center;" onclick="stopCameraScanner()">إغلاق الكاميرا</button>
+            </div>
+            <div id="fileReaderHidden" style="display:none;"></div>
+
             <div id="scanResultBox" class="scan-result">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <h3 id="resName" style="color:var(--primary); font-size:1.25rem;">-</h3>
-                    <button class="btn btn-warning" onclick="dispenseOneItem()">➖ صرف/بيع قطعة (1)</button>
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                    <h3 id="resName" style="color:var(--primary); font-size:1.3rem;">-</h3>
+                    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                        <button class="btn btn-warning" onclick="dispenseOneItem()">➖ صرف قطعة (1)</button>
+                        <button class="btn btn-secondary" onclick="openEditModal(currentScannedId)">✏️ تعديل هذه المادة</button>
+                        <button class="btn btn-light" style="color:var(--text); border-color:var(--border);" onclick="clearScanResult()">✕ إغلاق</button>
+                    </div>
                 </div>
                 <div class="scan-grid">
-                    <div class="scan-item"><span>الباركود:</span><strong id="resBarcode">-</strong></div>
-                    <div class="scan-item"><span>نوع المادة:</span><strong id="resType">-</strong></div>
+                    <div class="scan-item"><span>الباركود المسجل:</span><strong id="resBarcode">-</strong></div>
+                    <div class="scan-item"><span>نوع المادة / القسم:</span><strong id="resType">-</strong></div>
                     <div class="scan-item"><span>الشركة المنتجة:</span><strong id="resCompany">-</strong></div>
                     <div class="scan-item"><span>تاريخ الانتهاء:</span><strong id="resExpiry">-</strong></div>
                     <div class="scan-item"><span>الكمية / الكارتون:</span><strong id="resQty">-</strong></div>
@@ -376,21 +492,26 @@
             </div>
         </div>
 
-        <!-- قسم إضافة / ربط باركود جديد -->
         <div class="card no-print">
-            <div class="card-title">➕ إضافة علاج جديد أو ربط باركود بالجهاز</div>
+            <div class="card-title">
+                <span>➕ إضافة علاج جديد وربطه بالباركود</span>
+                <label class="btn btn-secondary" style="font-size:0.82rem; cursor:pointer;">
+                    📷 التقاط الباركود من صورة للحقل
+                    <input type="file" accept="image/*" style="display:none;" onchange="fillInputBarcodeFromImage(event, 'inBarcode')">
+                </label>
+            </div>
             <form id="addDrugForm" onsubmit="addNewDrug(event)">
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>رقم الباركود (امسحه بالجهاز)</label>
-                        <input type="text" id="inBarcode" placeholder="امسح الباركود هنا..." required>
+                        <label>رقم الباركود (اضربه بالجهاز)</label>
+                        <input type="text" id="inBarcode" placeholder="اضرب الباركود بالجهاز...">
                     </div>
                     <div class="form-group">
                         <label>اسم المادة (العلاج)</label>
                         <input type="text" id="inName" placeholder="مثال: Adol 250mg Supp" required>
                     </div>
                     <div class="form-group">
-                        <label>نوع المادة</label>
+                        <label>نوع المادة / القسم</label>
                         <input type="text" id="inType" placeholder="Tablet, Syrup, Vial..." required>
                     </div>
                     <div class="form-group">
@@ -398,7 +519,7 @@
                         <input type="text" id="inCompany" placeholder="مثال: Julphar, ASWAR..." required>
                     </div>
                     <div class="form-group">
-                        <label>تاريخ الانتهاء (YYYY-MM-DD)</label>
+                        <label>تاريخ الانتهاء</label>
                         <input type="date" id="inExpiry" required>
                     </div>
                     <div class="form-group">
@@ -416,11 +537,10 @@
             </form>
         </div>
 
-        <!-- جدول عرض المواد في الصفحة الأولى (بدون أسعار) -->
         <div class="card">
             <div class="card-title">
                 <span>📋 سجل مواد الصيدلية (عرض إداري بدون أسعار)</span>
-                <input type="text" id="filterPage1" placeholder="فلترة سريعة حسب الاسم أو الشركة..." style="max-width:300px;" onkeyup="renderTables()">
+                <input type="text" id="filterPage1" placeholder="فلترة حسب الاسم، الباركود، القسم، أو الشركة..." style="max-width:340px;" onkeyup="renderTables()">
             </div>
             <div class="table-responsive">
                 <table>
@@ -429,12 +549,12 @@
                             <th>#</th>
                             <th>الباركود</th>
                             <th>اسم المادة</th>
-                            <th>نوع المادة</th>
+                            <th>نوع المادة / القسم</th>
                             <th>الشركة المنتجة</th>
                             <th>تاريخ الانتهاء</th>
                             <th>كارتون / كمية</th>
                             <th>بونص</th>
-                            <th class="no-print">إجراءات (ربط باركود / تعديل)</th>
+                            <th class="no-print">تعديل / باركود</th>
                         </tr>
                     </thead>
                     <tbody id="tablePage1Body"></tbody>
@@ -443,7 +563,7 @@
         </div>
     </div>
 
-    <!-- ==================== الصفحة الثانية: قوائم المذاخر والأسعار ==================== -->
+    <!-- ==================== الصفحة الثانية: أرشيف قوائم المذاخر والأسعار ==================== -->
     <div id="page2" class="page">
         <div class="stats-grid">
             <div class="stat-box">
@@ -464,7 +584,7 @@
             <div class="card-title">
                 <span>🧾 سجل قوائم المذاخر والمشتريات (شامل الأسعار والمجموع)</span>
                 <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                    <select id="invoiceFilter" onchange="renderTables()" style="max-width:250px;">
+                    <select id="invoiceFilter" onchange="renderTables()" style="max-width:260px;">
                         <option value="ALL">كل القوائم</option>
                     </select>
                     <input type="text" id="filterPage2" placeholder="بحث في القوائم..." style="max-width:220px;" onkeyup="renderTables()">
@@ -476,15 +596,16 @@
                         <tr>
                             <th>#</th>
                             <th>المذخر / القائمة</th>
+                            <th>الباركود</th>
                             <th>اسم المادة</th>
-                            <th>نوع المادة</th>
+                            <th>نوع المادة / القسم</th>
                             <th>الشركة المنتجة</th>
                             <th>تاريخ الانتهاء</th>
                             <th>كارتون</th>
                             <th>بونص</th>
                             <th>سعر المفرد</th>
                             <th>المجموع</th>
-                            <th class="no-print">حذف</th>
+                            <th class="no-print">تعديل / حذف</th>
                         </tr>
                     </thead>
                     <tbody id="tablePage2Body"></tbody>
@@ -493,11 +614,91 @@
         </div>
     </div>
 
-    <!-- ==================== الصفحة الثالثة: التنبيهات الذكية ==================== -->
+    <!-- ==================== الصفحة الثالثة: إدارة وإضافة القوائم الجديدة ==================== -->
     <div id="page3" class="page">
+        <div class="settings-grid">
+            <!-- مكان استقبال القوائم المصورة -->
+            <div class="card" style="border-right: 4px solid var(--secondary);">
+                <div class="card-title" style="color: var(--secondary);">
+                    <span>📸 مكان إضافة القوائم المصورة (الخطوة السريعة)</span>
+                </div>
+                <p style="font-size:0.92rem; color:var(--text-muted); margin-bottom:12px; line-height:1.7;">
+                    كل ما تجيك قائمة جديدة من أي مذخر: قصّها صورة وأرسلها لي هنا في المحادثة؛ سأرتبها وأصحح أجزائها (اسم المادة، النوع، الشركة، الانتهاء، الكارتون، البونص، سعر المفرد، المجموع) وأعطيك كود القائمة لتلصقه هنا ويُضاف فوراً إلى القوائم السابقة:
+                </p>
+                <textarea id="page3ImportArea" rows="6" placeholder="الصق هنا كود القائمة الجاهز الذي أرسله لك بعد تصوير القائمة..."></textarea>
+                <button class="btn btn-secondary" style="margin-top:12px; width:100%; justify-content:center;" onclick="importFromPage3()">
+                    ➕ إضافة القائمة إلى النظام وحفظها مع القوائم السابقة
+                </button>
+            </div>
+
+            <!-- إضافة مادة جديدة ضمن قائمة محددة -->
+            <div class="card" style="border-right: 4px solid var(--success);">
+                <div class="card-title" style="color: var(--success);">
+                    <span>📝 إضافة مادة لقائمة جديدة أو قائمة موجودة</span>
+                </div>
+                <form onsubmit="addItemToSpecificInvoice(event)">
+                    <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label>اسم المذخر ورقم القائمة والتاريخ</label>
+                            <input type="text" id="invTitleInput" placeholder="مثال: مذخر الفردوس #342078 (22/11/2026)" list="existingInvoicesList" required>
+                            <datalist id="existingInvoicesList"></datalist>
+                        </div>
+                        <div class="form-group">
+                            <label>الباركود</label>
+                            <input type="text" id="invBarcodeInput" placeholder="اختياري">
+                        </div>
+                        <div class="form-group">
+                            <label>اسم المادة</label>
+                            <input type="text" id="invNameInput" required>
+                        </div>
+                        <div class="form-group">
+                            <label>نوع المادة / القسم</label>
+                            <input type="text" id="invTypeInput" placeholder="Tablet, Syrup, Cream..." required>
+                        </div>
+                        <div class="form-group">
+                            <label>الشركة المنتجة</label>
+                            <input type="text" id="invCompanyInput" required>
+                        </div>
+                        <div class="form-group">
+                            <label>تاريخ الانتهاء</label>
+                            <input type="date" id="invExpiryInput" required>
+                        </div>
+                        <div class="form-group">
+                            <label>كارتون / كمية</label>
+                            <input type="number" id="invQtyInput" value="1" min="0" required oninput="autoCalcInvoiceTotal()">
+                        </div>
+                        <div class="form-group">
+                            <label>بونص</label>
+                            <input type="number" id="invBonusInput" value="0" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>سعر المفرد (د.ع)</label>
+                            <input type="number" id="invPriceInput" value="0" min="0" oninput="autoCalcInvoiceTotal()">
+                        </div>
+                        <div class="form-group">
+                            <label>المجموع (د.ع)</label>
+                            <input type="number" id="invTotalInput" value="0" min="0">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success" style="margin-top:14px; width:100%; justify-content:center;">
+                        💾 حفظ المادة ضمن القائمة
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- ملخص القوائم المحفوظة في النظام -->
+        <div class="card">
+            <div class="card-title"><span>🗂️ القوائم المحفوظة حالياً في النظام</span></div>
+            <div id="invoicesSummaryCards" class="invoice-summary-list"></div>
+        </div>
+    </div>
+
+    <!-- ==================== الصفحة الرابعة: التنبيهات الذكية ==================== -->
+    <div id="page4" class="page">
         <div class="card" style="border-right: 4px solid var(--danger);">
             <div class="card-title" style="color: var(--danger);">
-                <span>⏳ تنبيهات تاريخ الانتهاء (منتهي أو ينتهي خلال 6 أشهر)</span>
+                <span>⏳ تنبيهات تاريخ الانتهاء (منتهي أو قريب الانتهاء)</span>
             </div>
             <div class="table-responsive">
                 <table>
@@ -508,6 +709,7 @@
                             <th>تاريخ الانتهاء</th>
                             <th>الحالة</th>
                             <th>الكمية المتبقية</th>
+                            <th class="no-print">تعديل</th>
                         </tr>
                     </thead>
                     <tbody id="expiryAlertBody"></tbody>
@@ -517,17 +719,18 @@
 
         <div class="card" style="border-right: 4px solid var(--warning);">
             <div class="card-title" style="color: var(--warning);">
-                <span>📉 تنبيهات النواقص (المواد التي كميتها 3 أو أقل)</span>
+                <span>📉 تنبيهات النواقص (المواد التي أوشكت على النفاد)</span>
             </div>
             <div class="table-responsive">
                 <table>
                     <thead>
                         <tr>
                             <th>اسم المادة</th>
-                            <th>نوع المادة</th>
+                            <th>نوع المادة / القسم</th>
                             <th>الشركة</th>
                             <th>الكمية المتبقية</th>
                             <th>المذخر المورد</th>
+                            <th class="no-print">تعديل</th>
                         </tr>
                     </thead>
                     <tbody id="lowStockAlertBody"></tbody>
@@ -536,35 +739,209 @@
         </div>
     </div>
 
+    <!-- ==================== الصفحة الخامسة: الإعدادات والخطوط والجداول ==================== -->
+    <div id="page5" class="page">
+        <div class="settings-grid">
+            <div class="card">
+                <div class="card-title">🔤 إعدادات الخطوط وحجم الكتابة</div>
+                <div class="form-group" style="margin-bottom:15px;">
+                    <label>اختر نوع الخط (35 خط عربي وعالمي):</label>
+                    <select id="settingFontFamily" onchange="applySettings()">
+                        <option value="'Cairo', sans-serif">1. Cairo (كايرو - الافتراضي)</option>
+                        <option value="'Tajawal', sans-serif">2. Tajawal (تجوال - عصري)</option>
+                        <option value="'Almarai', sans-serif">3. Almarai (المراعي - واضح جداً)</option>
+                        <option value="'IBM Plex Sans Arabic', sans-serif">4. IBM Plex Arabic (احترافي)</option>
+                        <option value="'Noto Kufi Arabic', sans-serif">5. Noto Kufi Arabic (كوفي حديث)</option>
+                        <option value="'Noto Sans Arabic', sans-serif">6. Noto Sans Arabic (نوتو)</option>
+                        <option value="'Readex Pro', sans-serif">7. Readex Pro (ريدكس)</option>
+                        <option value="'Rubik', sans-serif">8. Rubik (روبيك)</option>
+                        <option value="'Changa', sans-serif">9. Changa (تشانغا)</option>
+                        <option value="'El Messiri', sans-serif">10. El Messiri (المسيري)</option>
+                        <option value="'Mada', sans-serif">11. Mada (مدى)</option>
+                        <option value="'Vazirmatn', sans-serif">12. Vazirmatn (وزير)</option>
+                        <option value="'Amiri', serif">13. Amiri (أميري - كلاسيكي)</option>
+                        <option value="'Noto Naskh Arabic', serif">14. Noto Naskh (نسخ)</option>
+                        <option value="'Scheherazade New', serif">15. Scheherazade (شهرزاد)</option>
+                        <option value="'Markazi Text', serif">16. Markazi Text (مركزي)</option>
+                        <option value="'Lateef', serif">17. Lateef (لطيف)</option>
+                        <option value="'Mirza', serif">18. Mirza (ميرزا)</option>
+                        <option value="'Reem Kufi', sans-serif">19. Reem Kufi (ريم كوفي)</option>
+                        <option value="'Lalezar', cursive">20. Lalezar (لاليزار - عريض)</option>
+                        <option value="'Lemonada', cursive">21. Lemonada (ليمونادا)</option>
+                        <option value="'Aref Ruqaa', serif">22. Aref Ruqaa (عارف رقعة)</option>
+                        <option value="'Rakkas', cursive">23. Rakkas (رقاص)</option>
+                        <option value="Tahoma, sans-serif">24. Tahoma (تاهوما النظام)</option>
+                        <option value="Arial, sans-serif">25. Arial (آريال)</option>
+                        <option value="'Segoe UI', sans-serif">26. Segoe UI (ويندوز)</option>
+                        <option value="Verdana, sans-serif">27. Verdana (فيردانا)</option>
+                        <option value="'Trebuchet MS', sans-serif">28. Trebuchet MS</option>
+                        <option value="Georgia, serif">29. Georgia</option>
+                        <option value="'Times New Roman', serif">30. Times New Roman</option>
+                        <option value="'Courier New', monospace">31. Courier New (رقمي)</option>
+                        <option value="system-ui, sans-serif">32. خط النظام الافتراضي (System UI)</option>
+                        <option value="sans-serif">33. Sans-Serif عام</option>
+                        <option value="serif">34. Serif عام</option>
+                        <option value="monospace">35. Monospace (للبراكد والأرقام)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>حجم الخط العام (<span id="fontSizeVal">15</span> px):</label>
+                    <input type="range" id="settingFontSize" min="12" max="20" value="15" oninput="applySettings()">
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🎨 الألوان والمظهر العام</div>
+                <div class="form-group" style="margin-bottom:15px;">
+                    <label>اختر لون النظام الأساسي:</label>
+                    <div class="color-swatches">
+                        <div class="swatch active" style="background:#0f766e;" onclick="setPrimaryColor('#0f766e', '#115e59', this)" title="أخضر طبي"></div>
+                        <div class="swatch" style="background:#0284c7;" onclick="setPrimaryColor('#0284c7', '#0369a1', this)" title="أزرق سماوي"></div>
+                        <div class="swatch" style="background:#2563eb;" onclick="setPrimaryColor('#2563eb', '#1d4ed8', this)" title="أزرق ملكي"></div>
+                        <div class="swatch" style="background:#7c3aed;" onclick="setPrimaryColor('#7c3aed', '#6d28d9', this)" title="بنفسجي"></div>
+                        <div class="swatch" style="background:#be123c;" onclick="setPrimaryColor('#be123c', '#9f1239', this)" title="عنابي"></div>
+                        <div class="swatch" style="background:#b45309;" onclick="setPrimaryColor('#b45309', '#92400e', this)" title="ذهبي/برتقالي"></div>
+                        <div class="swatch" style="background:#15803d;" onclick="setPrimaryColor('#15803d', '#166534', this)" title="أخضر عشبي"></div>
+                        <div class="swatch" style="background:#334155;" onclick="setPrimaryColor('#334155', '#1e293b', this)" title="رمادي رسمي"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>وضع الإضاءة:</label>
+                    <select id="settingThemeMode" onchange="applySettings()">
+                        <option value="light">☀️ الوضع النهاري (فاتح)</option>
+                        <option value="dark">🌙 الوضع الليلي (داكن مريح للعين)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">📊 تنسيق الجداول والعرض</div>
+                <div class="form-group" style="margin-bottom:15px;">
+                    <label>تباعد وحجم خلايا الجداول:</label>
+                    <select id="settingTablePadding" onchange="applySettings()">
+                        <option value="6px">مضغوط (يعرض صفوف أكثر في الشاشة)</option>
+                        <option value="10px" selected>متوسط (قياسي ومتوازن)</option>
+                        <option value="15px">واسع (مريح للقراءة واللمس)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>حدود وشبكة الجداول:</label>
+                    <select id="settingTableBorders" onchange="applySettings()">
+                        <option value="1px" selected>إظهار خطوط الشبكة الكاملة</option>
+                        <option value="0px">بدون خطوط عمودية (تصميم عصري)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🔔 حدود التنبيهات والنسخ الاحتياطي</div>
+                <div class="form-group" style="margin-bottom:12px;">
+                    <label>نبهني بالنواقص إذا كانت الكمية أقل أو تساوي:</label>
+                    <input type="number" id="settingLowStockLimit" value="3" min="1" max="50" onchange="applySettings()">
+                </div>
+                <div class="form-group" style="margin-bottom:15px;">
+                    <label>نبهني بالإكسباير قبل انتهاء الصلاحية بـ (أشهر):</label>
+                    <select id="settingExpiryMonths" onchange="applySettings()">
+                        <option value="3">3 أشهر</option>
+                        <option value="6" selected>6 أشهر</option>
+                        <option value="9">9 أشهر</option>
+                        <option value="12">12 شهر (سنة)</option>
+                    </select>
+                </div>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <button class="btn btn-primary" onclick="exportBackup()">💾 تحميل نسخة احتياطية</button>
+                    <label class="btn btn-secondary" style="cursor:pointer;">
+                        📂 استعادة نسخة احتياطية
+                        <input type="file" accept=".json" style="display:none;" onchange="restoreBackup(event)">
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
-<!-- نافذة استيراد قائمة جديدة -->
+<!-- نافذة استيراد كود قائمة من الأعلى -->
 <div id="importModal" class="modal">
     <div class="modal-content">
         <div class="card-title">
-            <span>📥 استيراد قائمة مذخر جديدة</span>
+            <span>📥 استيراد كود قائمة مذخر جديدة</span>
             <button class="btn btn-danger" onclick="closeImportModal()">✕</button>
         </div>
         <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:10px;">
-            صوّر أي قائمة وأرسلها لي في المحادثة، وسأعطيك كود القائمة لتلصقه هنا مباشرة فيتم حفظها في الصفحة الأولى (بدون أسعار) والصفحة الثانية (بالأسعار):
+            الصق هنا الكود المرتب للقائمة الجديدة ليُضاف فوراً إلى القوائم الموجودة في النظام:
         </p>
         <textarea id="importJsonArea" rows="8" placeholder='الصق كود القائمة هنا...'></textarea>
         <div style="margin-top:15px; display:flex; gap:10px; justify-content:flex-end;">
-            <button class="btn btn-success" onclick="processImport()">✅ حفظ وإضافة القائمة</button>
+            <button class="btn btn-success" onclick="processImportFromModal()">✅ حفظ وإضافة القائمة</button>
         </div>
     </div>
 </div>
 
-<!-- نافذة ربط باركود سريع لمادة موجودة -->
-<div id="linkBarcodeModal" class="modal">
-    <div class="modal-content" style="max-width:420px;">
+<!-- نافذة التعديل الشامل لأي مادة في كل الأقسام -->
+<div id="editDrugModal" class="modal">
+    <div class="modal-content">
         <div class="card-title">
-            <span>🏷️ ربط باركود للمادة</span>
-            <button class="btn btn-danger" onclick="closeBarcodeModal()">✕</button>
+            <span>✏️ تعديل بيانات المادة والباركود والقائمة</span>
+            <button class="btn btn-danger" onclick="closeEditModal()">✕</button>
         </div>
-        <p id="linkDrugTitle" style="font-weight:700; margin-bottom:10px; color:var(--primary);"></p>
-        <input type="text" id="linkBarcodeInput" placeholder="امسح الباركود بالجهاز الآن...">
-        <button class="btn btn-primary" style="width:100%; margin-top:12px; justify-content:center;" onclick="saveLinkedBarcode()">حفظ الباركود</button>
+        <form id="editDrugForm" onsubmit="saveEditedDrug(event)">
+            <input type="hidden" id="editId">
+            <div class="form-grid">
+                <div class="form-group" style="grid-column: span 2;">
+                    <label>القائمة / المذخر</label>
+                    <input type="text" id="editInvoice" required>
+                </div>
+                <div class="form-group">
+                    <label>رقم الباركود</label>
+                    <input type="text" id="editBarcode" placeholder="امسح أو اكتب الباركود">
+                </div>
+                <div class="form-group">
+                    <label>قراءة باركود من صورة</label>
+                    <label class="btn btn-secondary" style="width:100%; justify-content:center; cursor:pointer; height:40px;">
+                        🖼️ اختيار صورة باركود
+                        <input type="file" accept="image/*" style="display:none;" onchange="fillInputBarcodeFromImage(event, 'editBarcode')">
+                    </label>
+                </div>
+                <div class="form-group" style="grid-column: span 2;">
+                    <label>اسم المادة</label>
+                    <input type="text" id="editName" required>
+                </div>
+                <div class="form-group">
+                    <label>نوع المادة / القسم</label>
+                    <input type="text" id="editType" required>
+                </div>
+                <div class="form-group">
+                    <label>الشركة المنتجة</label>
+                    <input type="text" id="editCompany" required>
+                </div>
+                <div class="form-group">
+                    <label>تاريخ الانتهاء</label>
+                    <input type="date" id="editExpiry" required>
+                </div>
+                <div class="form-group">
+                    <label>كارتون / كمية</label>
+                    <input type="number" id="editQty" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label>بونص</label>
+                    <input type="number" id="editBonus" min="0">
+                </div>
+                <div class="form-group">
+                    <label>سعر المفرد (د.ع)</label>
+                    <input type="number" id="editPrice" min="0">
+                </div>
+                <div class="form-group">
+                    <label>المجموع (د.ع)</label>
+                    <input type="number" id="editTotal" min="0">
+                </div>
+            </div>
+            <div style="margin-top:18px; display:flex; gap:10px; justify-content:flex-end;">
+                <button type="button" class="btn btn-light" style="color:var(--text); border-color:var(--border);" onclick="closeEditModal()">إلغاء</button>
+                <button type="submit" class="btn btn-success">💾 حفظ التعديلات</button>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -607,52 +984,104 @@
         { id: 34, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "راس ممة ثنائي AVEAT", type: "مستلزمات", company: "AVEAT", expiry: "2028-01-01", qty: 10, bonus: 0, price: 1653, total: 16530 }
     ];
 
-    let inventory = JSON.parse(localStorage.getItem('pharmacy_inventory_v1')) || initialAlferdosData;
+    let inventory = JSON.parse(localStorage.getItem('pharmacy_inventory_v3')) || initialAlferdosData;
+    let userSettings = JSON.parse(localStorage.getItem('pharmacy_settings_v3')) || {
+        fontFamily: "'Cairo', sans-serif",
+        fontSize: "15",
+        primary: "#0f766e",
+        primaryDark: "#115e59",
+        theme: "light",
+        tablePadding: "10px",
+        tableBorders: "1px",
+        lowStockLimit: 3,
+        expiryMonths: 6
+    };
+
     let currentScannedId = null;
-    let linkingDrugId = null;
+    let html5QrCode = null;
+    let scanTimeout = null;
 
-    function saveData() {
-        localStorage.setItem('pharmacy_inventory_v1', JSON.stringify(inventory));
-        renderTables();
-        updateAlerts();
-        updateInvoiceDropdown();
+    // ==================== الإعدادات ====================
+    function loadSettingsToUI() {
+        document.getElementById('settingFontFamily').value = userSettings.fontFamily;
+        document.getElementById('settingFontSize').value = userSettings.fontSize;
+        document.getElementById('fontSizeVal').textContent = userSettings.fontSize;
+        document.getElementById('settingThemeMode').value = userSettings.theme;
+        document.getElementById('settingTablePadding').value = userSettings.tablePadding;
+        document.getElementById('settingTableBorders').value = userSettings.tableBorders;
+        document.getElementById('settingLowStockLimit').value = userSettings.lowStockLimit;
+        document.getElementById('settingExpiryMonths').value = userSettings.expiryMonths;
+        applySettings(false);
     }
 
-    // التنقل بين الصفحات
-    function switchTab(pageId, btn) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(pageId).classList.add('active');
-        btn.classList.add('active');
-        if (pageId === 'page1') {
-            setTimeout(() => document.getElementById('barcodeScanInput').focus(), 100);
+    function applySettings(save = true) {
+        userSettings.fontFamily = document.getElementById('settingFontFamily').value;
+        userSettings.fontSize = document.getElementById('settingFontSize').value;
+        document.getElementById('fontSizeVal').textContent = userSettings.fontSize;
+        userSettings.theme = document.getElementById('settingThemeMode').value;
+        userSettings.tablePadding = document.getElementById('settingTablePadding').value;
+        userSettings.tableBorders = document.getElementById('settingTableBorders').value;
+        userSettings.lowStockLimit = parseInt(document.getElementById('settingLowStockLimit').value) || 3;
+        userSettings.expiryMonths = parseInt(document.getElementById('settingExpiryMonths').value) || 6;
+
+        const root = document.documentElement;
+        root.style.setProperty('--app-font', userSettings.fontFamily);
+        root.style.setProperty('--font-size', userSettings.fontSize + 'px');
+        root.style.setProperty('--primary', userSettings.primary);
+        root.style.setProperty('--primary-dark', userSettings.primaryDark);
+        root.style.setProperty('--cell-pad', userSettings.tablePadding);
+        root.style.setProperty('--table-border-width', userSettings.tableBorders);
+        document.body.setAttribute('data-theme', userSettings.theme);
+
+        if (save) {
+            localStorage.setItem('pharmacy_settings_v3', JSON.stringify(userSettings));
+            renderTables();
+            updateAlerts();
         }
     }
 
-    // البحث بالباركود أو الاسم
-    function handleBarcodeSearch(e) {
-        if (e.key === 'Enter' || document.getElementById('barcodeScanInput').value.length >= 3) {
-            searchBarcodeManual();
-        }
+    function setPrimaryColor(primary, dark, el) {
+        userSettings.primary = primary;
+        userSettings.primaryDark = dark;
+        document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+        if (el) el.classList.add('active');
+        applySettings(true);
     }
 
-    function searchBarcodeManual() {
-        const query = document.getElementById('barcodeScanInput').value.trim().toLowerCase();
+    function toggleTheme() {
+        userSettings.theme = userSettings.theme === 'dark' ? 'light' : 'dark';
+        document.getElementById('settingThemeMode').value = userSettings.theme;
+        applySettings(true);
+    }
+
+    // ==================== الباركود الفوري والكاميرا والصور ====================
+    function autoDetectBarcode() {
+        clearTimeout(scanTimeout);
+        scanTimeout = setTimeout(() => {
+            const val = document.getElementById('barcodeScanInput').value.trim();
+            if (val.length >= 2) {
+                executeBarcodeLookup(val);
+            }
+        }, 150);
+    }
+
+    function executeBarcodeLookup(codeOrName) {
+        const query = codeOrName.trim().toLowerCase();
         const box = document.getElementById('scanResultBox');
         if (!query) {
             box.style.display = 'none';
             return;
         }
 
-        const item = inventory.find(d => 
-            (d.barcode && d.barcode.toLowerCase() === query) || 
-            d.name.toLowerCase().includes(query)
-        );
+        let item = inventory.find(d => d.barcode && d.barcode.toLowerCase() === query);
+        if (!item) {
+            item = inventory.find(d => d.name.toLowerCase().includes(query));
+        }
 
         if (item) {
             currentScannedId = item.id;
             document.getElementById('resName').textContent = item.name;
-            document.getElementById('resBarcode').textContent = item.barcode || 'غير مربوط بباركود';
+            document.getElementById('resBarcode').textContent = item.barcode || 'غير مربوط بعد';
             document.getElementById('resType').textContent = item.type;
             document.getElementById('resCompany').textContent = item.company;
             document.getElementById('resExpiry').textContent = item.expiry;
@@ -665,20 +1094,156 @@
         }
     }
 
+    function clearScanResult() {
+        document.getElementById('scanResultBox').style.display = 'none';
+        const inp = document.getElementById('barcodeScanInput');
+        inp.value = '';
+        inp.focus();
+    }
+
+    function startCameraScanner() {
+        const container = document.getElementById('cameraReaderContainer');
+        container.style.display = 'block';
+        html5QrCode = new Html5Qrcode("reader");
+        html5QrCode.start(
+            { facingMode: "environment" },
+            { fps: 10, qrbox: { width: 250, height: 150 } },
+            (decodedText) => {
+                document.getElementById('barcodeScanInput').value = decodedText;
+                executeBarcodeLookup(decodedText);
+                stopCameraScanner();
+            },
+            () => {}
+        ).catch(err => {
+            alert("تعذر فتح الكاميرا: " + err);
+            container.style.display = 'none';
+        });
+    }
+
+    function stopCameraScanner() {
+        if (html5QrCode) {
+            html5QrCode.stop().then(() => {
+                document.getElementById('cameraReaderContainer').style.display = 'none';
+            }).catch(() => {
+                document.getElementById('cameraReaderContainer').style.display = 'none';
+            });
+        } else {
+            document.getElementById('cameraReaderContainer').style.display = 'none';
+        }
+    }
+
+    function scanBarcodeFromImage(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const fileScanner = new Html5Qrcode("fileReaderHidden");
+        fileScanner.scanFile(file, true)
+            .then(decodedText => {
+                document.getElementById('barcodeScanInput').value = decodedText;
+                executeBarcodeLookup(decodedText);
+                if (!currentScannedId) {
+                    alert(`تمت قراءة الباركود (${decodedText}) من الصورة، لكنه غير مربوط بعلاج بعد.`);
+                }
+            })
+            .catch(() => {
+                alert("لم يتم العثور على باركود واضح في الصورة.");
+            });
+        event.target.value = '';
+    }
+
+    function fillInputBarcodeFromImage(event, targetInputId) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const fileScanner = new Html5Qrcode("fileReaderHidden");
+        fileScanner.scanFile(file, true)
+            .then(decodedText => {
+                document.getElementById(targetInputId).value = decodedText;
+            })
+            .catch(() => {
+                alert("تعذر قراءة الباركود من الصورة.");
+            });
+        event.target.value = '';
+    }
+
+    // ==================== التعديل الشامل في كل الأقسام ====================
+    function openEditModal(id) {
+        const item = inventory.find(d => d.id === id);
+        if (!item) return;
+        document.getElementById('editId').value = item.id;
+        document.getElementById('editInvoice').value = item.invoice || '';
+        document.getElementById('editBarcode').value = item.barcode || '';
+        document.getElementById('editName').value = item.name || '';
+        document.getElementById('editType').value = item.type || '';
+        document.getElementById('editCompany').value = item.company || '';
+        document.getElementById('editExpiry').value = item.expiry || '';
+        document.getElementById('editQty').value = item.qty ?? 0;
+        document.getElementById('editBonus').value = item.bonus ?? 0;
+        document.getElementById('editPrice').value = item.price ?? 0;
+        document.getElementById('editTotal').value = item.total ?? 0;
+        document.getElementById('editDrugModal').style.display = 'flex';
+    }
+
+    function closeEditModal() {
+        document.getElementById('editDrugModal').style.display = 'none';
+    }
+
+    function saveEditedDrug(e) {
+        e.preventDefault();
+        const id = Number(document.getElementById('editId').value);
+        const idx = inventory.findIndex(d => d.id === id);
+        if (idx === -1) return;
+
+        inventory[idx] = {
+            ...inventory[idx],
+            invoice: document.getElementById('editInvoice').value.trim(),
+            barcode: document.getElementById('editBarcode').value.trim(),
+            name: document.getElementById('editName').value.trim(),
+            type: document.getElementById('editType').value.trim(),
+            company: document.getElementById('editCompany').value.trim(),
+            expiry: document.getElementById('editExpiry').value,
+            qty: parseInt(document.getElementById('editQty').value) || 0,
+            bonus: parseInt(document.getElementById('editBonus').value) || 0,
+            price: parseInt(document.getElementById('editPrice').value) || 0,
+            total: parseInt(document.getElementById('editTotal').value) || 0
+        };
+
+        saveData();
+        closeEditModal();
+        if (currentScannedId === id) {
+            executeBarcodeLookup(inventory[idx].barcode || inventory[idx].name);
+        }
+    }
+
+    // ==================== العمليات الأساسية وإدارة القوائم ====================
+    function saveData() {
+        localStorage.setItem('pharmacy_inventory_v3', JSON.stringify(inventory));
+        renderTables();
+        updateAlerts();
+        updateInvoiceDropdown();
+        renderInvoicesSummary();
+    }
+
+    function switchTab(pageId, btn) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        btn.classList.add('active');
+        if (pageId === 'page1') {
+            setTimeout(() => document.getElementById('barcodeScanInput').focus(), 100);
+        }
+    }
+
     function dispenseOneItem() {
         if (!currentScannedId) return;
         const idx = inventory.findIndex(d => d.id === currentScannedId);
         if (idx !== -1 && inventory[idx].qty > 0) {
             inventory[idx].qty -= 1;
             saveData();
-            searchBarcodeManual();
-            alert(`تم خصم قطعة واحدة من (${inventory[idx].name}). المتبقي: ${inventory[idx].qty}`);
+            executeBarcodeLookup(inventory[idx].barcode || inventory[idx].name);
         } else {
             alert('الكمية نفدت بالكامل!');
         }
     }
 
-    // إضافة مادة جديدة
     function addNewDrug(e) {
         e.preventDefault();
         const newItem = {
@@ -697,70 +1262,113 @@
         inventory.unshift(newItem);
         saveData();
         document.getElementById('addDrugForm').reset();
-        alert('تم حفظ العلاج والباركود بنجاح!');
+        document.getElementById('barcodeScanInput').focus();
     }
 
-    // ربط باركود لمادة موجودة مسبقاً من القوائم
-    function openBarcodeModal(id) {
-        const item = inventory.find(d => d.id === id);
-        if (!item) return;
-        linkingDrugId = id;
-        document.getElementById('linkDrugTitle').textContent = item.name;
-        document.getElementById('linkBarcodeInput').value = item.barcode || '';
-        document.getElementById('linkBarcodeModal').style.display = 'flex';
-        setTimeout(() => document.getElementById('linkBarcodeInput').focus(), 100);
+    function autoCalcInvoiceTotal() {
+        const q = parseFloat(document.getElementById('invQtyInput').value) || 0;
+        const p = parseFloat(document.getElementById('invPriceInput').value) || 0;
+        document.getElementById('invTotalInput').value = Math.round(q * p);
     }
 
-    function closeBarcodeModal() {
-        document.getElementById('linkBarcodeModal').style.display = 'none';
+    function addItemToSpecificInvoice(e) {
+        e.preventDefault();
+        const newItem = {
+            id: Date.now(),
+            invoice: document.getElementById('invTitleInput').value.trim(),
+            barcode: document.getElementById('invBarcodeInput').value.trim(),
+            name: document.getElementById('invNameInput').value.trim(),
+            type: document.getElementById('invTypeInput').value.trim(),
+            company: document.getElementById('invCompanyInput').value.trim(),
+            expiry: document.getElementById('invExpiryInput').value,
+            qty: parseInt(document.getElementById('invQtyInput').value) || 0,
+            bonus: parseInt(document.getElementById('invBonusInput').value) || 0,
+            price: parseInt(document.getElementById('invPriceInput').value) || 0,
+            total: parseInt(document.getElementById('invTotalInput').value) || 0
+        };
+        inventory.unshift(newItem);
+        saveData();
+        ['invBarcodeInput', 'invNameInput', 'invTypeInput', 'invCompanyInput', 'invExpiryInput'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('invQtyInput').value = 1;
+        document.getElementById('invBonusInput').value = 0;
+        document.getElementById('invPriceInput').value = 0;
+        document.getElementById('invTotalInput').value = 0;
+        alert('تمت إضافة المادة وحفظها ضمن القائمة بنجاح!');
     }
 
-    function saveLinkedBarcode() {
-        const code = document.getElementById('linkBarcodeInput').value.trim();
-        const idx = inventory.findIndex(d => d.id === linkingDrugId);
-        if (idx !== -1) {
-            inventory[idx].barcode = code;
-            saveData();
-            closeBarcodeModal();
-        }
+    function renderInvoicesSummary() {
+        const container = document.getElementById('invoicesSummaryCards');
+        const datalist = document.getElementById('existingInvoicesList');
+        container.innerHTML = '';
+        datalist.innerHTML = '';
+
+        const map = new Map();
+        inventory.forEach(item => {
+            const key = item.invoice || 'قائمة عامة';
+            if (!map.has(key)) map.set(key, { count: 0, sum: 0 });
+            const cur = map.get(key);
+            cur.count += 1;
+            cur.sum += Number(item.total || 0);
+        });
+
+        map.forEach((val, key) => {
+            datalist.innerHTML += `<option value="${key}">`;
+            container.innerHTML += `
+                <div class="invoice-chip">
+                    <div>
+                        <strong style="display:block; font-size:0.95rem;">${key}</strong>
+                        <span style="font-size:0.82rem; color:var(--text-muted);">${val.count} مادة</span>
+                    </div>
+                    <strong style="color:var(--primary);">${val.sum.toLocaleString()} د.ع</strong>
+                </div>
+            `;
+        });
     }
 
-    // عرض الجداول
     function renderTables() {
         const q1 = document.getElementById('filterPage1').value.toLowerCase();
         const q2 = document.getElementById('filterPage2').value.toLowerCase();
         const invFilter = document.getElementById('invoiceFilter').value;
+        const limit = userSettings.lowStockLimit;
 
-        // جدول الصفحة الأولى (بدون أسعار)
+        // الصفحة الأولى (بدون أسعار)
         const tbody1 = document.getElementById('tablePage1Body');
         tbody1.innerHTML = '';
-        inventory.filter(d => d.name.toLowerCase().includes(q1) || d.company.toLowerCase().includes(q1) || (d.barcode && d.barcode.includes(q1)))
-            .forEach((item, index) => {
-                const qtyBadge = item.qty <= 3 ? `<span class="status-pill pill-danger">${item.qty}</span>` : `<span class="status-pill pill-success">${item.qty}</span>`;
-                tbody1.innerHTML += `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td><strong>${item.barcode || '—'}</strong></td>
-                        <td><strong>${item.name}</strong></td>
-                        <td>${item.type}</td>
-                        <td>${item.company}</td>
-                        <td>${item.expiry}</td>
-                        <td>${qtyBadge}</td>
-                        <td>${item.bonus}</td>
-                        <td class="no-print">
-                            <button class="btn btn-secondary" style="padding:4px 10px; font-size:0.8rem;" onclick="openBarcodeModal(${item.id})">🏷️ ربط باركود</button>
-                        </td>
-                    </tr>
-                `;
-            });
+        inventory.filter(d =>
+            d.name.toLowerCase().includes(q1) ||
+            d.company.toLowerCase().includes(q1) ||
+            d.type.toLowerCase().includes(q1) ||
+            (d.barcode && d.barcode.toLowerCase().includes(q1))
+        ).forEach((item, index) => {
+            const qtyBadge = item.qty <= limit ? `<span class="status-pill pill-danger">${item.qty}</span>` : `<span class="status-pill pill-success">${item.qty}</span>`;
+            tbody1.innerHTML += `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td><strong>${item.barcode || '—'}</strong></td>
+                    <td><strong>${item.name}</strong></td>
+                    <td>${item.type}</td>
+                    <td>${item.company}</td>
+                    <td>${item.expiry}</td>
+                    <td>${qtyBadge}</td>
+                    <td>${item.bonus}</td>
+                    <td class="no-print">
+                        <button class="btn btn-secondary" style="padding:4px 10px; font-size:0.8rem;" onclick="openEditModal(${item.id})">✏️ تعديل</button>
+                    </td>
+                </tr>
+            `;
+        });
 
-        // جدول الصفحة الثانية (مع الأسعار)
+        // الصفحة الثانية (مع الأسعار)
         const tbody2 = document.getElementById('tablePage2Body');
         tbody2.innerHTML = '';
         let totalSum = 0;
         const filtered2 = inventory.filter(d => {
             const matchInv = invFilter === 'ALL' || d.invoice === invFilter;
-            const matchText = d.name.toLowerCase().includes(q2) || d.company.toLowerCase().includes(q2);
+            const matchText =
+                d.name.toLowerCase().includes(q2) ||
+                d.company.toLowerCase().includes(q2) ||
+                d.type.toLowerCase().includes(q2) ||
+                (d.barcode && d.barcode.toLowerCase().includes(q2));
             return matchInv && matchText;
         });
 
@@ -769,7 +1377,8 @@
             tbody2.innerHTML += `
                 <tr>
                     <td>${index + 1}</td>
-                    <td style="font-size:0.8rem; color:var(--text-muted);">${item.invoice}</td>
+                    <td style="font-size:0.82rem; color:var(--text-muted);">${item.invoice}</td>
+                    <td><strong>${item.barcode || '—'}</strong></td>
                     <td><strong>${item.name}</strong></td>
                     <td>${item.type}</td>
                     <td>${item.company}</td>
@@ -779,6 +1388,7 @@
                     <td>${Number(item.price).toLocaleString()} د.ع</td>
                     <td><strong>${Number(item.total).toLocaleString()} د.ع</strong></td>
                     <td class="no-print">
+                        <button class="btn btn-secondary" style="padding:3px 8px; font-size:0.8rem;" onclick="openEditModal(${item.id})">✏️</button>
                         <button class="btn btn-danger" style="padding:3px 8px; font-size:0.8rem;" onclick="deleteItem(${item.id})">🗑️</button>
                     </td>
                 </tr>
@@ -789,7 +1399,6 @@
         document.getElementById('statTotalCost').textContent = totalSum.toLocaleString() + ' د.ع';
     }
 
-    // التنبيهات (النواقص والإكسباير)
     function updateAlerts() {
         const expBody = document.getElementById('expiryAlertBody');
         const lowBody = document.getElementById('lowStockAlertBody');
@@ -798,14 +1407,13 @@
 
         let alertCount = 0;
         const today = new Date();
-        const sixMonthsLater = new Date();
-        sixMonthsLater.setMonth(today.getMonth() + 6);
+        const alertDateLimit = new Date();
+        alertDateLimit.setMonth(today.getMonth() + userSettings.expiryMonths);
 
         inventory.forEach(item => {
-            // فحص الانتهاء
             if (item.expiry) {
                 const expDate = new Date(item.expiry);
-                if (expDate <= sixMonthsLater) {
+                if (expDate <= alertDateLimit) {
                     alertCount++;
                     const isExpired = expDate < today;
                     expBody.innerHTML += `
@@ -815,13 +1423,13 @@
                             <td>${item.expiry}</td>
                             <td><span class="status-pill ${isExpired ? 'pill-danger' : 'pill-warning'}">${isExpired ? 'منتهي الصلاحية!' : 'قريب الانتهاء'}</span></td>
                             <td>${item.qty}</td>
+                            <td class="no-print"><button class="btn btn-secondary" style="padding:3px 8px; font-size:0.8rem;" onclick="openEditModal(${item.id})">✏️ تعديل</button></td>
                         </tr>
                     `;
                 }
             }
 
-            // فحص النواقص (3 أو أقل)
-            if (item.qty <= 3) {
+            if (item.qty <= userSettings.lowStockLimit) {
                 alertCount++;
                 lowBody.innerHTML += `
                     <tr>
@@ -830,6 +1438,7 @@
                         <td>${item.company}</td>
                         <td><span class="status-pill pill-danger">${item.qty} متبقي</span></td>
                         <td>${item.invoice}</td>
+                        <td class="no-print"><button class="btn btn-secondary" style="padding:3px 8px; font-size:0.8rem;" onclick="openEditModal(${item.id})">✏️ تعديل</button></td>
                     </tr>
                 `;
             }
@@ -846,7 +1455,7 @@
         invoices.forEach(inv => {
             select.innerHTML += `<option value="${inv}">${inv}</option>`;
         });
-        select.value = current;
+        select.value = current || 'ALL';
         if (invoices.length > 0) {
             document.getElementById('statLastInvoice').textContent = invoices[0];
         }
@@ -859,29 +1468,54 @@
         }
     }
 
-    // استيراد القوائم الجديدة
     function openImportModal() { document.getElementById('importModal').style.display = 'flex'; }
     function closeImportModal() { document.getElementById('importModal').style.display = 'none'; }
 
-    function processImport() {
+    function ingestItemsArray(rawText, clearAreaId = null) {
         try {
-            const raw = document.getElementById('importJsonArea').value.trim();
-            const newItems = JSON.parse(raw);
-            if (!Array.isArray(newItems)) throw new Error();
-            newItems.forEach((item, i) => {
-                item.id = Date.now() + i;
-                inventory.unshift(item);
+            const parsed = JSON.parse(rawText.trim());
+            const list = Array.isArray(parsed) ? parsed : [parsed];
+            if (!list.length) throw new Error();
+            list.forEach((item, i) => {
+                const qty = parseInt(item.qty) || 0;
+                const price = parseInt(item.price) || 0;
+                const total = item.total !== undefined ? (parseInt(item.total) || 0) : (qty * price);
+                inventory.unshift({
+                    id: Date.now() + i + Math.floor(Math.random() * 1000),
+                    invoice: item.invoice || "قائمة مذخر جديدة",
+                    barcode: item.barcode || "",
+                    name: item.name || "مادة جديدة",
+                    type: item.type || "عام",
+                    company: item.company || "-",
+                    expiry: item.expiry || "2028-12-01",
+                    qty: qty,
+                    bonus: parseInt(item.bonus) || 0,
+                    price: price,
+                    total: total
+                });
             });
             saveData();
-            closeImportModal();
-            document.getElementById('importJsonArea').value = '';
-            alert(`تمت إضافة ${newItems.length} مادة بنجاح إلى الصفحة الأولى والثانية!`);
-        } catch (e) {
-            alert('تأكد من لصق الكود بشكل صحيح كما أرسلته لك.');
+            if (clearAreaId) document.getElementById(clearAreaId).value = '';
+            alert(`تمت إضافة ${list.length} مادة وترتيبها وحفظها مع القوائم السابقة بنجاح!`);
+            return true;
+        } catch (err) {
+            alert('تأكد من لصق الكود المرتب للقائمة بشكل صحيح.');
+            return false;
         }
     }
 
-    // نسخة احتياطية
+    function processImportFromModal() {
+        const raw = document.getElementById('importJsonArea').value;
+        if (ingestItemsArray(raw, 'importJsonArea')) {
+            closeImportModal();
+        }
+    }
+
+    function importFromPage3() {
+        const raw = document.getElementById('page3ImportArea').value;
+        ingestItemsArray(raw, 'page3ImportArea');
+    }
+
     function exportBackup() {
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(inventory, null, 2));
         const a = document.createElement('a');
@@ -890,12 +1524,27 @@
         a.click();
     }
 
-    function toggleTheme() {
-        const body = document.body;
-        body.setAttribute('data-theme', body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    function restoreBackup(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const imported = JSON.parse(e.target.result);
+                if (Array.isArray(imported)) {
+                    inventory = imported;
+                    saveData();
+                    alert('تمت استعادة النسخة الاحتياطية بنجاح!');
+                }
+            } catch {
+                alert('ملف النسخة الاحتياطية غير صالح.');
+            }
+        };
+        reader.readAsText(file);
     }
 
-    // تشغيل مبدئي
+    // التشغيل عند الفتح
+    loadSettingsToUI();
     saveData();
 </script>
 </body>
