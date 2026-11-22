@@ -1144,856 +1144,857 @@
     </div>
 </div>
 
-<script src="app.js"></script>
-</body>
-</html>
-const initialAlferdosData = [
-    { id: 1, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "بارستول حب", salePrice: 5000, type: "Vial", company: "-", expiry: "2028-07-01", qty: 10, bonus: 0, price: 3762, total: 37620 },
-    { id: 2, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "باندج قهوائي 10سم", salePrice: 8500, type: "BANDAGE", company: "CHINA", expiry: "2028-01-01", qty: 4, bonus: 0, price: 7200, total: 28800 },
-    { id: 3, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "حب بارستول ازرق", salePrice: 4000, type: "Tablet", company: "-", expiry: "2029-06-01", qty: 14, bonus: 0, price: 3300, total: 46200 },
-    { id: 4, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "حفاضه اولويز ازرق", salePrice: 2000, type: "مستلزمات", company: "TURKEY", expiry: "2027-07-01", qty: 12, bonus: 0, price: 1300, total: 15600 },
-    { id: 5, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "خافضة لسان", salePrice: 2000, type: "مستلزمات", company: "CHINA", expiry: "2028-01-01", qty: 5, bonus: 0, price: 1333, total: 6665 },
-    { id: 6, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "راس ممة ثنائي", salePrice: 1000, type: "مستلزمات", company: "CHINA", expiry: "2030-01-01", qty: 10, bonus: 0, price: 500, total: 5000 },
-    { id: 7, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "زنك كاستراويل 25 غم سامراء", salePrice: 2000, type: "Cream", company: "SDI / IRAQ", expiry: "2028-10-01", qty: 25, bonus: 0, price: 1425, total: 35625 },
-    { id: 8, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "سرنج انسولين 0.5 good", salePrice: 8000, type: "Syringe", company: "good / Turkey", expiry: "2030-01-01", qty: 4, bonus: 0, price: 6900, total: 27600 },
-    { id: 9, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "كمام اسود صيني", salePrice: 2000, type: "Mask", company: "CHINA", expiry: "2028-01-01", qty: 5, bonus: 0, price: 1500, total: 7500 },
-    { id: 10, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "كمامة اطفال", salePrice: 3000, type: "Mask", company: "TURKEY", expiry: "2028-01-01", qty: 1, bonus: 0, price: 2500, total: 2500 },
-    { id: 11, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "لزقة الالام شفاء صيني", salePrice: 500, type: "Patch", company: "unknown", expiry: "2029-12-01", qty: 24, bonus: 0, price: 371, total: 8904 },
-    { id: 12, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "لفاف ابيض بانجي 10 سم", salePrice: 4000, type: "PLASTER", company: "CHINA", expiry: "2028-01-01", qty: 4, bonus: 0, price: 3354, total: 13416 },
-    { id: 13, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "هايدرو فيال ازرق", salePrice: 2500, type: "Vial", company: "-", expiry: "2029-01-01", qty: 20, bonus: 0, price: 1539, total: 30780 },
-    { id: 14, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Acuaiss ULTRA ( 10 ml )", salePrice: 20000, type: "Drops", company: "DISOP / Spain", expiry: "2029-02-01", qty: 2, bonus: 0, price: 17055, total: 34110 },
-    { id: 15, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Adol ( Paracetamol 250 mg ) 10 Supp", salePrice: 3500, type: "Suppositories", company: "Julphar", expiry: "2027-05-01", qty: 10, bonus: 0, price: 2332, total: 23320 },
-    { id: 16, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Afrafast ( 30 Sachets )", salePrice: 11000, type: "Sachets", company: "APC / IRAQ", expiry: "2028-03-01", qty: 10, bonus: 0, price: 9000, total: 90000 },
-    { id: 17, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "ALLERCEN 10MG (10AMP)", salePrice: 8000, type: "Ampoule", company: "ocean", expiry: "2027-10-01", qty: 4, bonus: 0, price: 6607, total: 26428 },
-    { id: 18, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Anginovag Spray 10 ml", salePrice: 10000, type: "Spray", company: "ferrer / ESP", expiry: "2028-04-01", qty: 2, bonus: 0, price: 8512, total: 17024 },
-    { id: 19, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Angiosar-Plus ( 160/5/12.5mg ) 30 tab", salePrice: 18000, type: "Tablet", company: "Dar Al Dawa", expiry: "2028-11-01", qty: 5, bonus: 0, price: 15151, total: 75755 },
-    { id: 20, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Aqdexa (10Ampoules)", salePrice: 6500, type: "Ampoule", company: "AQUALAB", expiry: "2028-05-01", qty: 6, bonus: 0, price: 5130, total: 30780 },
-    { id: 21, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "AS-Aslavox CREAM", salePrice: 1000, type: "Cream", company: "ASWAR", expiry: "2029-04-01", qty: 15, bonus: 0, price: 544, total: 8160 },
-    { id: 22, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "AS-Betnosun cream", salePrice: 1000, type: "Cream", company: "ASWAR", expiry: "2029-04-01", qty: 15, bonus: 0, price: 513, total: 7695 },
-    { id: 23, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "AS-Dermodeem Cream", salePrice: 1000, type: "Cream", company: "ASWAR", expiry: "2029-04-01", qty: 25, bonus: 0, price: 493, total: 12325 },
-    { id: 24, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "AS-DERMODEEM OINTMENT", salePrice: 1000, type: "Ointment", company: "ASWAR", expiry: "2029-04-01", qty: 25, bonus: 0, price: 590, total: 14750 },
-    { id: 25, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "As-Fugidin Cream", salePrice: 1000, type: "Cream", company: "ASWAR", expiry: "2028-02-01", qty: 15, bonus: 0, price: 483, total: 7245 },
-    { id: 26, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "As-Hydrocortison Cream", salePrice: 1250, type: "Cream", company: "ASWAR", expiry: "2027-05-01", qty: 15, bonus: 0, price: 749, total: 11235 },
-    { id: 27, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "AS-NYESTOCORT OINTMENT", salePrice: 1500, type: "Ointment", company: "ASWAR", expiry: "2028-09-01", qty: 25, bonus: 0, price: 1029, total: 25725 },
-    { id: 28, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "ASALORMINE SYRUP ASWAR", salePrice: 1000, type: "Syrup", company: "ASWAR", expiry: "2029-04-01", qty: 20, bonus: 0, price: 491, total: 9820 },
-    { id: 29, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "ASMAFORT ( Ketotifen 1 mg ) 100 ml", salePrice: 4500, type: "Syrup", company: "Julphar", expiry: "2028-08-01", qty: 15, bonus: 0, price: 3250, total: 48750 },
-    { id: 30, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "ASWARFOCEN Ointment", salePrice: 2000, type: "Ointment", company: "ASWAR", expiry: "2029-06-01", qty: 12, bonus: 0, price: 1406, total: 16872 },
-    { id: 31, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Atacand 16 mg ( 28 tab ) اصلي", salePrice: 17000, type: "Tablet", company: "ASTRAZENECA", expiry: "2028-01-01", qty: 2, bonus: 0, price: 14295, total: 28590 },
-    { id: 32, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Atacand 8 mg ( 28 tab ) اصلي", salePrice: 13500, type: "Tablet", company: "ASTRAZENECA", expiry: "2028-04-01", qty: 2, bonus: 0, price: 11028, total: 22056 },
-    { id: 33, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Atacand Plus ( 16/12.5 mg ) 28 tab اصلي", salePrice: 17000, type: "Tablet", company: "ASTRAZENECA", expiry: "2028-07-01", qty: 2, bonus: 0, price: 14320, total: 28640 },
-    { id: 34, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "راس ممة ثنائي AVEAT", salePrice: 2500, type: "مستلزمات", company: "AVEAT", expiry: "2028-01-01", qty: 10, bonus: 0, price: 1653, total: 16530 }
-];
+<script>
+    const initialAlferdosData = [
+        { id: 1, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "بارستول حب", salePrice: 5000, type: "Vial", company: "-", expiry: "2028-07-01", qty: 10, bonus: 0, price: 3762, total: 37620 },
+        { id: 2, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "باندج قهوائي 10سم", salePrice: 8500, type: "BANDAGE", company: "CHINA", expiry: "2028-01-01", qty: 4, bonus: 0, price: 7200, total: 28800 },
+        { id: 3, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "حب بارستول ازرق", salePrice: 4000, type: "Tablet", company: "-", expiry: "2029-06-01", qty: 14, bonus: 0, price: 3300, total: 46200 },
+        { id: 4, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "حفاضه اولويز ازرق", salePrice: 2000, type: "مستلزمات", company: "TURKEY", expiry: "2027-07-01", qty: 12, bonus: 0, price: 1300, total: 15600 },
+        { id: 5, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "خافضة لسان", salePrice: 2000, type: "مستلزمات", company: "CHINA", expiry: "2028-01-01", qty: 5, bonus: 0, price: 1333, total: 6665 },
+        { id: 6, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "راس ممة ثنائي", salePrice: 1000, type: "مستلزمات", company: "CHINA", expiry: "2030-01-01", qty: 10, bonus: 0, price: 500, total: 5000 },
+        { id: 7, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "زنك كاستراويل 25 غم سامراء", salePrice: 2000, type: "Cream", company: "SDI / IRAQ", expiry: "2028-10-01", qty: 25, bonus: 0, price: 1425, total: 35625 },
+        { id: 8, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "سرنج انسولين 0.5 good", salePrice: 8000, type: "Syringe", company: "good / Turkey", expiry: "2030-01-01", qty: 4, bonus: 0, price: 6900, total: 27600 },
+        { id: 9, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "كمام اسود صيني", salePrice: 2000, type: "Mask", company: "CHINA", expiry: "2028-01-01", qty: 5, bonus: 0, price: 1500, total: 7500 },
+        { id: 10, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "كمامة اطفال", salePrice: 3000, type: "Mask", company: "TURKEY", expiry: "2028-01-01", qty: 1, bonus: 0, price: 2500, total: 2500 },
+        { id: 11, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "لزقة الالام شفاء صيني", salePrice: 500, type: "Patch", company: "unknown", expiry: "2029-12-01", qty: 24, bonus: 0, price: 371, total: 8904 },
+        { id: 12, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "لفاف ابيض بانجي 10 سم", salePrice: 4000, type: "PLASTER", company: "CHINA", expiry: "2028-01-01", qty: 4, bonus: 0, price: 3354, total: 13416 },
+        { id: 13, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "هايدرو فيال ازرق", salePrice: 2500, type: "Vial", company: "-", expiry: "2029-01-01", qty: 20, bonus: 0, price: 1539, total: 30780 },
+        { id: 14, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Acuaiss ULTRA ( 10 ml )", salePrice: 20000, type: "Drops", company: "DISOP / Spain", expiry: "2029-02-01", qty: 2, bonus: 0, price: 17055, total: 34110 },
+        { id: 15, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Adol ( Paracetamol 250 mg ) 10 Supp", salePrice: 3500, type: "Suppositories", company: "Julphar", expiry: "2027-05-01", qty: 10, bonus: 0, price: 2332, total: 23320 },
+        { id: 16, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Afrafast ( 30 Sachets )", salePrice: 11000, type: "Sachets", company: "APC / IRAQ", expiry: "2028-03-01", qty: 10, bonus: 0, price: 9000, total: 90000 },
+        { id: 17, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "ALLERCEN 10MG (10AMP)", salePrice: 8000, type: "Ampoule", company: "ocean", expiry: "2027-10-01", qty: 4, bonus: 0, price: 6607, total: 26428 },
+        { id: 18, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Anginovag Spray 10 ml", salePrice: 10000, type: "Spray", company: "ferrer / ESP", expiry: "2028-04-01", qty: 2, bonus: 0, price: 8512, total: 17024 },
+        { id: 19, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Angiosar-Plus ( 160/5/12.5mg ) 30 tab", salePrice: 18000, type: "Tablet", company: "Dar Al Dawa", expiry: "2028-11-01", qty: 5, bonus: 0, price: 15151, total: 75755 },
+        { id: 20, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Aqdexa (10Ampoules)", salePrice: 6500, type: "Ampoule", company: "AQUALAB", expiry: "2028-05-01", qty: 6, bonus: 0, price: 5130, total: 30780 },
+        { id: 21, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "AS-Aslavox CREAM", salePrice: 1000, type: "Cream", company: "ASWAR", expiry: "2029-04-01", qty: 15, bonus: 0, price: 544, total: 8160 },
+        { id: 22, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "AS-Betnosun cream", salePrice: 1000, type: "Cream", company: "ASWAR", expiry: "2029-04-01", qty: 15, bonus: 0, price: 513, total: 7695 },
+        { id: 23, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "AS-Dermodeem Cream", salePrice: 1000, type: "Cream", company: "ASWAR", expiry: "2029-04-01", qty: 25, bonus: 0, price: 493, total: 12325 },
+        { id: 24, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "AS-DERMODEEM OINTMENT", salePrice: 1000, type: "Ointment", company: "ASWAR", expiry: "2029-04-01", qty: 25, bonus: 0, price: 590, total: 14750 },
+        { id: 25, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "As-Fugidin Cream", salePrice: 1000, type: "Cream", company: "ASWAR", expiry: "2028-02-01", qty: 15, bonus: 0, price: 483, total: 7245 },
+        { id: 26, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "As-Hydrocortison Cream", salePrice: 1250, type: "Cream", company: "ASWAR", expiry: "2027-05-01", qty: 15, bonus: 0, price: 749, total: 11235 },
+        { id: 27, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "AS-NYESTOCORT OINTMENT", salePrice: 1500, type: "Ointment", company: "ASWAR", expiry: "2028-09-01", qty: 25, bonus: 0, price: 1029, total: 25725 },
+        { id: 28, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "ASALORMINE SYRUP ASWAR", salePrice: 1000, type: "Syrup", company: "ASWAR", expiry: "2029-04-01", qty: 20, bonus: 0, price: 491, total: 9820 },
+        { id: 29, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "ASMAFORT ( Ketotifen 1 mg ) 100 ml", salePrice: 4500, type: "Syrup", company: "Julphar", expiry: "2028-08-01", qty: 15, bonus: 0, price: 3250, total: 48750 },
+        { id: 30, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "ASWARFOCEN Ointment", salePrice: 2000, type: "Ointment", company: "ASWAR", expiry: "2029-06-01", qty: 12, bonus: 0, price: 1406, total: 16872 },
+        { id: 31, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Atacand 16 mg ( 28 tab ) اصلي", salePrice: 17000, type: "Tablet", company: "ASTRAZENECA", expiry: "2028-01-01", qty: 2, bonus: 0, price: 14295, total: 28590 },
+        { id: 32, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Atacand 8 mg ( 28 tab ) اصلي", salePrice: 13500, type: "Tablet", company: "ASTRAZENECA", expiry: "2028-04-01", qty: 2, bonus: 0, price: 11028, total: 22056 },
+        { id: 33, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Atacand Plus ( 16/12.5 mg ) 28 tab اصلي", salePrice: 17000, type: "Tablet", company: "ASTRAZENECA", expiry: "2028-07-01", qty: 2, bonus: 0, price: 14320, total: 28640 },
+        { id: 34, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "راس ممة ثنائي AVEAT", salePrice: 2500, type: "مستلزمات", company: "AVEAT", expiry: "2028-01-01", qty: 10, bonus: 0, price: 1653, total: 16530 }
+    ];
 
-const arabicLetters = ["الكل", "أ", "ب", "ت", "ث", "ج", "ح", "خ", "د", "ذ", "ر", "ز", "س", "ش", "ص", "ض", "ط", "ظ", "ع", "غ", "ف", "ق", "ك", "ل", "م", "ن", "هـ", "و", "ي"];
+    const arabicLetters = ["الكل", "أ", "ب", "ت", "ث", "ج", "ح", "خ", "د", "ذ", "ر", "ز", "س", "ش", "ص", "ض", "ط", "ظ", "ع", "غ", "ف", "ق", "ك", "ل", "م", "ن", "هـ", "و", "ي"];
 
-let inventory = JSON.parse(localStorage.getItem('pharmacy_inventory_v6')) || initialAlferdosData;
-let debtors = JSON.parse(localStorage.getItem('pharmacy_debtors_v6')) || [];
-let uploadedLists = JSON.parse(localStorage.getItem('pharmacy_uploaded_lists_v6')) || [];
-let userSettings = JSON.parse(localStorage.getItem('pharmacy_settings_v6')) || {
-    fontFamily: "'Cairo', sans-serif",
-    fontSize: "13.5",
-    primary: "#0f766e",
-    primaryDark: "#115e59",
-    theme: "light",
-    tablePadding: "8px",
-    tableBorders: "1px",
-    lowStockLimit: 3,
-    expiryMonths: 6
-};
+    let inventory = JSON.parse(localStorage.getItem('pharmacy_inventory_v7')) || initialAlferdosData;
+    let debtors = JSON.parse(localStorage.getItem('pharmacy_debtors_v7')) || [];
+    let uploadedLists = JSON.parse(localStorage.getItem('pharmacy_uploaded_lists_v7')) || [];
+    let userSettings = JSON.parse(localStorage.getItem('pharmacy_settings_v7')) || {
+        fontFamily: "'Cairo', sans-serif",
+        fontSize: "13.5",
+        primary: "#0f766e",
+        primaryDark: "#115e59",
+        theme: "light",
+        tablePadding: "8px",
+        tableBorders: "1px",
+        lowStockLimit: 3,
+        expiryMonths: 6
+    };
 
-let salesCart = [];
-let currentScannedId = null;
-let html5QrCode = null;
-let isCameraRunning = false;
-let scanTimeout = null;
-let activeLetter = "الكل";
-let pendingImages = [];
-let pendingPdfUrl = null;
-let pendingPdfName = null;
+    let salesCart = [];
+    let currentScannedId = null;
+    let html5QrCode = null;
+    let isCameraRunning = false;
+    let scanTimeout = null;
+    let activeLetter = "الكل";
+    let pendingImages = [];
+    let pendingPdfUrl = null;
+    let pendingPdfName = null;
 
-document.getElementById('debtorDateInput').value = new Date().toISOString().slice(0, 10);
+    document.getElementById('debtorDateInput').value = new Date().toISOString().slice(0, 10);
 
-function loadSettingsToUI() {
-    document.getElementById('settingFontFamily').value = userSettings.fontFamily;
-    document.getElementById('settingFontSize').value = userSettings.fontSize;
-    document.getElementById('fontSizeVal').textContent = userSettings.fontSize;
-    document.getElementById('settingThemeMode').value = userSettings.theme;
-    document.getElementById('settingTablePadding').value = userSettings.tablePadding;
-    document.getElementById('settingTableBorders').value = userSettings.tableBorders;
-    document.getElementById('settingLowStockLimit').value = userSettings.lowStockLimit;
-    document.getElementById('settingExpiryMonths').value = userSettings.expiryMonths;
-    applySettings(false);
-}
-
-function applySettings(save = true) {
-    userSettings.fontFamily = document.getElementById('settingFontFamily').value;
-    userSettings.fontSize = document.getElementById('settingFontSize').value;
-    document.getElementById('fontSizeVal').textContent = userSettings.fontSize;
-    userSettings.theme = document.getElementById('settingThemeMode').value;
-    userSettings.tablePadding = document.getElementById('settingTablePadding').value;
-    userSettings.tableBorders = document.getElementById('settingTableBorders').value;
-    userSettings.lowStockLimit = parseInt(document.getElementById('settingLowStockLimit').value) || 3;
-    userSettings.expiryMonths = parseInt(document.getElementById('settingExpiryMonths').value) || 6;
-
-    const root = document.documentElement;
-    root.style.setProperty('--app-font', userSettings.fontFamily);
-    root.style.setProperty('--font-size', userSettings.fontSize + 'px');
-    root.style.setProperty('--primary', userSettings.primary);
-    root.style.setProperty('--primary-dark', userSettings.primaryDark);
-    root.style.setProperty('--cell-pad', userSettings.tablePadding);
-    root.style.setProperty('--table-border-width', userSettings.tableBorders);
-    document.body.setAttribute('data-theme', userSettings.theme);
-
-    if (save) {
-        localStorage.setItem('pharmacy_settings_v6', JSON.stringify(userSettings));
-        renderTables();
-        updateAlerts();
+    function loadSettingsToUI() {
+        document.getElementById('settingFontFamily').value = userSettings.fontFamily;
+        document.getElementById('settingFontSize').value = userSettings.fontSize;
+        document.getElementById('fontSizeVal').textContent = userSettings.fontSize;
+        document.getElementById('settingThemeMode').value = userSettings.theme;
+        document.getElementById('settingTablePadding').value = userSettings.tablePadding;
+        document.getElementById('settingTableBorders').value = userSettings.tableBorders;
+        document.getElementById('settingLowStockLimit').value = userSettings.lowStockLimit;
+        document.getElementById('settingExpiryMonths').value = userSettings.expiryMonths;
+        applySettings(false);
     }
-}
 
-function setPrimaryColor(primary, dark, el) {
-    userSettings.primary = primary;
-    userSettings.primaryDark = dark;
-    document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
-    if (el) el.classList.add('active');
-    applySettings(true);
-}
+    function applySettings(save = true) {
+        userSettings.fontFamily = document.getElementById('settingFontFamily').value;
+        userSettings.fontSize = document.getElementById('settingFontSize').value;
+        document.getElementById('fontSizeVal').textContent = userSettings.fontSize;
+        userSettings.theme = document.getElementById('settingThemeMode').value;
+        userSettings.tablePadding = document.getElementById('settingTablePadding').value;
+        userSettings.tableBorders = document.getElementById('settingTableBorders').value;
+        userSettings.lowStockLimit = parseInt(document.getElementById('settingLowStockLimit').value) || 3;
+        userSettings.expiryMonths = parseInt(document.getElementById('settingExpiryMonths').value) || 6;
 
-function toggleTheme() {
-    userSettings.theme = userSettings.theme === 'dark' ? 'light' : 'dark';
-    document.getElementById('settingThemeMode').value = userSettings.theme;
-    applySettings(true);
-}
+        const root = document.documentElement;
+        root.style.setProperty('--app-font', userSettings.fontFamily);
+        root.style.setProperty('--font-size', userSettings.fontSize + 'px');
+        root.style.setProperty('--primary', userSettings.primary);
+        root.style.setProperty('--primary-dark', userSettings.primaryDark);
+        root.style.setProperty('--cell-pad', userSettings.tablePadding);
+        root.style.setProperty('--table-border-width', userSettings.tableBorders);
+        document.body.setAttribute('data-theme', userSettings.theme);
 
-function switchTab(pageId, btn) {
-    if (isCameraRunning) stopCameraScanner();
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-pill').forEach(b => b.classList.remove('active'));
-    document.getElementById(pageId).classList.add('active');
-    btn.classList.add('active');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    if (pageId === 'page1') {
-        setTimeout(() => document.getElementById('barcodeScanInput').focus(), 120);
-    }
-}
-
-function autoDetectBarcode() {
-    clearTimeout(scanTimeout);
-    scanTimeout = setTimeout(() => {
-        const val = document.getElementById('barcodeScanInput').value.trim();
-        if (val.length >= 2) executeBarcodeLookup(val, true);
-    }, 160);
-}
-
-function executeBarcodeLookup(codeOrName, autoAddIfBarcode = false) {
-    const query = codeOrName.trim().toLowerCase();
-    const box = document.getElementById('scanResultBox');
-    if (!query) { box.style.display = 'none'; return; }
-
-    const exactBarcode = inventory.find(d => d.barcode && d.barcode.toLowerCase() === query);
-    const item = exactBarcode || inventory.find(d => d.name.toLowerCase().includes(query));
-
-    if (item) {
-        currentScannedId = item.id;
-        const salePrice = Number(item.salePrice || item.price || 0);
-        document.getElementById('resName').textContent = item.name;
-        document.getElementById('resSalePrice').textContent = salePrice.toLocaleString() + ' د.ع';
-        document.getElementById('resBarcode').textContent = item.barcode || 'غير مربوط';
-        document.getElementById('resType').textContent = item.type;
-        document.getElementById('resCompany').textContent = item.company;
-        document.getElementById('resExpiry').textContent = item.expiry;
-        document.getElementById('resQty').textContent = item.qty;
-        box.style.display = 'block';
-
-        if (autoAddIfBarcode && exactBarcode) {
-            addDrugToCartById(item.id);
-            document.getElementById('barcodeScanInput').value = '';
+        if (save) {
+            localStorage.setItem('pharmacy_settings_v7', JSON.stringify(userSettings));
+            renderTables();
+            updateAlerts();
         }
-    } else {
-        currentScannedId = null;
-        box.style.display = 'none';
-    }
-}
-
-function addCurrentScannedToCart() {
-    if (currentScannedId) addDrugToCartById(currentScannedId);
-}
-
-function addDrugToCartById(id) {
-    const drug = inventory.find(d => d.id === id);
-    if (!drug) return;
-    const unitPrice = Number(drug.salePrice || drug.price || 0);
-    const existing = salesCart.find(c => c.id === id);
-    if (existing) {
-        existing.count += 1;
-    } else {
-        salesCart.push({ id: drug.id, name: drug.name, price: unitPrice, count: 1 });
-    }
-    renderCart();
-}
-
-function changeCartQty(idx, delta) {
-    if (!salesCart[idx]) return;
-    salesCart[idx].count += delta;
-    if (salesCart[idx].count <= 0) salesCart.splice(idx, 1);
-    renderCart();
-}
-
-function removeCartItem(idx) {
-    salesCart.splice(idx, 1);
-    renderCart();
-}
-
-function clearCart() {
-    salesCart = [];
-    renderCart();
-}
-
-function renderCart() {
-    const tbody = document.getElementById('posCartBody');
-    tbody.innerHTML = '';
-    let grandTotal = 0;
-
-    if (!salesCart.length) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">اضرب باركود أي علاج ليظهر هنا ويُحسب سعره ومجموعه تلقائياً</td></tr>';
-        document.getElementById('posGrandTotal').textContent = '0 د.ع';
-        return;
     }
 
-    salesCart.forEach((c, idx) => {
-        const sub = c.price * c.count;
-        grandTotal += sub;
-        tbody.innerHTML += `
-            <tr>
-                <td>${idx + 1}</td>
-                <td><strong>${c.name}</strong></td>
-                <td>${c.price.toLocaleString()} د.ع</td>
-                <td>
-                    <button class="btn btn-light" style="color:var(--text); border-color:var(--border); padding:2px 7px;" onclick="changeCartQty(${idx}, -1)">-</button>
-                    <strong style="margin:0 6px;">${c.count}</strong>
-                    <button class="btn btn-light" style="color:var(--text); border-color:var(--border); padding:2px 7px;" onclick="changeCartQty(${idx}, 1)">+</button>
-                </td>
-                <td><strong>${sub.toLocaleString()} د.ع</strong></td>
-                <td><button class="btn btn-danger" style="padding:2px 7px;" onclick="removeCartItem(${idx})">✕</button></td>
-            </tr>
-        `;
-    });
-
-    document.getElementById('posGrandTotal').textContent = grandTotal.toLocaleString() + ' د.ع';
-}
-
-function toggleDebtorSelect() {
-    const isCredit = document.getElementById('paymentTypeSelect').value === 'credit';
-    document.getElementById('posDebtorSelect').style.display = isCredit ? 'inline-block' : 'none';
-    document.getElementById('posNewDebtorName').style.display = isCredit ? 'inline-block' : 'none';
-}
-
-function checkoutSale() {
-    if (!salesCart.length) {
-        alert('أضف علاجاً واحداً على الأقل إلى قائمة البيع أولاً.');
-        return;
+    function setPrimaryColor(primary, dark, el) {
+        userSettings.primary = primary;
+        userSettings.primaryDark = dark;
+        document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+        if (el) el.classList.add('active');
+        applySettings(true);
     }
 
-    const totalAmount = salesCart.reduce((s, c) => s + (c.price * c.count), 0);
-    const payType = document.getElementById('paymentTypeSelect').value;
+    function toggleTheme() {
+        userSettings.theme = userSettings.theme === 'dark' ? 'light' : 'dark';
+        document.getElementById('settingThemeMode').value = userSettings.theme;
+        applySettings(true);
+    }
 
-    salesCart.forEach(c => {
-        const item = inventory.find(d => d.id === c.id);
-        if (item && item.qty > 0) item.qty = Math.max(0, item.qty - c.count);
-    });
+    function switchTab(pageId, btn) {
+        if (isCameraRunning) stopCameraScanner();
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.nav-pill').forEach(b => b.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        btn.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (pageId === 'page1') {
+            setTimeout(() => document.getElementById('barcodeScanInput').focus(), 120);
+        }
+    }
 
-    if (payType === 'credit') {
-        const chosenName = document.getElementById('posNewDebtorName').value.trim() || document.getElementById('posDebtorSelect').value;
-        if (!chosenName) {
-            alert('اختر اسم المديون أو اكتب اسماً جديداً لإضافة الدين عليه.');
+    function autoDetectBarcode() {
+        clearTimeout(scanTimeout);
+        scanTimeout = setTimeout(() => {
+            const val = document.getElementById('barcodeScanInput').value.trim();
+            if (val.length >= 2) executeBarcodeLookup(val, true);
+        }, 160);
+    }
+
+    function executeBarcodeLookup(codeOrName, autoAddIfBarcode = false) {
+        const query = codeOrName.trim().toLowerCase();
+        const box = document.getElementById('scanResultBox');
+        if (!query) { box.style.display = 'none'; return; }
+
+        const exactBarcode = inventory.find(d => d.barcode && d.barcode.toLowerCase() === query);
+        const item = exactBarcode || inventory.find(d => d.name.toLowerCase().includes(query));
+
+        if (item) {
+            currentScannedId = item.id;
+            const salePrice = Number(item.salePrice || item.price || 0);
+            document.getElementById('resName').textContent = item.name;
+            document.getElementById('resSalePrice').textContent = salePrice.toLocaleString() + ' د.ع';
+            document.getElementById('resBarcode').textContent = item.barcode || 'غير مربوط';
+            document.getElementById('resType').textContent = item.type;
+            document.getElementById('resCompany').textContent = item.company;
+            document.getElementById('resExpiry').textContent = item.expiry;
+            document.getElementById('resQty').textContent = item.qty;
+            box.style.display = 'block';
+
+            if (autoAddIfBarcode && exactBarcode) {
+                addDrugToCartById(item.id);
+                document.getElementById('barcodeScanInput').value = '';
+            }
+        } else {
+            currentScannedId = null;
+            box.style.display = 'none';
+        }
+    }
+
+    function addCurrentScannedToCart() {
+        if (currentScannedId) addDrugToCartById(currentScannedId);
+    }
+
+    function addDrugToCartById(id) {
+        const drug = inventory.find(d => d.id === id);
+        if (!drug) return;
+        const unitPrice = Number(drug.salePrice || drug.price || 0);
+        const existing = salesCart.find(c => c.id === id);
+        if (existing) {
+            existing.count += 1;
+        } else {
+            salesCart.push({ id: drug.id, name: drug.name, price: unitPrice, count: 1 });
+        }
+        renderCart();
+    }
+
+    function changeCartQty(idx, delta) {
+        if (!salesCart[idx]) return;
+        salesCart[idx].count += delta;
+        if (salesCart[idx].count <= 0) salesCart.splice(idx, 1);
+        renderCart();
+    }
+
+    function removeCartItem(idx) {
+        salesCart.splice(idx, 1);
+        renderCart();
+    }
+
+    function clearCart() {
+        salesCart = [];
+        renderCart();
+    }
+
+    function renderCart() {
+        const tbody = document.getElementById('posCartBody');
+        tbody.innerHTML = '';
+        let grandTotal = 0;
+
+        if (!salesCart.length) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">اضرب باركود أي علاج ليظهر هنا ويُحسب سعره ومجموعه تلقائياً</td></tr>';
+            document.getElementById('posGrandTotal').textContent = '0 د.ع';
             return;
         }
-        const summaryText = salesCart.map(c => `${c.name} (${c.count})`).join(' + ');
-        addDebtEntry(chosenName, "", new Date().toISOString().slice(0, 10), summaryText, totalAmount);
-        alert(`تم تسجيل القائمة بالدين على (${chosenName}) بمبلغ ${totalAmount.toLocaleString()} د.ع.`);
-    } else {
-        alert(`تم إتمام البيع النقدي بنجاح بمجموع ${totalAmount.toLocaleString()} د.ع.`);
+
+        salesCart.forEach((c, idx) => {
+            const sub = c.price * c.count;
+            grandTotal += sub;
+            tbody.innerHTML += `
+                <tr>
+                    <td>${idx + 1}</td>
+                    <td><strong>${c.name}</strong></td>
+                    <td>${c.price.toLocaleString()} د.ع</td>
+                    <td>
+                        <button class="btn btn-light" style="color:var(--text); border-color:var(--border); padding:2px 7px;" onclick="changeCartQty(${idx}, -1)">-</button>
+                        <strong style="margin:0 6px;">${c.count}</strong>
+                        <button class="btn btn-light" style="color:var(--text); border-color:var(--border); padding:2px 7px;" onclick="changeCartQty(${idx}, 1)">+</button>
+                    </td>
+                    <td><strong>${sub.toLocaleString()} د.ع</strong></td>
+                    <td><button class="btn btn-danger" style="padding:2px 7px;" onclick="removeCartItem(${idx})">✕</button></td>
+                </tr>
+            `;
+        });
+
+        document.getElementById('posGrandTotal').textContent = grandTotal.toLocaleString() + ' د.ع';
     }
 
-    salesCart = [];
-    document.getElementById('posNewDebtorName').value = '';
-    renderCart();
-    saveData();
-}
+    function toggleDebtorSelect() {
+        const isCredit = document.getElementById('paymentTypeSelect').value === 'credit';
+        document.getElementById('posDebtorSelect').style.display = isCredit ? 'inline-block' : 'none';
+        document.getElementById('posNewDebtorName').style.display = isCredit ? 'inline-block' : 'none';
+    }
 
-function clearScanResult() {
-    document.getElementById('scanResultBox').style.display = 'none';
-    const inp = document.getElementById('barcodeScanInput');
-    inp.value = '';
-    inp.focus();
-}
-
-async function startCameraScanner() {
-    const container = document.getElementById('cameraReaderContainer');
-    container.style.display = 'block';
-    try {
-        if (html5QrCode && isCameraRunning) {
-            await html5QrCode.stop();
-            isCameraRunning = false;
+    function checkoutSale() {
+        if (!salesCart.length) {
+            alert('أضف علاجاً واحداً على الأقل إلى قائمة البيع أولاً.');
+            return;
         }
-        html5QrCode = new Html5Qrcode("reader");
-        await html5QrCode.start(
-            { facingMode: "environment" },
-            { fps: 10, qrbox: { width: 230, height: 130 } },
-            (decodedText) => {
+
+        const totalAmount = salesCart.reduce((s, c) => s + (c.price * c.count), 0);
+        const payType = document.getElementById('paymentTypeSelect').value;
+
+        salesCart.forEach(c => {
+            const item = inventory.find(d => d.id === c.id);
+            if (item && item.qty > 0) item.qty = Math.max(0, item.qty - c.count);
+        });
+
+        if (payType === 'credit') {
+            const chosenName = document.getElementById('posNewDebtorName').value.trim() || document.getElementById('posDebtorSelect').value;
+            if (!chosenName) {
+                alert('اختر اسم المديون أو اكتب اسماً جديداً لإضافة الدين عليه.');
+                return;
+            }
+            const summaryText = salesCart.map(c => `${c.name} (${c.count})`).join(' + ');
+            addDebtEntry(chosenName, "", new Date().toISOString().slice(0, 10), summaryText, totalAmount);
+            alert(`تم تسجيل القائمة بالدين على (${chosenName}) بمبلغ ${totalAmount.toLocaleString()} د.ع.`);
+        } else {
+            alert(`تم إتمام البيع النقدي بنجاح بمجموع ${totalAmount.toLocaleString()} د.ع.`);
+        }
+
+        salesCart = [];
+        document.getElementById('posNewDebtorName').value = '';
+        renderCart();
+        saveData();
+    }
+
+    function clearScanResult() {
+        document.getElementById('scanResultBox').style.display = 'none';
+        const inp = document.getElementById('barcodeScanInput');
+        inp.value = '';
+        inp.focus();
+    }
+
+    async function startCameraScanner() {
+        const container = document.getElementById('cameraReaderContainer');
+        container.style.display = 'block';
+        try {
+            if (html5QrCode && isCameraRunning) {
+                await html5QrCode.stop();
+                isCameraRunning = false;
+            }
+            html5QrCode = new Html5Qrcode("reader");
+            await html5QrCode.start(
+                { facingMode: "environment" },
+                { fps: 10, qrbox: { width: 230, height: 130 } },
+                (decodedText) => {
+                    document.getElementById('barcodeScanInput').value = decodedText;
+                    executeBarcodeLookup(decodedText, true);
+                    stopCameraScanner();
+                },
+                () => {}
+            );
+            isCameraRunning = true;
+        } catch (err) {
+            container.style.display = 'none';
+            isCameraRunning = false;
+            alert("تعذر تشغيل الكاميرا، يمكنك استخدام زر (صورة باركود) أو قارئ الباركود مباشرة.");
+        }
+    }
+
+    async function stopCameraScanner() {
+        const container = document.getElementById('cameraReaderContainer');
+        if (html5QrCode && isCameraRunning) {
+            try { await html5QrCode.stop(); } catch {}
+        }
+        isCameraRunning = false;
+        container.style.display = 'none';
+    }
+
+    function scanBarcodeFromImage(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const fileScanner = new Html5Qrcode("fileReaderHidden");
+        fileScanner.scanFile(file, true)
+            .then(decodedText => {
                 document.getElementById('barcodeScanInput').value = decodedText;
                 executeBarcodeLookup(decodedText, true);
-                stopCameraScanner();
-            },
-            () => {}
-        );
-        isCameraRunning = true;
-    } catch (err) {
-        container.style.display = 'none';
-        isCameraRunning = false;
-        alert("تعذر تشغيل الكاميرا، يمكنك استخدام زر (صورة باركود) أو قارئ الباركود مباشرة.");
+            })
+            .catch(() => {
+                alert("لم يظهر باركود واضح في الصورة، جرب صورة أقرب للباركود.");
+            });
+        event.target.value = '';
     }
-}
 
-async function stopCameraScanner() {
-    const container = document.getElementById('cameraReaderContainer');
-    if (html5QrCode && isCameraRunning) {
-        try { await html5QrCode.stop(); } catch {}
+    function fillInputBarcodeFromImage(event, targetInputId) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const fileScanner = new Html5Qrcode("fileReaderHidden");
+        fileScanner.scanFile(file, true)
+            .then(decodedText => { document.getElementById(targetInputId).value = decodedText; })
+            .catch(() => alert("تعذر استخراج الباركود من الصورة."));
+        event.target.value = '';
     }
-    isCameraRunning = false;
-    container.style.display = 'none';
-}
 
-function scanBarcodeFromImage(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    const fileScanner = new Html5Qrcode("fileReaderHidden");
-    fileScanner.scanFile(file, true)
-        .then(decodedText => {
-            document.getElementById('barcodeScanInput').value = decodedText;
-            executeBarcodeLookup(decodedText, true);
-        })
-        .catch(() => {
-            alert("لم يظهر باركود واضح في الصورة، جرب صورة أقرب للباركود.");
+    function normalizeArabicFirstLetter(name) {
+        const first = (name || "").trim().charAt(0);
+        if (["أ", "إ", "آ", "ا"].includes(first)) return "أ";
+        if (first === "ه") return "هـ";
+        return first || "أ";
+    }
+
+    function addDebtEntry(name, phone, date, itemsText, amount) {
+        const cleanName = name.trim();
+        let debtor = debtors.find(d => d.name === cleanName);
+        if (!debtor) {
+            debtor = {
+                id: Date.now() + Math.floor(Math.random() * 100),
+                name: cleanName,
+                phone: phone || "",
+                batches: []
+            };
+            debtors.push(debtor);
+        }
+        if (phone && !debtor.phone) debtor.phone = phone;
+        debtor.batches.unshift({
+            id: Date.now(),
+            date: date || new Date().toISOString().slice(0, 10),
+            items: itemsText || "وجبة علاج بالدين",
+            amount: Number(amount) || 0
         });
-    event.target.value = '';
-}
-
-function fillInputBarcodeFromImage(event, targetInputId) {
-    const file = event.target.files[0];
-    if (!file) return;
-    const fileScanner = new Html5Qrcode("fileReaderHidden");
-    fileScanner.scanFile(file, true)
-        .then(decodedText => { document.getElementById(targetInputId).value = decodedText; })
-        .catch(() => alert("تعذر استخراج الباركود من الصورة."));
-    event.target.value = '';
-}
-
-function normalizeArabicFirstLetter(name) {
-    const first = (name || "").trim().charAt(0);
-    if (["أ", "إ", "آ", "ا"].includes(first)) return "أ";
-    if (first === "ه") return "هـ";
-    return first || "أ";
-}
-
-function addDebtEntry(name, phone, date, itemsText, amount) {
-    const cleanName = name.trim();
-    let debtor = debtors.find(d => d.name === cleanName);
-    if (!debtor) {
-        debtor = {
-            id: Date.now() + Math.floor(Math.random() * 100),
-            name: cleanName,
-            phone: phone || "",
-            batches: []
-        };
-        debtors.push(debtor);
-    }
-    if (phone && !debtor.phone) debtor.phone = phone;
-    debtor.batches.unshift({
-        id: Date.now(),
-        date: date || new Date().toISOString().slice(0, 10),
-        items: itemsText || "وجبة علاج بالدين",
-        amount: Number(amount) || 0
-    });
-    debtors.sort((a, b) => a.name.localeCompare(b.name, 'ar'));
-    localStorage.setItem('pharmacy_debtors_v6', JSON.stringify(debtors));
-    renderDebtors();
-    updateDebtorDropdown();
-}
-
-function addManualDebtorOrBatch(e) {
-    e.preventDefault();
-    const name = document.getElementById('debtorNameInput').value.trim();
-    const phone = document.getElementById('debtorPhoneInput').value.trim();
-    const date = document.getElementById('debtorDateInput').value;
-    const items = document.getElementById('debtorItemsInput').value.trim() || "وجبة علاج بالدين";
-    const amount = parseInt(document.getElementById('debtorAmountInput').value) || 0;
-    if (!name) return;
-    addDebtEntry(name, phone, date, items, amount);
-    document.getElementById('debtorNameInput').value = '';
-    document.getElementById('debtorPhoneInput').value = '';
-    document.getElementById('debtorItemsInput').value = '';
-    document.getElementById('debtorAmountInput').value = 0;
-    alert('تم حفظ اسم المديون والوجبة بنجاح!');
-}
-
-function payDebtAmount(debtorId) {
-    const debtor = debtors.find(d => d.id === debtorId);
-    if (!debtor) return;
-    const currentTotal = debtor.batches.reduce((s, b) => s + Number(b.amount || 0), 0);
-    const inputVal = prompt(`المطلوب الحالي على (${debtor.name}): ${currentTotal.toLocaleString()} د.ع\nأدخل المبلغ المسدد بالدينار (أو اكتب المبلغ الكامل للتصفير):`, currentTotal);
-    if (inputVal === null) return;
-    const paid = parseInt(inputVal);
-    if (isNaN(paid) || paid <= 0) return;
-
-    debtor.batches.push({
-        id: Date.now(),
-        date: new Date().toISOString().slice(0, 10),
-        items: "تسديد دفعة نقدية من الدين",
-        amount: -paid
-    });
-    localStorage.setItem('pharmacy_debtors_v6', JSON.stringify(debtors));
-    renderDebtors();
-}
-
-function deleteDebtor(debtorId) {
-    if (confirm('حذف سجل هذا المديون نهائياً؟')) {
-        debtors = debtors.filter(d => d.id !== debtorId);
-        localStorage.setItem('pharmacy_debtors_v6', JSON.stringify(debtors));
+        debtors.sort((a, b) => a.name.localeCompare(b.name, 'ar'));
+        localStorage.setItem('pharmacy_debtors_v7', JSON.stringify(debtors));
         renderDebtors();
         updateDebtorDropdown();
     }
-}
 
-function buildAlphaBar() {
-    const bar = document.getElementById('alphaFilterBar');
-    bar.innerHTML = '';
-    arabicLetters.forEach(ltr => {
-        const btn = document.createElement('button');
-        btn.className = 'alpha-btn' + (activeLetter === ltr ? ' active' : '');
-        btn.textContent = ltr;
-        btn.onclick = () => {
-            activeLetter = ltr;
-            buildAlphaBar();
-            renderDebtors();
-        };
-        bar.appendChild(btn);
-    });
-}
-
-function renderDebtors() {
-    const search = (document.getElementById('debtorSearchInput').value || '').trim().toLowerCase();
-    const container = document.getElementById('debtorsListContainer');
-    container.innerHTML = '';
-
-    let totalAllDebts = 0;
-    debtors.forEach(d => {
-        totalAllDebts += d.batches.reduce((s, b) => s + Number(b.amount || 0), 0);
-    });
-    document.getElementById('statDebtorsCount').textContent = debtors.length;
-    document.getElementById('statTotalDebts').textContent = totalAllDebts.toLocaleString() + ' د.ع';
-
-    const filtered = debtors.filter(d => {
-        const matchSearch = !search || d.name.toLowerCase().includes(search) || (d.phone && d.phone.includes(search));
-        const matchLetter = activeLetter === "الكل" || normalizeArabicFirstLetter(d.name) === activeLetter;
-        return matchSearch && matchLetter;
-    });
-
-    if (!filtered.length) {
-        container.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding:14px;">لا توجد أسماء مديونين مطابقة للبحث أو الحرف المختار.</p>';
-        return;
+    function addManualDebtorOrBatch(e) {
+        e.preventDefault();
+        const name = document.getElementById('debtorNameInput').value.trim();
+        const phone = document.getElementById('debtorPhoneInput').value.trim();
+        const date = document.getElementById('debtorDateInput').value;
+        const items = document.getElementById('debtorItemsInput').value.trim() || "وجبة علاج بالدين";
+        const amount = parseInt(document.getElementById('debtorAmountInput').value) || 0;
+        if (!name) return;
+        addDebtEntry(name, phone, date, items, amount);
+        document.getElementById('debtorNameInput').value = '';
+        document.getElementById('debtorPhoneInput').value = '';
+        document.getElementById('debtorItemsInput').value = '';
+        document.getElementById('debtorAmountInput').value = 0;
+        alert('تم حفظ اسم المديون والوجبة بنجاح!');
     }
 
-    filtered.forEach(d => {
-        const balance = d.batches.reduce((s, b) => s + Number(b.amount || 0), 0);
-        let batchesHtml = '';
-        d.batches.forEach(b => {
-            const isPayment = Number(b.amount) < 0;
-            batchesHtml += `
-                <div class="batch-box">
-                    <div style="display:flex; justify-content:space-between; gap:8px;">
-                        <span>📅 <strong>${b.date}</strong> — ${b.items}</span>
-                        <strong style="color:${isPayment ? 'var(--success)' : 'var(--danger)'};">
-                            ${isPayment ? 'تسديد: ' + Math.abs(b.amount).toLocaleString() + ' د.ع' : Number(b.amount).toLocaleString() + ' د.ع'}
-                        </strong>
+    function payDebtAmount(debtorId) {
+        const debtor = debtors.find(d => d.id === debtorId);
+        if (!debtor) return;
+        const currentTotal = debtor.batches.reduce((s, b) => s + Number(b.amount || 0), 0);
+        const inputVal = prompt(`المطلوب الحالي على (${debtor.name}): ${currentTotal.toLocaleString()} د.ع\nأدخل المبلغ المسدد بالدينار (أو اكتب المبلغ الكامل للتصفير):`, currentTotal);
+        if (inputVal === null) return;
+        const paid = parseInt(inputVal);
+        if (isNaN(paid) || paid <= 0) return;
+
+        debtor.batches.push({
+            id: Date.now(),
+            date: new Date().toISOString().slice(0, 10),
+            items: "تسديد دفعة نقدية من الدين",
+            amount: -paid
+        });
+        localStorage.setItem('pharmacy_debtors_v7', JSON.stringify(debtors));
+        renderDebtors();
+    }
+
+    function deleteDebtor(debtorId) {
+        if (confirm('حذف سجل هذا المديون نهائياً؟')) {
+            debtors = debtors.filter(d => d.id !== debtorId);
+            localStorage.setItem('pharmacy_debtors_v7', JSON.stringify(debtors));
+            renderDebtors();
+            updateDebtorDropdown();
+        }
+    }
+
+    function buildAlphaBar() {
+        const bar = document.getElementById('alphaFilterBar');
+        bar.innerHTML = '';
+        arabicLetters.forEach(ltr => {
+            const btn = document.createElement('button');
+            btn.className = 'alpha-btn' + (activeLetter === ltr ? ' active' : '');
+            btn.textContent = ltr;
+            btn.onclick = () => {
+                activeLetter = ltr;
+                buildAlphaBar();
+                renderDebtors();
+            };
+            bar.appendChild(btn);
+        });
+    }
+
+    function renderDebtors() {
+        const search = (document.getElementById('debtorSearchInput').value || '').trim().toLowerCase();
+        const container = document.getElementById('debtorsListContainer');
+        container.innerHTML = '';
+
+        let totalAllDebts = 0;
+        debtors.forEach(d => {
+            totalAllDebts += d.batches.reduce((s, b) => s + Number(b.amount || 0), 0);
+        });
+        document.getElementById('statDebtorsCount').textContent = debtors.length;
+        document.getElementById('statTotalDebts').textContent = totalAllDebts.toLocaleString() + ' د.ع';
+
+        const filtered = debtors.filter(d => {
+            const matchSearch = !search || d.name.toLowerCase().includes(search) || (d.phone && d.phone.includes(search));
+            const matchLetter = activeLetter === "الكل" || normalizeArabicFirstLetter(d.name) === activeLetter;
+            return matchSearch && matchLetter;
+        });
+
+        if (!filtered.length) {
+            container.innerHTML = '<p style="color:var(--text-muted); text-align:center; padding:14px;">لا توجد أسماء مديونين مطابقة للبحث أو الحرف المختار.</p>';
+            return;
+        }
+
+        filtered.forEach(d => {
+            const balance = d.batches.reduce((s, b) => s + Number(b.amount || 0), 0);
+            let batchesHtml = '';
+            d.batches.forEach(b => {
+                const isPayment = Number(b.amount) < 0;
+                batchesHtml += `
+                    <div class="batch-box">
+                        <div style="display:flex; justify-content:space-between; gap:8px;">
+                            <span>📅 <strong>${b.date}</strong> — ${b.items}</span>
+                            <strong style="color:${isPayment ? 'var(--success)' : 'var(--danger)'};">
+                                ${isPayment ? 'تسديد: ' + Math.abs(b.amount).toLocaleString() + ' د.ع' : Number(b.amount).toLocaleString() + ' د.ع'}
+                            </strong>
+                        </div>
                     </div>
+                `;
+            });
+
+            container.innerHTML += `
+                <div class="debtor-card">
+                    <div class="debtor-header">
+                        <div>
+                            <strong style="font-size:1rem;">👤 ${d.name}</strong>
+                            ${d.phone ? `<span style="font-size:0.8rem; color:var(--text-muted); margin-right:8px;">📞 ${d.phone}</span>` : ''}
+                        </div>
+                        <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+                            <span class="status-pill ${balance > 0 ? 'pill-danger' : 'pill-success'}">المطلوب: ${balance.toLocaleString()} د.ع</span>
+                            <button class="btn btn-success" style="padding:3px 8px; font-size:0.78rem;" onclick="payDebtAmount(${d.id})">💵 تسديد</button>
+                            <button class="btn btn-danger" style="padding:3px 8px; font-size:0.78rem;" onclick="deleteDebtor(${d.id})">🗑️</button>
+                        </div>
+                    </div>
+                    ${batchesHtml || '<div style="font-size:0.8rem; color:var(--text-muted);">لا توجد وجبات مسجلة</div>'}
+                </div>
+            `;
+        });
+    }
+
+    function updateDebtorDropdown() {
+        const sel = document.getElementById('posDebtorSelect');
+        sel.innerHTML = '<option value="">اختر اسم المديون...</option>';
+        debtors.forEach(d => {
+            sel.innerHTML += `<option value="${d.name}">${d.name}</option>`;
+        });
+    }
+
+    function openEditModal(id) {
+        const item = inventory.find(d => d.id === id);
+        if (!item) return;
+        document.getElementById('editId').value = item.id;
+        document.getElementById('editInvoice').value = item.invoice || '';
+        document.getElementById('editBarcode').value = item.barcode || '';
+        document.getElementById('editName').value = item.name || '';
+        document.getElementById('editSalePrice').value = item.salePrice ?? item.price ?? 0;
+        document.getElementById('editType').value = item.type || '';
+        document.getElementById('editCompany').value = item.company || '';
+        document.getElementById('editExpiry').value = item.expiry || '';
+        document.getElementById('editQty').value = item.qty ?? 0;
+        document.getElementById('editBonus').value = item.bonus ?? 0;
+        document.getElementById('editPrice').value = item.price ?? 0;
+        document.getElementById('editTotal').value = item.total ?? 0;
+        document.getElementById('editDrugModal').style.display = 'flex';
+    }
+
+    function closeEditModal() { document.getElementById('editDrugModal').style.display = 'none'; }
+
+    function saveEditedDrug(e) {
+        e.preventDefault();
+        const id = Number(document.getElementById('editId').value);
+        const idx = inventory.findIndex(d => d.id === id);
+        if (idx === -1) return;
+        inventory[idx] = {
+            ...inventory[idx],
+            invoice: document.getElementById('editInvoice').value.trim(),
+            barcode: document.getElementById('editBarcode').value.trim(),
+            name: document.getElementById('editName').value.trim(),
+            salePrice: parseInt(document.getElementById('editSalePrice').value) || 0,
+            type: document.getElementById('editType').value.trim(),
+            company: document.getElementById('editCompany').value.trim(),
+            expiry: document.getElementById('editExpiry').value,
+            qty: parseInt(document.getElementById('editQty').value) || 0,
+            bonus: parseInt(document.getElementById('editBonus').value) || 0,
+            price: parseInt(document.getElementById('editPrice').value) || 0,
+            total: parseInt(document.getElementById('editTotal').value) || 0
+        };
+        saveData();
+        closeEditModal();
+        if (currentScannedId === id) executeBarcodeLookup(inventory[idx].barcode || inventory[idx].name, false);
+    }
+
+    function saveData() {
+        localStorage.setItem('pharmacy_inventory_v7', JSON.stringify(inventory));
+        renderTables();
+        updateAlerts();
+        updateInvoiceDropdown();
+        renderInvoicesSummary();
+        renderDebtors();
+        updateDebtorDropdown();
+    }
+
+    function addNewDrug(e) {
+        e.preventDefault();
+        inventory.unshift({
+            id: Date.now(),
+            invoice: "إدخال مباشر للصيدلية",
+            barcode: document.getElementById('inBarcode').value.trim(),
+            name: document.getElementById('inName').value.trim(),
+            salePrice: parseInt(document.getElementById('inSalePrice').value) || 0,
+            type: document.getElementById('inType').value.trim(),
+            company: document.getElementById('inCompany').value.trim(),
+            expiry: document.getElementById('inExpiry').value,
+            qty: parseInt(document.getElementById('inQty').value) || 0,
+            bonus: parseInt(document.getElementById('inBonus').value) || 0,
+            price: 0,
+            total: 0
+        });
+        saveData();
+        document.getElementById('addDrugForm').reset();
+    }
+
+    function autoCalcInvoiceTotal() {
+        const q = parseFloat(document.getElementById('invQtyInput').value) || 0;
+        const p = parseFloat(document.getElementById('invPriceInput').value) || 0;
+        document.getElementById('invTotalInput').value = Math.round(q * p);
+    }
+
+    function addItemToSpecificInvoice(e) {
+        e.preventDefault();
+        const unitPrice = parseInt(document.getElementById('invPriceInput').value) || 0;
+        const salePrice = parseInt(document.getElementById('invSalePriceInput').value) || unitPrice;
+        inventory.unshift({
+            id: Date.now(),
+            invoice: document.getElementById('invTitleInput').value.trim(),
+            barcode: document.getElementById('invBarcodeInput').value.trim(),
+            name: document.getElementById('invNameInput').value.trim(),
+            salePrice: salePrice,
+            type: document.getElementById('invTypeInput').value.trim(),
+            company: document.getElementById('invCompanyInput').value.trim(),
+            expiry: document.getElementById('invExpiryInput').value,
+            qty: parseInt(document.getElementById('invQtyInput').value) || 0,
+            bonus: parseInt(document.getElementById('invBonusInput').value) || 0,
+            price: unitPrice,
+            total: parseInt(document.getElementById('invTotalInput').value) || 0
+        });
+        saveData();
+        ['invBarcodeInput', 'invNameInput', 'invTypeInput', 'invCompanyInput', 'invExpiryInput'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('invSalePriceInput').value = 0;
+        document.getElementById('invQtyInput').value = 1;
+        document.getElementById('invBonusInput').value = 0;
+        document.getElementById('invPriceInput').value = 0;
+        document.getElementById('invTotalInput').value = 0;
+        alert('تمت إضافة المادة وحفظها في القائمة!');
+    }
+
+    function handleMediaFiles(event, sourceType) {
+        const files = Array.from(event.target.files || []);
+        files.forEach(file => {
+            const reader = new FileReader();
+            reader.onload = e => {
+                pendingImages.push({ name: file.name, src: sourceType, dataUrl: e.target.result });
+                renderMediaPreview();
+            };
+            reader.readAsDataURL(file);
+        });
+        event.target.value = '';
+    }
+
+    function handlePdfFile(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        pendingPdfName = file.name;
+        pendingPdfUrl = URL.createObjectURL(file);
+        document.getElementById('pdfViewerArea').style.display = 'block';
+        document.getElementById('pdfFrame').src = pendingPdfUrl;
+        event.target.value = '';
+    }
+
+    function renderMediaPreview() {
+        const area = document.getElementById('mediaPreviewArea');
+        area.innerHTML = '';
+        pendingImages.forEach(img => {
+            area.innerHTML += `
+                <div class="media-thumb">
+                    <img src="${img.dataUrl}" alt="${img.name}">
+                    <div>${img.src === 'camera' ? '📷 كاميرا' : '🖼️ معرض'}</div>
+                </div>
+            `;
+        });
+    }
+
+    function clearUploadedMedia() {
+        pendingImages = [];
+        pendingPdfUrl = null;
+        pendingPdfName = null;
+        document.getElementById('mediaPreviewArea').innerHTML = '';
+        document.getElementById('pdfFrame').src = '';
+        document.getElementById('pdfViewerArea').style.display = 'none';
+    }
+
+    function saveUploadedListRecord() {
+        const title = document.getElementById('uploadInvoiceName').value.trim() || `قائمة مرفقة (${new Date().toLocaleDateString('ar-IQ')})`;
+        if (!pendingImages.length && !pendingPdfName) {
+            alert('التقط صورة بالكاميرا أو اختر صوراً من المعرض أو حمّل ملف PDF أولاً.');
+            return;
+        }
+        uploadedLists.unshift({
+            id: Date.now(),
+            title,
+            imagesCount: pendingImages.length,
+            pdfName: pendingPdfName || '—',
+            date: new Date().toLocaleDateString('ar-IQ')
+        });
+        localStorage.setItem('pharmacy_uploaded_lists_v7', JSON.stringify(uploadedLists));
+        clearUploadedMedia();
+        document.getElementById('uploadInvoiceName').value = '';
+        renderInvoicesSummary();
+        alert('تم حفظ القائمة المرفقة بنجاح!');
+    }
+
+    function renderInvoicesSummary() {
+        const container = document.getElementById('invoicesSummaryCards');
+        const datalist = document.getElementById('existingInvoicesList');
+        container.innerHTML = '';
+        datalist.innerHTML = '';
+
+        const map = new Map();
+        inventory.forEach(item => {
+            const key = item.invoice || 'قائمة عامة';
+            if (!map.has(key)) map.set(key, { count: 0, sum: 0 });
+            const cur = map.get(key);
+            cur.count += 1;
+            cur.sum += Number(item.total || 0);
+        });
+
+        map.forEach((val, key) => {
+            datalist.innerHTML += `<option value="${key}">`;
+            container.innerHTML += `
+                <div class="invoice-chip">
+                    <div>
+                        <strong style="display:block; font-size:0.86rem;">${key}</strong>
+                        <span style="font-size:0.76rem; color:var(--text-muted);">${val.count} مادة</span>
+                    </div>
+                    <strong style="color:var(--primary); font-size:0.86rem;">${val.sum.toLocaleString()} د.ع</strong>
                 </div>
             `;
         });
 
-        container.innerHTML += `
-            <div class="debtor-card">
-                <div class="debtor-header">
+        uploadedLists.forEach(ul => {
+            container.innerHTML += `
+                <div class="invoice-chip" style="border-right-color: var(--success);">
                     <div>
-                        <strong style="font-size:1rem;">👤 ${d.name}</strong>
-                        ${d.phone ? `<span style="font-size:0.8rem; color:var(--text-muted); margin-right:8px;">📞 ${d.phone}</span>` : ''}
+                        <strong style="display:block; font-size:0.86rem;">${ul.title}</strong>
+                        <span style="font-size:0.75rem; color:var(--text-muted);">صور: ${ul.imagesCount} | PDF: ${ul.pdfName}</span>
                     </div>
-                    <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
-                        <span class="status-pill ${balance > 0 ? 'pill-danger' : 'pill-success'}">المطلوب: ${balance.toLocaleString()} د.ع</span>
-                        <button class="btn btn-success" style="padding:3px 8px; font-size:0.78rem;" onclick="payDebtAmount(${d.id})">💵 تسديد</button>
-                        <button class="btn btn-danger" style="padding:3px 8px; font-size:0.78rem;" onclick="deleteDebtor(${d.id})">🗑️</button>
-                    </div>
+                    <span class="status-pill pill-success">${ul.date}</span>
                 </div>
-                ${batchesHtml || '<div style="font-size:0.8rem; color:var(--text-muted);">لا توجد وجبات مسجلة</div>'}
-            </div>
-        `;
-    });
-}
-
-function updateDebtorDropdown() {
-    const sel = document.getElementById('posDebtorSelect');
-    sel.innerHTML = '<option value="">اختر اسم المديون...</option>';
-    debtors.forEach(d => {
-        sel.innerHTML += `<option value="${d.name}">${d.name}</option>`;
-    });
-}
-
-function openEditModal(id) {
-    const item = inventory.find(d => d.id === id);
-    if (!item) return;
-    document.getElementById('editId').value = item.id;
-    document.getElementById('editInvoice').value = item.invoice || '';
-    document.getElementById('editBarcode').value = item.barcode || '';
-    document.getElementById('editName').value = item.name || '';
-    document.getElementById('editSalePrice').value = item.salePrice ?? item.price ?? 0;
-    document.getElementById('editType').value = item.type || '';
-    document.getElementById('editCompany').value = item.company || '';
-    document.getElementById('editExpiry').value = item.expiry || '';
-    document.getElementById('editQty').value = item.qty ?? 0;
-    document.getElementById('editBonus').value = item.bonus ?? 0;
-    document.getElementById('editPrice').value = item.price ?? 0;
-    document.getElementById('editTotal').value = item.total ?? 0;
-    document.getElementById('editDrugModal').style.display = 'flex';
-}
-
-function closeEditModal() { document.getElementById('editDrugModal').style.display = 'none'; }
-
-function saveEditedDrug(e) {
-    e.preventDefault();
-    const id = Number(document.getElementById('editId').value);
-    const idx = inventory.findIndex(d => d.id === id);
-    if (idx === -1) return;
-    inventory[idx] = {
-        ...inventory[idx],
-        invoice: document.getElementById('editInvoice').value.trim(),
-        barcode: document.getElementById('editBarcode').value.trim(),
-        name: document.getElementById('editName').value.trim(),
-        salePrice: parseInt(document.getElementById('editSalePrice').value) || 0,
-        type: document.getElementById('editType').value.trim(),
-        company: document.getElementById('editCompany').value.trim(),
-        expiry: document.getElementById('editExpiry').value,
-        qty: parseInt(document.getElementById('editQty').value) || 0,
-        bonus: parseInt(document.getElementById('editBonus').value) || 0,
-        price: parseInt(document.getElementById('editPrice').value) || 0,
-        total: parseInt(document.getElementById('editTotal').value) || 0
-    };
-    saveData();
-    closeEditModal();
-    if (currentScannedId === id) executeBarcodeLookup(inventory[idx].barcode || inventory[idx].name, false);
-}
-
-function saveData() {
-    localStorage.setItem('pharmacy_inventory_v6', JSON.stringify(inventory));
-    renderTables();
-    updateAlerts();
-    updateInvoiceDropdown();
-    renderInvoicesSummary();
-    renderDebtors();
-    updateDebtorDropdown();
-}
-
-function addNewDrug(e) {
-    e.preventDefault();
-    inventory.unshift({
-        id: Date.now(),
-        invoice: "إدخال مباشر للصيدلية",
-        barcode: document.getElementById('inBarcode').value.trim(),
-        name: document.getElementById('inName').value.trim(),
-        salePrice: parseInt(document.getElementById('inSalePrice').value) || 0,
-        type: document.getElementById('inType').value.trim(),
-        company: document.getElementById('inCompany').value.trim(),
-        expiry: document.getElementById('inExpiry').value,
-        qty: parseInt(document.getElementById('inQty').value) || 0,
-        bonus: parseInt(document.getElementById('inBonus').value) || 0,
-        price: 0,
-        total: 0
-    });
-    saveData();
-    document.getElementById('addDrugForm').reset();
-}
-
-function autoCalcInvoiceTotal() {
-    const q = parseFloat(document.getElementById('invQtyInput').value) || 0;
-    const p = parseFloat(document.getElementById('invPriceInput').value) || 0;
-    document.getElementById('invTotalInput').value = Math.round(q * p);
-}
-
-function addItemToSpecificInvoice(e) {
-    e.preventDefault();
-    const unitPrice = parseInt(document.getElementById('invPriceInput').value) || 0;
-    const salePrice = parseInt(document.getElementById('invSalePriceInput').value) || unitPrice;
-    inventory.unshift({
-        id: Date.now(),
-        invoice: document.getElementById('invTitleInput').value.trim(),
-        barcode: document.getElementById('invBarcodeInput').value.trim(),
-        name: document.getElementById('invNameInput').value.trim(),
-        salePrice: salePrice,
-        type: document.getElementById('invTypeInput').value.trim(),
-        company: document.getElementById('invCompanyInput').value.trim(),
-        expiry: document.getElementById('invExpiryInput').value,
-        qty: parseInt(document.getElementById('invQtyInput').value) || 0,
-        bonus: parseInt(document.getElementById('invBonusInput').value) || 0,
-        price: unitPrice,
-        total: parseInt(document.getElementById('invTotalInput').value) || 0
-    });
-    saveData();
-    ['invBarcodeInput', 'invNameInput', 'invTypeInput', 'invCompanyInput', 'invExpiryInput'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('invSalePriceInput').value = 0;
-    document.getElementById('invQtyInput').value = 1;
-    document.getElementById('invBonusInput').value = 0;
-    document.getElementById('invPriceInput').value = 0;
-    document.getElementById('invTotalInput').value = 0;
-    alert('تمت إضافة المادة وحفظها في القائمة!');
-}
-
-function handleMediaFiles(event, sourceType) {
-    const files = Array.from(event.target.files || []);
-    files.forEach(file => {
-        const reader = new FileReader();
-        reader.onload = e => {
-            pendingImages.push({ name: file.name, src: sourceType, dataUrl: e.target.result });
-            renderMediaPreview();
-        };
-        reader.readAsDataURL(file);
-    });
-    event.target.value = '';
-}
-
-function handlePdfFile(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    pendingPdfName = file.name;
-    pendingPdfUrl = URL.createObjectURL(file);
-    document.getElementById('pdfViewerArea').style.display = 'block';
-    document.getElementById('pdfFrame').src = pendingPdfUrl;
-    event.target.value = '';
-}
-
-function renderMediaPreview() {
-    const area = document.getElementById('mediaPreviewArea');
-    area.innerHTML = '';
-    pendingImages.forEach(img => {
-        area.innerHTML += `
-            <div class="media-thumb">
-                <img src="${img.dataUrl}" alt="${img.name}">
-                <div>${img.src === 'camera' ? '📷 كاميرا' : '🖼️ معرض'}</div>
-            </div>
-        `;
-    });
-}
-
-function clearUploadedMedia() {
-    pendingImages = [];
-    pendingPdfUrl = null;
-    pendingPdfName = null;
-    document.getElementById('mediaPreviewArea').innerHTML = '';
-    document.getElementById('pdfFrame').src = '';
-    document.getElementById('pdfViewerArea').style.display = 'none';
-}
-
-function saveUploadedListRecord() {
-    const title = document.getElementById('uploadInvoiceName').value.trim() || `قائمة مرفقة (${new Date().toLocaleDateString('ar-IQ')})`;
-    if (!pendingImages.length && !pendingPdfName) {
-        alert('التقط صورة بالكاميرا أو اختر صوراً من المعرض أو حمّل ملف PDF أولاً.');
-        return;
+            `;
+        });
     }
-    uploadedLists.unshift({
-        id: Date.now(),
-        title,
-        imagesCount: pendingImages.length,
-        pdfName: pendingPdfName || '—',
-        date: new Date().toLocaleDateString('ar-IQ')
-    });
-    localStorage.setItem('pharmacy_uploaded_lists_v6', JSON.stringify(uploadedLists));
-    clearUploadedMedia();
-    document.getElementById('uploadInvoiceName').value = '';
-    renderInvoicesSummary();
-    alert('تم حفظ القائمة المرفقة بنجاح!');
-}
 
-function renderInvoicesSummary() {
-    const container = document.getElementById('invoicesSummaryCards');
-    const datalist = document.getElementById('existingInvoicesList');
-    container.innerHTML = '';
-    datalist.innerHTML = '';
+    function renderTables() {
+        const q1 = document.getElementById('filterPage1').value.toLowerCase();
+        const q2 = document.getElementById('filterPage2').value.toLowerCase();
+        const invFilter = document.getElementById('invoiceFilter').value;
+        const limit = userSettings.lowStockLimit;
 
-    const map = new Map();
-    inventory.forEach(item => {
-        const key = item.invoice || 'قائمة عامة';
-        if (!map.has(key)) map.set(key, { count: 0, sum: 0 });
-        const cur = map.get(key);
-        cur.count += 1;
-        cur.sum += Number(item.total || 0);
-    });
+        const tbody1 = document.getElementById('tablePage1Body');
+        tbody1.innerHTML = '';
+        inventory.filter(d =>
+            d.name.toLowerCase().includes(q1) ||
+            d.company.toLowerCase().includes(q1) ||
+            d.type.toLowerCase().includes(q1) ||
+            (d.barcode && d.barcode.toLowerCase().includes(q1))
+        ).forEach((item, index) => {
+            const sPrice = Number(item.salePrice || item.price || 0);
+            const qtyBadge = item.qty <= limit ? `<span class="status-pill pill-danger">${item.qty}</span>` : `<span class="status-pill pill-success">${item.qty}</span>`;
+            tbody1.innerHTML += `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td><strong>${item.barcode || '—'}</strong></td>
+                    <td><strong>${item.name}</strong></td>
+                    <td><strong style="color:var(--success);">${sPrice.toLocaleString()} د.ع</strong></td>
+                    <td>${item.type}</td>
+                    <td>${item.company}</td>
+                    <td>${item.expiry}</td>
+                    <td>${qtyBadge}</td>
+                    <td class="no-print"><button class="btn btn-secondary" style="padding:3px 8px; font-size:0.76rem;" onclick="openEditModal(${item.id})">✏️</button></td>
+                </tr>
+            `;
+        });
 
-    map.forEach((val, key) => {
-        datalist.innerHTML += `<option value="${key}">`;
-        container.innerHTML += `
-            <div class="invoice-chip">
-                <div>
-                    <strong style="display:block; font-size:0.86rem;">${key}</strong>
-                    <span style="font-size:0.76rem; color:var(--text-muted);">${val.count} مادة</span>
-                </div>
-                <strong style="color:var(--primary); font-size:0.86rem;">${val.sum.toLocaleString()} د.ع</strong>
-            </div>
-        `;
-    });
+        const tbody2 = document.getElementById('tablePage2Body');
+        tbody2.innerHTML = '';
+        let totalSum = 0;
+        const filtered2 = inventory.filter(d => {
+            const matchInv = invFilter === 'ALL' || d.invoice === invFilter;
+            const matchText = d.name.toLowerCase().includes(q2) || d.company.toLowerCase().includes(q2) || d.type.toLowerCase().includes(q2);
+            return matchInv && matchText;
+        });
 
-    uploadedLists.forEach(ul => {
-        container.innerHTML += `
-            <div class="invoice-chip" style="border-right-color: var(--success);">
-                <div>
-                    <strong style="display:block; font-size:0.86rem;">${ul.title}</strong>
-                    <span style="font-size:0.75rem; color:var(--text-muted);">صور: ${ul.imagesCount} | PDF: ${ul.pdfName}</span>
-                </div>
-                <span class="status-pill pill-success">${ul.date}</span>
-            </div>
-        `;
-    });
-}
+        filtered2.forEach((item, index) => {
+            totalSum += Number(item.total || 0);
+            tbody2.innerHTML += `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td style="font-size:0.78rem; color:var(--text-muted);">${item.invoice}</td>
+                    <td><strong>${item.barcode || '—'}</strong></td>
+                    <td><strong>${item.name}</strong></td>
+                    <td>${item.type}</td>
+                    <td>${item.company}</td>
+                    <td>${item.expiry}</td>
+                    <td>${item.qty}</td>
+                    <td>${item.bonus}</td>
+                    <td>${Number(item.price).toLocaleString()}</td>
+                    <td><strong>${Number(item.total).toLocaleString()}</strong></td>
+                    <td class="no-print">
+                        <button class="btn btn-secondary" style="padding:2px 6px; font-size:0.75rem;" onclick="openEditModal(${item.id})">✏️</button>
+                        <button class="btn btn-danger" style="padding:2px 6px; font-size:0.75rem;" onclick="deleteItem(${item.id})">🗑️</button>
+                    </td>
+                </tr>
+            `;
+        });
 
-function renderTables() {
-    const q1 = document.getElementById('filterPage1').value.toLowerCase();
-    const q2 = document.getElementById('filterPage2').value.toLowerCase();
-    const invFilter = document.getElementById('invoiceFilter').value;
-    const limit = userSettings.lowStockLimit;
+        document.getElementById('statTotalItems').textContent = filtered2.length;
+        document.getElementById('statTotalCost').textContent = totalSum.toLocaleString() + ' د.ع';
+    }
 
-    const tbody1 = document.getElementById('tablePage1Body');
-    tbody1.innerHTML = '';
-    inventory.filter(d =>
-        d.name.toLowerCase().includes(q1) ||
-        d.company.toLowerCase().includes(q1) ||
-        d.type.toLowerCase().includes(q1) ||
-        (d.barcode && d.barcode.toLowerCase().includes(q1))
-    ).forEach((item, index) => {
-        const sPrice = Number(item.salePrice || item.price || 0);
-        const qtyBadge = item.qty <= limit ? `<span class="status-pill pill-danger">${item.qty}</span>` : `<span class="status-pill pill-success">${item.qty}</span>`;
-        tbody1.innerHTML += `
-            <tr>
-                <td>${index + 1}</td>
-                <td><strong>${item.barcode || '—'}</strong></td>
-                <td><strong>${item.name}</strong></td>
-                <td><strong style="color:var(--success);">${sPrice.toLocaleString()} د.ع</strong></td>
-                <td>${item.type}</td>
-                <td>${item.company}</td>
-                <td>${item.expiry}</td>
-                <td>${qtyBadge}</td>
-                <td class="no-print"><button class="btn btn-secondary" style="padding:3px 8px; font-size:0.76rem;" onclick="openEditModal(${item.id})">✏️</button></td>
-            </tr>
-        `;
-    });
+    function updateAlerts() {
+        const expBody = document.getElementById('expiryAlertBody');
+        const lowBody = document.getElementById('lowStockAlertBody');
+        expBody.innerHTML = '';
+        lowBody.innerHTML = '';
 
-    const tbody2 = document.getElementById('tablePage2Body');
-    tbody2.innerHTML = '';
-    let totalSum = 0;
-    const filtered2 = inventory.filter(d => {
-        const matchInv = invFilter === 'ALL' || d.invoice === invFilter;
-        const matchText = d.name.toLowerCase().includes(q2) || d.company.toLowerCase().includes(q2) || d.type.toLowerCase().includes(q2);
-        return matchInv && matchText;
-    });
+        let alertCount = 0;
+        const today = new Date();
+        const alertDateLimit = new Date();
+        alertDateLimit.setMonth(today.getMonth() + userSettings.expiryMonths);
 
-    filtered2.forEach((item, index) => {
-        totalSum += Number(item.total || 0);
-        tbody2.innerHTML += `
-            <tr>
-                <td>${index + 1}</td>
-                <td style="font-size:0.78rem; color:var(--text-muted);">${item.invoice}</td>
-                <td><strong>${item.barcode || '—'}</strong></td>
-                <td><strong>${item.name}</strong></td>
-                <td>${item.type}</td>
-                <td>${item.company}</td>
-                <td>${item.expiry}</td>
-                <td>${item.qty}</td>
-                <td>${item.bonus}</td>
-                <td>${Number(item.price).toLocaleString()}</td>
-                <td><strong>${Number(item.total).toLocaleString()}</strong></td>
-                <td class="no-print">
-                    <button class="btn btn-secondary" style="padding:2px 6px; font-size:0.75rem;" onclick="openEditModal(${item.id})">✏️</button>
-                    <button class="btn btn-danger" style="padding:2px 6px; font-size:0.75rem;" onclick="deleteItem(${item.id})">🗑️</button>
-                </td>
-            </tr>
-        `;
-    });
+        inventory.forEach(item => {
+            if (item.expiry) {
+                const expDate = new Date(item.expiry);
+                if (expDate <= alertDateLimit) {
+                    alertCount++;
+                    const isExpired = expDate < today;
+                    expBody.innerHTML += `
+                        <tr>
+                            <td><strong>${item.name}</strong></td>
+                            <td>${item.company}</td>
+                            <td>${item.expiry}</td>
+                            <td><span class="status-pill ${isExpired ? 'pill-danger' : 'pill-warning'}">${isExpired ? 'منتهي' : 'قريب'}</span></td>
+                            <td>${item.qty}</td>
+                            <td class="no-print"><button class="btn btn-secondary" style="padding:2px 6px; font-size:0.75rem;" onclick="openEditModal(${item.id})">✏️</button></td>
+                        </tr>
+                    `;
+                }
+            }
 
-    document.getElementById('statTotalItems').textContent = filtered2.length;
-    document.getElementById('statTotalCost').textContent = totalSum.toLocaleString() + ' د.ع';
-}
-
-function updateAlerts() {
-    const expBody = document.getElementById('expiryAlertBody');
-    const lowBody = document.getElementById('lowStockAlertBody');
-    expBody.innerHTML = '';
-    lowBody.innerHTML = '';
-
-    let alertCount = 0;
-    const today = new Date();
-    const alertDateLimit = new Date();
-    alertDateLimit.setMonth(today.getMonth() + userSettings.expiryMonths);
-
-    inventory.forEach(item => {
-        if (item.expiry) {
-            const expDate = new Date(item.expiry);
-            if (expDate <= alertDateLimit) {
+            if (item.qty <= userSettings.lowStockLimit) {
                 alertCount++;
-                const isExpired = expDate < today;
-                expBody.innerHTML += `
+                lowBody.innerHTML += `
                     <tr>
                         <td><strong>${item.name}</strong></td>
+                        <td>${item.type}</td>
                         <td>${item.company}</td>
-                        <td>${item.expiry}</td>
-                        <td><span class="status-pill ${isExpired ? 'pill-danger' : 'pill-warning'}">${isExpired ? 'منتهي' : 'قريب'}</span></td>
-                        <td>${item.qty}</td>
+                        <td><span class="status-pill pill-danger">${item.qty}</span></td>
+                        <td>${item.invoice}</td>
                         <td class="no-print"><button class="btn btn-secondary" style="padding:2px 6px; font-size:0.75rem;" onclick="openEditModal(${item.id})">✏️</button></td>
                     </tr>
                 `;
             }
-        }
+        });
 
-        if (item.qty <= userSettings.lowStockLimit) {
-            alertCount++;
-            lowBody.innerHTML += `
-                <tr>
-                    <td><strong>${item.name}</strong></td>
-                    <td>${item.type}</td>
-                    <td>${item.company}</td>
-                    <td><span class="status-pill pill-danger">${item.qty}</span></td>
-                    <td>${item.invoice}</td>
-                    <td class="no-print"><button class="btn btn-secondary" style="padding:2px 6px; font-size:0.75rem;" onclick="openEditModal(${item.id})">✏️</button></td>
-                </tr>
-            `;
-        }
-    });
-
-    document.getElementById('alertBadge').textContent = alertCount;
-}
-
-function updateInvoiceDropdown() {
-    const select = document.getElementById('invoiceFilter');
-    const current = select.value;
-    const invoices = [...new Set(inventory.map(i => i.invoice))];
-    select.innerHTML = '<option value="ALL">كل القوائم</option>';
-    invoices.forEach(inv => { select.innerHTML += `<option value="${inv}">${inv}</option>`; });
-    select.value = current || 'ALL';
-    if (invoices.length > 0) document.getElementById('statLastInvoice').textContent = invoices[0];
-}
-
-function deleteItem(id) {
-    if (confirm('حذف هذه المادة؟')) {
-        inventory = inventory.filter(i => i.id !== id);
-        saveData();
+        document.getElementById('alertBadge').textContent = alertCount;
     }
-}
 
-buildAlphaBar();
-loadSettingsToUI();
-saveData();
+    function updateInvoiceDropdown() {
+        const select = document.getElementById('invoiceFilter');
+        const current = select.value;
+        const invoices = [...new Set(inventory.map(i => i.invoice))];
+        select.innerHTML = '<option value="ALL">كل القوائم</option>';
+        invoices.forEach(inv => { select.innerHTML += `<option value="${inv}">${inv}</option>`; });
+        select.value = current || 'ALL';
+        if (invoices.length > 0) document.getElementById('statLastInvoice').textContent = invoices[0];
+    }
+
+    function deleteItem(id) {
+        if (confirm('حذف هذه المادة؟')) {
+            inventory = inventory.filter(i => i.id !== id);
+            saveData();
+        }
+    }
+
+    buildAlphaBar();
+    loadSettingsToUI();
+    saveData();
+</script>
+</body>
+</html>
