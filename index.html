@@ -2,11 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>نظام إدارة الصيدلية والمذاخر الاحترافي</title>
-    <!-- مكتبة قراءة الباركود بالكاميرا والصور -->
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-    <!-- باقة خطوط Google Fonts المتنوعة -->
     <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@400;600;700;800&family=Changa:wght@400;600;700&family=El+Messiri:wght@400;600;700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=Lateef&family=Lalezar&family=Lemonada:wght@400;600;700&family=Mada:wght@400;600;700&family=Markazi+Text:wght@400;600;700&family=Mirza:wght@400;700&family=Noto+Kufi+Arabic:wght@400;600;700&family=Noto+Naskh+Arabic:wght@400;600;700&family=Noto+Sans+Arabic:wght@400;600;700&family=Rakkas&family=Readex+Pro:wght@400;600;700&family=Reem+Kufi:wght@400;600;700&family=Rubik:wght@400;600;700&family=Scheherazade+New:wght@400;700&family=Tajawal:wght@400;500;700;800&family=Vazirmatn:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
@@ -23,8 +21,8 @@
             --warning: #d97706;
             --success: #16a34a;
             --app-font: 'Cairo', sans-serif;
-            --font-size: 15px;
-            --cell-pad: 10px;
+            --font-size: 13.5px;
+            --cell-pad: 8px;
             --table-border-width: 1px;
         }
 
@@ -41,59 +39,111 @@
             font-family: var(--app-font);
             margin: 0;
             padding: 0;
+            max-width: 100%;
         }
 
-        html { font-size: var(--font-size); }
+        html {
+            font-size: var(--font-size);
+            overflow-x: hidden;
+            touch-action: pan-y;
+        }
 
         body {
             background-color: var(--bg);
             color: var(--text);
-            transition: background 0.3s, color 0.3s;
-            padding-bottom: 60px;
+            transition: background 0.25s, color 0.25s;
+            padding-bottom: 50px;
             overflow-x: hidden;
+            width: 100%;
+            touch-action: pan-y;
         }
 
-        /* Header */
+        /* Header يضم العنوان والأدوات وأزرار الأقسام في الأعلى */
         header {
             background: linear-gradient(135deg, var(--primary-dark), var(--primary));
             color: white;
-            padding: 15px 25px;
+            padding: 12px 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.14);
+            position: sticky;
+            top: 0;
+            z-index: 500;
+        }
+
+        .header-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            gap: 8px;
+            margin-bottom: 10px;
         }
 
         header h1 {
-            font-size: 1.35rem;
+            font-size: 1.05rem;
             font-weight: 800;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 6px;
         }
 
         .header-actions {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             flex-wrap: wrap;
         }
 
-        .btn {
-            padding: 8px 14px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
+        /* أزرار الأقسام المدمجة أعلى الصفحة */
+        .header-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .nav-pill {
+            padding: 6px 10px;
+            border-radius: 7px;
+            border: 1px solid rgba(255,255,255,0.28);
+            background: rgba(255,255,255,0.12);
+            color: #fff;
+            font-size: 0.82rem;
             font-weight: 700;
-            font-size: 0.9rem;
+            cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
             transition: 0.2s;
         }
 
-        .btn:hover { opacity: 0.92; transform: translateY(-1px); }
+        .nav-pill.active {
+            background: #ffffff;
+            color: var(--primary-dark);
+            border-color: #ffffff;
+        }
+
+        .badge {
+            background: var(--danger);
+            color: #fff;
+            font-size: 0.72rem;
+            padding: 1px 6px;
+            border-radius: 10px;
+        }
+
+        .btn {
+            padding: 6px 11px;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.82rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: 0.2s;
+        }
+
+        .btn:hover { opacity: 0.92; }
         .btn-primary { background: var(--primary); color: white; }
         .btn-secondary { background: var(--secondary); color: white; }
         .btn-light { background: rgba(255,255,255,0.18); color: white; border: 1px solid rgba(255,255,255,0.3); }
@@ -101,206 +151,208 @@
         .btn-warning { background: var(--warning); color: white; }
         .btn-success { background: var(--success); color: white; }
 
-        /* Navigation Tabs */
-        .nav-tabs {
-            display: flex;
-            background: var(--card);
-            padding: 10px 20px;
-            gap: 8px;
-            border-bottom: 2px solid var(--border);
-            overflow-x: auto;
-        }
-
-        .tab-btn {
-            padding: 10px 18px;
-            border: none;
-            background: transparent;
-            color: var(--text-muted);
-            font-weight: 700;
-            font-size: 0.98rem;
-            cursor: pointer;
-            border-radius: 8px;
-            white-space: nowrap;
-        }
-
-        .tab-btn.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .badge {
-            background: var(--danger);
-            color: white;
-            font-size: 0.75rem;
-            padding: 2px 7px;
-            border-radius: 12px;
-            margin-right: 5px;
-        }
-
         /* Container */
         .container {
-            max-width: 1420px;
-            margin: 20px auto;
-            padding: 0 15px;
+            width: 100%;
+            max-width: 1380px;
+            margin: 14px auto;
+            padding: 0 10px;
+            overflow-x: hidden;
         }
 
-        .page { display: none; }
-        .page.active { display: block; animation: fadeIn 0.25s; }
+        .page { display: none; width: 100%; }
+        .page.active { display: block; animation: fadeIn 0.2s; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         /* Cards */
         .card {
             background: var(--card);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 14px;
             border: 1px solid var(--border);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            width: 100%;
         }
 
         .card-title {
-            font-size: 1.15rem;
+            font-size: 1rem;
             font-weight: 800;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             color: var(--primary);
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
         }
 
         /* Barcode Scanner Hero */
         .scanner-hero {
             background: linear-gradient(135deg, rgba(15, 118, 110, 0.08), rgba(2, 132, 199, 0.08));
-            border: 2px solid var(--primary);
-            border-radius: 14px;
-            padding: 22px;
+            border: 1.5px solid var(--primary);
+            border-radius: 12px;
+            padding: 14px;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 14px;
         }
+
+        .scanner-hero h2 { font-size: 1rem; margin-top: 6px; }
 
         .scanner-status-indicator {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             background: var(--success);
             color: white;
-            padding: 4px 14px;
+            padding: 3px 10px;
             border-radius: 20px;
-            font-size: 0.85rem;
+            font-size: 0.78rem;
             font-weight: 700;
-            margin-bottom: 10px;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.5); }
-            70% { box-shadow: 0 0 0 10px rgba(22, 163, 74, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
         }
 
         .scanner-controls {
             display: flex;
-            max-width: 780px;
-            margin: 12px auto 0;
-            gap: 10px;
+            margin: 10px auto 0;
+            gap: 8px;
             flex-wrap: wrap;
             justify-content: center;
         }
 
         .scanner-controls input {
             flex: 1;
-            min-width: 240px;
-            font-size: 1.05rem;
+            min-width: 200px;
+            font-size: 0.92rem;
             font-weight: 700;
             text-align: center;
-            border: 2px solid var(--primary);
+            border: 1.5px solid var(--primary);
         }
 
         #cameraReaderContainer {
             display: none;
-            max-width: 450px;
-            margin: 15px auto;
+            max-width: 420px;
+            margin: 12px auto;
             background: var(--card);
-            padding: 15px;
-            border-radius: 12px;
-            border: 2px solid var(--secondary);
+            padding: 12px;
+            border-radius: 10px;
+            border: 1.5px solid var(--secondary);
         }
 
-        /* Scanned Result Card */
         .scan-result {
             display: none;
             background: var(--card);
-            border-right: 6px solid var(--success);
-            padding: 18px 22px;
-            border-radius: 10px;
-            margin-top: 18px;
+            border-right: 5px solid var(--success);
+            padding: 14px;
+            border-radius: 8px;
+            margin-top: 14px;
             text-align: right;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
 
         .scan-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 12px;
-            margin-top: 12px;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 8px;
+            margin-top: 10px;
         }
 
         .scan-item {
             background: var(--bg);
-            padding: 8px 12px;
-            border-radius: 8px;
+            padding: 7px 10px;
+            border-radius: 7px;
         }
 
-        .scan-item span { display: block; font-size: 0.8rem; color: var(--text-muted); }
-        .scan-item strong { font-size: 1.05rem; color: var(--text); }
+        .scan-item span { display: block; font-size: 0.75rem; color: var(--text-muted); }
+        .scan-item strong { font-size: 0.92rem; color: var(--text); }
 
         /* Form Grid */
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
-            gap: 12px;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
             align-items: end;
         }
 
         .form-group label {
             display: block;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 700;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
             color: var(--text-muted);
         }
 
         input, select, textarea {
             width: 100%;
-            padding: 10px 14px;
+            padding: 8px 10px;
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: 7px;
             background: var(--bg);
             color: var(--text);
-            font-size: 0.95rem;
+            font-size: 0.88rem;
         }
 
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
+        /* Media Upload Box (Camera / Gallery / PDF) */
+        .media-upload-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .media-btn {
+            border: 1.5px dashed var(--primary);
+            background: var(--bg);
+            color: var(--text);
+            padding: 12px 10px;
+            border-radius: 9px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.84rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .media-preview-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .media-thumb {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 6px;
+            background: var(--bg);
+            text-align: center;
+            font-size: 0.75rem;
+        }
+
+        .media-thumb img {
+            width: 100%;
+            height: 95px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 4px;
         }
 
         /* Tables */
         .table-responsive {
             overflow-x: auto;
-            border-radius: 8px;
+            border-radius: 7px;
             border: var(--table-border-width) solid var(--border);
+            width: 100%;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             text-align: right;
-            font-size: 0.94rem;
+            font-size: 0.85rem;
         }
 
         th {
@@ -318,13 +370,10 @@
             white-space: nowrap;
         }
 
-        tr:nth-child(even) { background-color: rgba(148, 163, 184, 0.05); }
-        tr:hover { background-color: rgba(15, 118, 110, 0.08); }
-
         .status-pill {
-            padding: 3px 9px;
+            padding: 2px 7px;
             border-radius: 6px;
-            font-size: 0.82rem;
+            font-size: 0.76rem;
             font-weight: 700;
         }
 
@@ -332,71 +381,65 @@
         .pill-warning { background: #fef3c7; color: #b45309; }
         .pill-success { background: #dcfce7; color: #15803d; }
 
-        /* Stats & Invoice Cards */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 10px;
+            margin-bottom: 14px;
         }
 
         .stat-box {
             background: var(--card);
-            padding: 18px;
-            border-radius: 12px;
+            padding: 12px;
+            border-radius: 10px;
             border: 1px solid var(--border);
             border-right: 4px solid var(--primary);
         }
 
-        .stat-box h3 { font-size: 0.85rem; color: var(--text-muted); }
-        .stat-box .num { font-size: 1.5rem; font-weight: 800; margin-top: 5px; }
+        .stat-box h3 { font-size: 0.78rem; color: var(--text-muted); }
+        .stat-box .num { font-size: 1.2rem; font-weight: 800; margin-top: 4px; }
 
         .invoice-summary-list {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 12px;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 10px;
         }
 
         .invoice-chip {
             background: var(--bg);
             border: 1px solid var(--border);
             border-right: 4px solid var(--secondary);
-            padding: 12px 15px;
-            border-radius: 10px;
+            padding: 10px 12px;
+            border-radius: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 8px;
         }
 
-        /* Settings Grid */
         .settings-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 14px;
         }
 
         .color-swatches {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
             margin-top: 8px;
         }
 
         .swatch {
-            width: 36px;
-            height: 36px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             cursor: pointer;
-            border: 3px solid transparent;
-            transition: 0.2s;
+            border: 2.5px solid transparent;
         }
 
-        .swatch.active {
-            border-color: var(--text);
-            transform: scale(1.15);
-        }
+        .swatch.active { border-color: var(--text); transform: scale(1.12); }
 
-        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -405,22 +448,22 @@
             z-index: 1000;
             justify-content: center;
             align-items: center;
-            padding: 15px;
+            padding: 12px;
         }
 
         .modal-content {
             background: var(--card);
-            padding: 25px;
-            border-radius: 14px;
-            max-width: 720px;
+            padding: 18px;
+            border-radius: 12px;
+            max-width: 680px;
             width: 100%;
-            max-height: 92vh;
+            max-height: 90vh;
             overflow-y: auto;
             border: 1px solid var(--border);
         }
 
         @media print {
-            header, .nav-tabs, .no-print { display: none !important; }
+            header, .no-print { display: none !important; }
             .page { display: block !important; }
             .card { box-shadow: none; border: none; }
         }
@@ -428,65 +471,64 @@
 </head>
 <body>
 
-<header>
-    <h1>💊 نظام إدارة الصيدلية والمذاخر الاحترافي</h1>
-    <div class="header-actions no-print">
-        <button class="btn btn-light" onclick="openImportModal()">📥 استيراد كود قائمة</button>
-        <button class="btn btn-light" onclick="window.print()">🖨️ طباعة</button>
-        <button class="btn btn-light" onclick="toggleTheme()">🌓 ليلي / نهاري</button>
+<header class="no-print">
+    <div class="header-top">
+        <h1>💊 نظام إدارة الصيدلية والمذاخر</h1>
+        <div class="header-actions">
+            <button class="btn btn-light" onclick="window.print()">🖨️ طباعة</button>
+            <button class="btn btn-light" onclick="toggleTheme()">🌓 ليلي / نهاري</button>
+        </div>
     </div>
-</header>
 
-<div class="nav-tabs no-print">
-    <button class="tab-btn active" onclick="switchTab('page1', this)">1️⃣ واجهة الصيدلية والباركود (بدون أسعار)</button>
-    <button class="tab-btn" onclick="switchTab('page2', this)">2️⃣ أرشيف قوائم المذاخر والفواتير (مع الأسعار)</button>
-    <button class="tab-btn" onclick="switchTab('page3', this)">3️⃣ إدارة وإضافة القوائم الجديدة</button>
-    <button class="tab-btn" onclick="switchTab('page4', this)">
-        ⚠️ التنبيهات والنواقص والإكسباير <span class="badge" id="alertBadge">0</span>
-    </button>
-    <button class="tab-btn" onclick="switchTab('page5', this)">⚙️ الإعدادات والخطوط والجداول</button>
-</div>
+    <!-- الأقسام منقولة إلى أعلى الهيدر لتفتح أسفله مباشرة -->
+    <nav class="header-nav">
+        <button class="nav-pill active" onclick="switchTab('page1', this)">1️⃣ الصيدلية والباركود</button>
+        <button class="nav-pill" onclick="switchTab('page2', this)">2️⃣ أرشيف القوائم والأسعار</button>
+        <button class="nav-pill" onclick="switchTab('page3', this)">3️⃣ إضافة القوائم (كاميرا / صور / PDF)</button>
+        <button class="nav-pill" onclick="switchTab('page4', this)">
+            ⚠️ التنبيهات <span class="badge" id="alertBadge">0</span>
+        </button>
+        <button class="nav-pill" onclick="switchTab('page5', this)">⚙️ الإعدادات</button>
+    </nav>
+</header>
 
 <div class="container">
 
-    <!-- ==================== الصفحة الأولى: واجهة الصيدلية والباركود ==================== -->
+    <!-- ==================== 1. الصيدلية والباركود ==================== -->
     <div id="page1" class="page active">
-        
         <div class="scanner-hero no-print">
             <div class="scanner-status-indicator">🟢 مستشعر الباركود جاهز للاستلام الفوري</div>
-            <h2>اقرأ الباركود بالجهاز أو بالكاميرا/الصورة ليظهر العلاج فوراً</h2>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">اضرب الباركود بجهاز القارئ مباشرة، أو افتح الكاميرا / اختر صورة باركود من جهازك</p>
-            
+            <h2>اقرأ الباركود بالجهاز أو بالكاميرا أو من صورة ليظهر العلاج فوراً</h2>
             <div class="scanner-controls">
-                <input type="text" id="barcodeScanInput" placeholder="⚡ اضرب الباركود بالجهاز هنا (استلام تلقائي)..." autofocus oninput="autoDetectBarcode()">
-                <button class="btn btn-secondary" onclick="startCameraScanner()">📷 فتح الكاميرا للمسح</button>
+                <input type="text" id="barcodeScanInput" placeholder="⚡ اضرب الباركود بالجهاز هنا..." autofocus oninput="autoDetectBarcode()">
+                <button class="btn btn-secondary" onclick="startCameraScanner()">📷 مسح بالكاميرا</button>
                 <label class="btn btn-primary" style="cursor:pointer; margin:0;">
-                    🖼️ قراءة باركود من صورة
-                    <input type="file" id="barcodeImageFile" accept="image/*" style="display:none;" onchange="scanBarcodeFromImage(event)">
+                    🖼️ صورة باركود
+                    <input type="file" accept="image/*" style="display:none;" onchange="scanBarcodeFromImage(event)">
                 </label>
             </div>
 
             <div id="cameraReaderContainer">
                 <div id="reader" style="width:100%;"></div>
-                <button class="btn btn-danger" style="margin-top:10px; width:100%; justify-content:center;" onclick="stopCameraScanner()">إغلاق الكاميرا</button>
+                <button class="btn btn-danger" style="margin-top:8px; width:100%; justify-content:center;" onclick="stopCameraScanner()">إغلاق الكاميرا</button>
             </div>
             <div id="fileReaderHidden" style="display:none;"></div>
 
             <div id="scanResultBox" class="scan-result">
-                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-                    <h3 id="resName" style="color:var(--primary); font-size:1.3rem;">-</h3>
-                    <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                        <button class="btn btn-warning" onclick="dispenseOneItem()">➖ صرف قطعة (1)</button>
-                        <button class="btn btn-secondary" onclick="openEditModal(currentScannedId)">✏️ تعديل هذه المادة</button>
-                        <button class="btn btn-light" style="color:var(--text); border-color:var(--border);" onclick="clearScanResult()">✕ إغلاق</button>
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                    <h3 id="resName" style="color:var(--primary); font-size:1.05rem;">-</h3>
+                    <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                        <button class="btn btn-warning" onclick="dispenseOneItem()">➖ صرف (1)</button>
+                        <button class="btn btn-secondary" onclick="openEditModal(currentScannedId)">✏️ تعديل</button>
+                        <button class="btn btn-light" style="color:var(--text); border-color:var(--border);" onclick="clearScanResult()">✕</button>
                     </div>
                 </div>
                 <div class="scan-grid">
-                    <div class="scan-item"><span>الباركود المسجل:</span><strong id="resBarcode">-</strong></div>
-                    <div class="scan-item"><span>نوع المادة / القسم:</span><strong id="resType">-</strong></div>
-                    <div class="scan-item"><span>الشركة المنتجة:</span><strong id="resCompany">-</strong></div>
-                    <div class="scan-item"><span>تاريخ الانتهاء:</span><strong id="resExpiry">-</strong></div>
-                    <div class="scan-item"><span>الكمية / الكارتون:</span><strong id="resQty">-</strong></div>
+                    <div class="scan-item"><span>الباركود:</span><strong id="resBarcode">-</strong></div>
+                    <div class="scan-item"><span>النوع / القسم:</span><strong id="resType">-</strong></div>
+                    <div class="scan-item"><span>الشركة:</span><strong id="resCompany">-</strong></div>
+                    <div class="scan-item"><span>الانتهاء:</span><strong id="resExpiry">-</strong></div>
+                    <div class="scan-item"><span>كارتون / كمية:</span><strong id="resQty">-</strong></div>
                     <div class="scan-item"><span>البونص:</span><strong id="resBonus">-</strong></div>
                 </div>
             </div>
@@ -495,35 +537,35 @@
         <div class="card no-print">
             <div class="card-title">
                 <span>➕ إضافة علاج جديد وربطه بالباركود</span>
-                <label class="btn btn-secondary" style="font-size:0.82rem; cursor:pointer;">
-                    📷 التقاط الباركود من صورة للحقل
+                <label class="btn btn-secondary" style="cursor:pointer;">
+                    📷 باركود من صورة
                     <input type="file" accept="image/*" style="display:none;" onchange="fillInputBarcodeFromImage(event, 'inBarcode')">
                 </label>
             </div>
             <form id="addDrugForm" onsubmit="addNewDrug(event)">
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>رقم الباركود (اضربه بالجهاز)</label>
-                        <input type="text" id="inBarcode" placeholder="اضرب الباركود بالجهاز...">
+                        <label>رقم الباركود</label>
+                        <input type="text" id="inBarcode" placeholder="اضرب الباركود...">
                     </div>
                     <div class="form-group">
-                        <label>اسم المادة (العلاج)</label>
-                        <input type="text" id="inName" placeholder="مثال: Adol 250mg Supp" required>
+                        <label>اسم المادة</label>
+                        <input type="text" id="inName" placeholder="اسم العلاج" required>
                     </div>
                     <div class="form-group">
                         <label>نوع المادة / القسم</label>
-                        <input type="text" id="inType" placeholder="Tablet, Syrup, Vial..." required>
+                        <input type="text" id="inType" placeholder="Tablet, Syrup..." required>
                     </div>
                     <div class="form-group">
                         <label>الشركة المنتجة</label>
-                        <input type="text" id="inCompany" placeholder="مثال: Julphar, ASWAR..." required>
+                        <input type="text" id="inCompany" placeholder="الشركة" required>
                     </div>
                     <div class="form-group">
                         <label>تاريخ الانتهاء</label>
                         <input type="date" id="inExpiry" required>
                     </div>
                     <div class="form-group">
-                        <label>الكمية / كارتون</label>
+                        <label>كارتون / كمية</label>
                         <input type="number" id="inQty" value="1" min="0" required>
                     </div>
                     <div class="form-group">
@@ -531,7 +573,7 @@
                         <input type="number" id="inBonus" value="0" min="0">
                     </div>
                     <div class="form-group">
-                        <button type="submit" class="btn btn-success" style="width:100%; justify-content:center; height:42px;">💾 حفظ في الصيدلية</button>
+                        <button type="submit" class="btn btn-success" style="width:100%; justify-content:center; height:36px;">💾 حفظ</button>
                     </div>
                 </div>
             </form>
@@ -539,8 +581,8 @@
 
         <div class="card">
             <div class="card-title">
-                <span>📋 سجل مواد الصيدلية (عرض إداري بدون أسعار)</span>
-                <input type="text" id="filterPage1" placeholder="فلترة حسب الاسم، الباركود، القسم، أو الشركة..." style="max-width:340px;" onkeyup="renderTables()">
+                <span>📋 مواد الصيدلية (بدون أسعار)</span>
+                <input type="text" id="filterPage1" placeholder="بحث سريع..." style="max-width:240px;" onkeyup="renderTables()">
             </div>
             <div class="table-responsive">
                 <table>
@@ -549,12 +591,12 @@
                             <th>#</th>
                             <th>الباركود</th>
                             <th>اسم المادة</th>
-                            <th>نوع المادة / القسم</th>
-                            <th>الشركة المنتجة</th>
-                            <th>تاريخ الانتهاء</th>
-                            <th>كارتون / كمية</th>
+                            <th>النوع / القسم</th>
+                            <th>الشركة</th>
+                            <th>الانتهاء</th>
+                            <th>كارتون</th>
                             <th>بونص</th>
-                            <th class="no-print">تعديل / باركود</th>
+                            <th class="no-print">تعديل</th>
                         </tr>
                     </thead>
                     <tbody id="tablePage1Body"></tbody>
@@ -563,31 +605,31 @@
         </div>
     </div>
 
-    <!-- ==================== الصفحة الثانية: أرشيف قوائم المذاخر والأسعار ==================== -->
+    <!-- ==================== 2. أرشيف القوائم والأسعار ==================== -->
     <div id="page2" class="page">
         <div class="stats-grid">
             <div class="stat-box">
-                <h3>عدد المواد في القوائم</h3>
+                <h3>عدد المواد</h3>
                 <div class="num" id="statTotalItems">0</div>
             </div>
             <div class="stat-box" style="border-right-color: var(--secondary);">
-                <h3>إجمالي قيمة القوائم (دينار)</h3>
+                <h3>إجمالي القوائم (د.ع)</h3>
                 <div class="num" id="statTotalCost">0 د.ع</div>
             </div>
             <div class="stat-box" style="border-right-color: var(--success);">
-                <h3>آخر قائمة مضافة</h3>
-                <div class="num" style="font-size:1.1rem;" id="statLastInvoice">مذخر الفردوس #342077</div>
+                <h3>آخر قائمة</h3>
+                <div class="num" style="font-size:0.95rem;" id="statLastInvoice">مذخر الفردوس #342077</div>
             </div>
         </div>
 
         <div class="card">
             <div class="card-title">
-                <span>🧾 سجل قوائم المذاخر والمشتريات (شامل الأسعار والمجموع)</span>
-                <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                    <select id="invoiceFilter" onchange="renderTables()" style="max-width:260px;">
+                <span>🧾 أرشيف القوائم والأسعار</span>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <select id="invoiceFilter" onchange="renderTables()" style="max-width:220px;">
                         <option value="ALL">كل القوائم</option>
                     </select>
-                    <input type="text" id="filterPage2" placeholder="بحث في القوائم..." style="max-width:220px;" onkeyup="renderTables()">
+                    <input type="text" id="filterPage2" placeholder="بحث..." style="max-width:180px;" onkeyup="renderTables()">
                 </div>
             </div>
             <div class="table-responsive">
@@ -595,17 +637,17 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>المذخر / القائمة</th>
+                            <th>القائمة / المذخر</th>
                             <th>الباركود</th>
                             <th>اسم المادة</th>
-                            <th>نوع المادة / القسم</th>
-                            <th>الشركة المنتجة</th>
-                            <th>تاريخ الانتهاء</th>
+                            <th>النوع / القسم</th>
+                            <th>الشركة</th>
+                            <th>الانتهاء</th>
                             <th>كارتون</th>
                             <th>بونص</th>
                             <th>سعر المفرد</th>
                             <th>المجموع</th>
-                            <th class="no-print">تعديل / حذف</th>
+                            <th class="no-print">إجراء</th>
                         </tr>
                     </thead>
                     <tbody id="tablePage2Body"></tbody>
@@ -614,101 +656,123 @@
         </div>
     </div>
 
-    <!-- ==================== الصفحة الثالثة: إدارة وإضافة القوائم الجديدة ==================== -->
+    <!-- ==================== 3. إضافة القوائم (كاميرا / صور / PDF) ==================== -->
     <div id="page3" class="page">
-        <div class="settings-grid">
-            <!-- مكان استقبال القوائم المصورة -->
-            <div class="card" style="border-right: 4px solid var(--secondary);">
-                <div class="card-title" style="color: var(--secondary);">
-                    <span>📸 مكان إضافة القوائم المصورة (الخطوة السريعة)</span>
-                </div>
-                <p style="font-size:0.92rem; color:var(--text-muted); margin-bottom:12px; line-height:1.7;">
-                    كل ما تجيك قائمة جديدة من أي مذخر: قصّها صورة وأرسلها لي هنا في المحادثة؛ سأرتبها وأصحح أجزائها (اسم المادة، النوع، الشركة، الانتهاء، الكارتون، البونص، سعر المفرد، المجموع) وأعطيك كود القائمة لتلصقه هنا ويُضاف فوراً إلى القوائم السابقة:
-                </p>
-                <textarea id="page3ImportArea" rows="6" placeholder="الصق هنا كود القائمة الجاهز الذي أرسله لك بعد تصوير القائمة..."></textarea>
-                <button class="btn btn-secondary" style="margin-top:12px; width:100%; justify-content:center;" onclick="importFromPage3()">
-                    ➕ إضافة القائمة إلى النظام وحفظها مع القوائم السابقة
-                </button>
+        <div class="card" style="border-right: 4px solid var(--secondary);">
+            <div class="card-title" style="color: var(--secondary);">
+                <span>📸 رفع القوائم بالكاميرا أو من المعرض أو ملف PDF</span>
+            </div>
+            <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;">
+                التقط صورة للقائمة بكاميرا الموبايل مباشرة، أو اختر صوراً من المعرض، أو حمّل ملف PDF، واحفظها كقائمة جديدة في النظام:
+            </p>
+
+            <div class="form-group" style="margin-bottom:12px;">
+                <label>اسم المذخر / رقم القائمة والتاريخ</label>
+                <input type="text" id="uploadInvoiceName" placeholder="مثال: مذخر الفردوس - قائمة جديدة (22/11/2026)" list="existingInvoicesList">
+                <datalist id="existingInvoicesList"></datalist>
             </div>
 
-            <!-- إضافة مادة جديدة ضمن قائمة محددة -->
-            <div class="card" style="border-right: 4px solid var(--success);">
-                <div class="card-title" style="color: var(--success);">
-                    <span>📝 إضافة مادة لقائمة جديدة أو قائمة موجودة</span>
-                </div>
-                <form onsubmit="addItemToSpecificInvoice(event)">
-                    <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));">
-                        <div class="form-group" style="grid-column: span 2;">
-                            <label>اسم المذخر ورقم القائمة والتاريخ</label>
-                            <input type="text" id="invTitleInput" placeholder="مثال: مذخر الفردوس #342078 (22/11/2026)" list="existingInvoicesList" required>
-                            <datalist id="existingInvoicesList"></datalist>
-                        </div>
-                        <div class="form-group">
-                            <label>الباركود</label>
-                            <input type="text" id="invBarcodeInput" placeholder="اختياري">
-                        </div>
-                        <div class="form-group">
-                            <label>اسم المادة</label>
-                            <input type="text" id="invNameInput" required>
-                        </div>
-                        <div class="form-group">
-                            <label>نوع المادة / القسم</label>
-                            <input type="text" id="invTypeInput" placeholder="Tablet, Syrup, Cream..." required>
-                        </div>
-                        <div class="form-group">
-                            <label>الشركة المنتجة</label>
-                            <input type="text" id="invCompanyInput" required>
-                        </div>
-                        <div class="form-group">
-                            <label>تاريخ الانتهاء</label>
-                            <input type="date" id="invExpiryInput" required>
-                        </div>
-                        <div class="form-group">
-                            <label>كارتون / كمية</label>
-                            <input type="number" id="invQtyInput" value="1" min="0" required oninput="autoCalcInvoiceTotal()">
-                        </div>
-                        <div class="form-group">
-                            <label>بونص</label>
-                            <input type="number" id="invBonusInput" value="0" min="0">
-                        </div>
-                        <div class="form-group">
-                            <label>سعر المفرد (د.ع)</label>
-                            <input type="number" id="invPriceInput" value="0" min="0" oninput="autoCalcInvoiceTotal()">
-                        </div>
-                        <div class="form-group">
-                            <label>المجموع (د.ع)</label>
-                            <input type="number" id="invTotalInput" value="0" min="0">
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-success" style="margin-top:14px; width:100%; justify-content:center;">
-                        💾 حفظ المادة ضمن القائمة
-                    </button>
-                </form>
+            <div class="media-upload-grid">
+                <label class="media-btn">
+                    <span style="font-size:1.5rem;">📷</span>
+                    <span>التقاط بالكاميرا</span>
+                    <input type="file" accept="image/*" capture="environment" style="display:none;" onchange="handleMediaFiles(event, 'camera')">
+                </label>
+
+                <label class="media-btn">
+                    <span style="font-size:1.5rem;">🖼️</span>
+                    <span>اختيار من المعرض</span>
+                    <input type="file" accept="image/*" multiple style="display:none;" onchange="handleMediaFiles(event, 'gallery')">
+                </label>
+
+                <label class="media-btn">
+                    <span style="font-size:1.5rem;">📄</span>
+                    <span>تحميل ملف PDF</span>
+                    <input type="file" accept="application/pdf,.pdf" style="display:none;" onchange="handlePdfFile(event)">
+                </label>
+            </div>
+
+            <div id="mediaPreviewArea" class="media-preview-list"></div>
+            <div id="pdfViewerArea" style="display:none; margin-top:12px;">
+                <iframe id="pdfFrame" style="width:100%; height:320px; border:1px solid var(--border); border-radius:8px;"></iframe>
+            </div>
+
+            <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
+                <button class="btn btn-success" onclick="saveUploadedListRecord()">💾 حفظ القائمة المرفقة في الأرشيف</button>
+                <button class="btn btn-danger" onclick="clearUploadedMedia()">🗑️ مسح المرفقات</button>
             </div>
         </div>
 
-        <!-- ملخص القوائم المحفوظة في النظام -->
+        <div class="card" style="border-right: 4px solid var(--success);">
+            <div class="card-title" style="color: var(--success);">
+                <span>📝 إضافة مادة لقائمة جديدة أو سابقة</span>
+            </div>
+            <form onsubmit="addItemToSpecificInvoice(event)">
+                <div class="form-grid">
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label>اسم المذخر ورقم القائمة</label>
+                        <input type="text" id="invTitleInput" list="existingInvoicesList" required>
+                    </div>
+                    <div class="form-group">
+                        <label>الباركود</label>
+                        <input type="text" id="invBarcodeInput">
+                    </div>
+                    <div class="form-group">
+                        <label>اسم المادة</label>
+                        <input type="text" id="invNameInput" required>
+                    </div>
+                    <div class="form-group">
+                        <label>النوع / القسم</label>
+                        <input type="text" id="invTypeInput" required>
+                    </div>
+                    <div class="form-group">
+                        <label>الشركة</label>
+                        <input type="text" id="invCompanyInput" required>
+                    </div>
+                    <div class="form-group">
+                        <label>تاريخ الانتهاء</label>
+                        <input type="date" id="invExpiryInput" required>
+                    </div>
+                    <div class="form-group">
+                        <label>كارتون</label>
+                        <input type="number" id="invQtyInput" value="1" min="0" required oninput="autoCalcInvoiceTotal()">
+                    </div>
+                    <div class="form-group">
+                        <label>بونص</label>
+                        <input type="number" id="invBonusInput" value="0" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>سعر المفرد (د.ع)</label>
+                        <input type="number" id="invPriceInput" value="0" min="0" oninput="autoCalcInvoiceTotal()">
+                    </div>
+                    <div class="form-group">
+                        <label>المجموع (د.ع)</label>
+                        <input type="number" id="invTotalInput" value="0" min="0">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success" style="margin-top:12px; width:100%; justify-content:center;">➕ حفظ المادة في القائمة</button>
+            </form>
+        </div>
+
         <div class="card">
-            <div class="card-title"><span>🗂️ القوائم المحفوظة حالياً في النظام</span></div>
+            <div class="card-title"><span>🗂️ القوائم المحفوظة في النظام</span></div>
             <div id="invoicesSummaryCards" class="invoice-summary-list"></div>
         </div>
     </div>
 
-    <!-- ==================== الصفحة الرابعة: التنبيهات الذكية ==================== -->
+    <!-- ==================== 4. التنبيهات ==================== -->
     <div id="page4" class="page">
         <div class="card" style="border-right: 4px solid var(--danger);">
-            <div class="card-title" style="color: var(--danger);">
-                <span>⏳ تنبيهات تاريخ الانتهاء (منتهي أو قريب الانتهاء)</span>
-            </div>
+            <div class="card-title" style="color: var(--danger);"><span>⏳ تنبيهات تاريخ الانتهاء</span></div>
             <div class="table-responsive">
                 <table>
                     <thead>
                         <tr>
                             <th>اسم المادة</th>
                             <th>الشركة</th>
-                            <th>تاريخ الانتهاء</th>
+                            <th>الانتهاء</th>
                             <th>الحالة</th>
-                            <th>الكمية المتبقية</th>
+                            <th>الكمية</th>
                             <th class="no-print">تعديل</th>
                         </tr>
                     </thead>
@@ -718,18 +782,16 @@
         </div>
 
         <div class="card" style="border-right: 4px solid var(--warning);">
-            <div class="card-title" style="color: var(--warning);">
-                <span>📉 تنبيهات النواقص (المواد التي أوشكت على النفاد)</span>
-            </div>
+            <div class="card-title" style="color: var(--warning);"><span>📉 تنبيهات النواقص</span></div>
             <div class="table-responsive">
                 <table>
                     <thead>
                         <tr>
                             <th>اسم المادة</th>
-                            <th>نوع المادة / القسم</th>
+                            <th>النوع / القسم</th>
                             <th>الشركة</th>
-                            <th>الكمية المتبقية</th>
-                            <th>المذخر المورد</th>
+                            <th>المتبقي</th>
+                            <th>القائمة</th>
                             <th class="no-print">تعديل</th>
                         </tr>
                     </thead>
@@ -739,122 +801,107 @@
         </div>
     </div>
 
-    <!-- ==================== الصفحة الخامسة: الإعدادات والخطوط والجداول ==================== -->
+    <!-- ==================== 5. الإعدادات ==================== -->
     <div id="page5" class="page">
         <div class="settings-grid">
             <div class="card">
-                <div class="card-title">🔤 إعدادات الخطوط وحجم الكتابة</div>
-                <div class="form-group" style="margin-bottom:15px;">
-                    <label>اختر نوع الخط (35 خط عربي وعالمي):</label>
+                <div class="card-title">🔤 الخطوط وحجم التصغير والتكبير</div>
+                <div class="form-group" style="margin-bottom:12px;">
+                    <label>نوع الخط (35 خط):</label>
                     <select id="settingFontFamily" onchange="applySettings()">
-                        <option value="'Cairo', sans-serif">1. Cairo (كايرو - الافتراضي)</option>
-                        <option value="'Tajawal', sans-serif">2. Tajawal (تجوال - عصري)</option>
-                        <option value="'Almarai', sans-serif">3. Almarai (المراعي - واضح جداً)</option>
-                        <option value="'IBM Plex Sans Arabic', sans-serif">4. IBM Plex Arabic (احترافي)</option>
-                        <option value="'Noto Kufi Arabic', sans-serif">5. Noto Kufi Arabic (كوفي حديث)</option>
-                        <option value="'Noto Sans Arabic', sans-serif">6. Noto Sans Arabic (نوتو)</option>
-                        <option value="'Readex Pro', sans-serif">7. Readex Pro (ريدكس)</option>
-                        <option value="'Rubik', sans-serif">8. Rubik (روبيك)</option>
-                        <option value="'Changa', sans-serif">9. Changa (تشانغا)</option>
-                        <option value="'El Messiri', sans-serif">10. El Messiri (المسيري)</option>
-                        <option value="'Mada', sans-serif">11. Mada (مدى)</option>
-                        <option value="'Vazirmatn', sans-serif">12. Vazirmatn (وزير)</option>
-                        <option value="'Amiri', serif">13. Amiri (أميري - كلاسيكي)</option>
-                        <option value="'Noto Naskh Arabic', serif">14. Noto Naskh (نسخ)</option>
-                        <option value="'Scheherazade New', serif">15. Scheherazade (شهرزاد)</option>
-                        <option value="'Markazi Text', serif">16. Markazi Text (مركزي)</option>
-                        <option value="'Lateef', serif">17. Lateef (لطيف)</option>
-                        <option value="'Mirza', serif">18. Mirza (ميرزا)</option>
-                        <option value="'Reem Kufi', sans-serif">19. Reem Kufi (ريم كوفي)</option>
-                        <option value="'Lalezar', cursive">20. Lalezar (لاليزار - عريض)</option>
-                        <option value="'Lemonada', cursive">21. Lemonada (ليمونادا)</option>
-                        <option value="'Aref Ruqaa', serif">22. Aref Ruqaa (عارف رقعة)</option>
-                        <option value="'Rakkas', cursive">23. Rakkas (رقاص)</option>
-                        <option value="Tahoma, sans-serif">24. Tahoma (تاهوما النظام)</option>
-                        <option value="Arial, sans-serif">25. Arial (آريال)</option>
-                        <option value="'Segoe UI', sans-serif">26. Segoe UI (ويندوز)</option>
-                        <option value="Verdana, sans-serif">27. Verdana (فيردانا)</option>
+                        <option value="'Cairo', sans-serif">1. Cairo</option>
+                        <option value="'Tajawal', sans-serif">2. Tajawal</option>
+                        <option value="'Almarai', sans-serif">3. Almarai</option>
+                        <option value="'IBM Plex Sans Arabic', sans-serif">4. IBM Plex Arabic</option>
+                        <option value="'Noto Kufi Arabic', sans-serif">5. Noto Kufi Arabic</option>
+                        <option value="'Noto Sans Arabic', sans-serif">6. Noto Sans Arabic</option>
+                        <option value="'Readex Pro', sans-serif">7. Readex Pro</option>
+                        <option value="'Rubik', sans-serif">8. Rubik</option>
+                        <option value="'Changa', sans-serif">9. Changa</option>
+                        <option value="'El Messiri', sans-serif">10. El Messiri</option>
+                        <option value="'Mada', sans-serif">11. Mada</option>
+                        <option value="'Vazirmatn', sans-serif">12. Vazirmatn</option>
+                        <option value="'Amiri', serif">13. Amiri</option>
+                        <option value="'Noto Naskh Arabic', serif">14. Noto Naskh</option>
+                        <option value="'Scheherazade New', serif">15. Scheherazade</option>
+                        <option value="'Markazi Text', serif">16. Markazi Text</option>
+                        <option value="'Lateef', serif">17. Lateef</option>
+                        <option value="'Mirza', serif">18. Mirza</option>
+                        <option value="'Reem Kufi', sans-serif">19. Reem Kufi</option>
+                        <option value="'Lalezar', cursive">20. Lalezar</option>
+                        <option value="'Lemonada', cursive">21. Lemonada</option>
+                        <option value="'Aref Ruqaa', serif">22. Aref Ruqaa</option>
+                        <option value="'Rakkas', cursive">23. Rakkas</option>
+                        <option value="Tahoma, sans-serif">24. Tahoma</option>
+                        <option value="Arial, sans-serif">25. Arial</option>
+                        <option value="'Segoe UI', sans-serif">26. Segoe UI</option>
+                        <option value="Verdana, sans-serif">27. Verdana</option>
                         <option value="'Trebuchet MS', sans-serif">28. Trebuchet MS</option>
                         <option value="Georgia, serif">29. Georgia</option>
                         <option value="'Times New Roman', serif">30. Times New Roman</option>
-                        <option value="'Courier New', monospace">31. Courier New (رقمي)</option>
-                        <option value="system-ui, sans-serif">32. خط النظام الافتراضي (System UI)</option>
-                        <option value="sans-serif">33. Sans-Serif عام</option>
-                        <option value="serif">34. Serif عام</option>
-                        <option value="monospace">35. Monospace (للبراكد والأرقام)</option>
+                        <option value="'Courier New', monospace">31. Courier New</option>
+                        <option value="system-ui, sans-serif">32. خط النظام</option>
+                        <option value="sans-serif">33. Sans-Serif</option>
+                        <option value="serif">34. Serif</option>
+                        <option value="monospace">35. Monospace</option>
                     </select>
                 </div>
-
                 <div class="form-group">
-                    <label>حجم الخط العام (<span id="fontSizeVal">15</span> px):</label>
-                    <input type="range" id="settingFontSize" min="12" max="20" value="15" oninput="applySettings()">
+                    <label>حجم العرض والخط (<span id="fontSizeVal">13.5</span> px):</label>
+                    <input type="range" id="settingFontSize" min="11" max="18" step="0.5" value="13.5" oninput="applySettings()">
                 </div>
             </div>
 
             <div class="card">
-                <div class="card-title">🎨 الألوان والمظهر العام</div>
-                <div class="form-group" style="margin-bottom:15px;">
-                    <label>اختر لون النظام الأساسي:</label>
-                    <div class="color-swatches">
-                        <div class="swatch active" style="background:#0f766e;" onclick="setPrimaryColor('#0f766e', '#115e59', this)" title="أخضر طبي"></div>
-                        <div class="swatch" style="background:#0284c7;" onclick="setPrimaryColor('#0284c7', '#0369a1', this)" title="أزرق سماوي"></div>
-                        <div class="swatch" style="background:#2563eb;" onclick="setPrimaryColor('#2563eb', '#1d4ed8', this)" title="أزرق ملكي"></div>
-                        <div class="swatch" style="background:#7c3aed;" onclick="setPrimaryColor('#7c3aed', '#6d28d9', this)" title="بنفسجي"></div>
-                        <div class="swatch" style="background:#be123c;" onclick="setPrimaryColor('#be123c', '#9f1239', this)" title="عنابي"></div>
-                        <div class="swatch" style="background:#b45309;" onclick="setPrimaryColor('#b45309', '#92400e', this)" title="ذهبي/برتقالي"></div>
-                        <div class="swatch" style="background:#15803d;" onclick="setPrimaryColor('#15803d', '#166534', this)" title="أخضر عشبي"></div>
-                        <div class="swatch" style="background:#334155;" onclick="setPrimaryColor('#334155', '#1e293b', this)" title="رمادي رسمي"></div>
-                    </div>
+                <div class="card-title">🎨 الألوان والمظهر</div>
+                <div class="color-swatches">
+                    <div class="swatch active" style="background:#0f766e;" onclick="setPrimaryColor('#0f766e', '#115e59', this)"></div>
+                    <div class="swatch" style="background:#0284c7;" onclick="setPrimaryColor('#0284c7', '#0369a1', this)"></div>
+                    <div class="swatch" style="background:#2563eb;" onclick="setPrimaryColor('#2563eb', '#1d4ed8', this)"></div>
+                    <div class="swatch" style="background:#7c3aed;" onclick="setPrimaryColor('#7c3aed', '#6d28d9', this)"></div>
+                    <div class="swatch" style="background:#be123c;" onclick="setPrimaryColor('#be123c', '#9f1239', this)"></div>
+                    <div class="swatch" style="background:#b45309;" onclick="setPrimaryColor('#b45309', '#92400e', this)"></div>
+                    <div class="swatch" style="background:#15803d;" onclick="setPrimaryColor('#15803d', '#166534', this)"></div>
+                    <div class="swatch" style="background:#334155;" onclick="setPrimaryColor('#334155', '#1e293b', this)"></div>
                 </div>
-                <div class="form-group">
+                <div class="form-group" style="margin-top:12px;">
                     <label>وضع الإضاءة:</label>
                     <select id="settingThemeMode" onchange="applySettings()">
-                        <option value="light">☀️ الوضع النهاري (فاتح)</option>
-                        <option value="dark">🌙 الوضع الليلي (داكن مريح للعين)</option>
+                        <option value="light">☀️ نهاري</option>
+                        <option value="dark">🌙 ليلي</option>
                     </select>
                 </div>
             </div>
 
             <div class="card">
-                <div class="card-title">📊 تنسيق الجداول والعرض</div>
-                <div class="form-group" style="margin-bottom:15px;">
-                    <label>تباعد وحجم خلايا الجداول:</label>
+                <div class="card-title">📊 الجداول والتنبيهات</div>
+                <div class="form-group" style="margin-bottom:10px;">
+                    <label>تباعد الجداول:</label>
                     <select id="settingTablePadding" onchange="applySettings()">
-                        <option value="6px">مضغوط (يعرض صفوف أكثر في الشاشة)</option>
-                        <option value="10px" selected>متوسط (قياسي ومتوازن)</option>
-                        <option value="15px">واسع (مريح للقراءة واللمس)</option>
+                        <option value="5px">مضغوط</option>
+                        <option value="8px" selected>متوسط</option>
+                        <option value="13px">واسع</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-bottom:10px;">
+                    <label>حدود الجداول:</label>
+                    <select id="settingTableBorders" onchange="applySettings()">
+                        <option value="1px" selected>شبكة كاملة</option>
+                        <option value="0px">بدون خطوط عمودية</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>حدود وشبكة الجداول:</label>
-                    <select id="settingTableBorders" onchange="applySettings()">
-                        <option value="1px" selected>إظهار خطوط الشبكة الكاملة</option>
-                        <option value="0px">بدون خطوط عمودية (تصميم عصري)</option>
-                    </select>
+                    <label>حد النواقص (أقل أو يساوي):</label>
+                    <input type="number" id="settingLowStockLimit" value="3" min="1" onchange="applySettings()">
                 </div>
-            </div>
-
-            <div class="card">
-                <div class="card-title">🔔 حدود التنبيهات والنسخ الاحتياطي</div>
-                <div class="form-group" style="margin-bottom:12px;">
-                    <label>نبهني بالنواقص إذا كانت الكمية أقل أو تساوي:</label>
-                    <input type="number" id="settingLowStockLimit" value="3" min="1" max="50" onchange="applySettings()">
-                </div>
-                <div class="form-group" style="margin-bottom:15px;">
-                    <label>نبهني بالإكسباير قبل انتهاء الصلاحية بـ (أشهر):</label>
+                <div class="form-group" style="margin-top:10px;">
+                    <label>تنبيه الانتهاء قبل (أشهر):</label>
                     <select id="settingExpiryMonths" onchange="applySettings()">
                         <option value="3">3 أشهر</option>
                         <option value="6" selected>6 أشهر</option>
                         <option value="9">9 أشهر</option>
-                        <option value="12">12 شهر (سنة)</option>
+                        <option value="12">12 شهر</option>
                     </select>
-                </div>
-                <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                    <button class="btn btn-primary" onclick="exportBackup()">💾 تحميل نسخة احتياطية</button>
-                    <label class="btn btn-secondary" style="cursor:pointer;">
-                        📂 استعادة نسخة احتياطية
-                        <input type="file" accept=".json" style="display:none;" onchange="restoreBackup(event)">
-                    </label>
                 </div>
             </div>
         </div>
@@ -862,28 +909,11 @@
 
 </div>
 
-<!-- نافذة استيراد كود قائمة من الأعلى -->
-<div id="importModal" class="modal">
-    <div class="modal-content">
-        <div class="card-title">
-            <span>📥 استيراد كود قائمة مذخر جديدة</span>
-            <button class="btn btn-danger" onclick="closeImportModal()">✕</button>
-        </div>
-        <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:10px;">
-            الصق هنا الكود المرتب للقائمة الجديدة ليُضاف فوراً إلى القوائم الموجودة في النظام:
-        </p>
-        <textarea id="importJsonArea" rows="8" placeholder='الصق كود القائمة هنا...'></textarea>
-        <div style="margin-top:15px; display:flex; gap:10px; justify-content:flex-end;">
-            <button class="btn btn-success" onclick="processImportFromModal()">✅ حفظ وإضافة القائمة</button>
-        </div>
-    </div>
-</div>
-
-<!-- نافذة التعديل الشامل لأي مادة في كل الأقسام -->
+<!-- نافذة التعديل الشامل -->
 <div id="editDrugModal" class="modal">
     <div class="modal-content">
         <div class="card-title">
-            <span>✏️ تعديل بيانات المادة والباركود والقائمة</span>
+            <span>✏️ تعديل المادة والباركود والقائمة</span>
             <button class="btn btn-danger" onclick="closeEditModal()">✕</button>
         </div>
         <form id="editDrugForm" onsubmit="saveEditedDrug(event)">
@@ -894,13 +924,13 @@
                     <input type="text" id="editInvoice" required>
                 </div>
                 <div class="form-group">
-                    <label>رقم الباركود</label>
-                    <input type="text" id="editBarcode" placeholder="امسح أو اكتب الباركود">
+                    <label>الباركود</label>
+                    <input type="text" id="editBarcode">
                 </div>
                 <div class="form-group">
-                    <label>قراءة باركود من صورة</label>
-                    <label class="btn btn-secondary" style="width:100%; justify-content:center; cursor:pointer; height:40px;">
-                        🖼️ اختيار صورة باركود
+                    <label>باركود من صورة</label>
+                    <label class="btn btn-secondary" style="width:100%; justify-content:center; cursor:pointer; height:34px;">
+                        🖼️ صورة
                         <input type="file" accept="image/*" style="display:none;" onchange="fillInputBarcodeFromImage(event, 'editBarcode')">
                     </label>
                 </div>
@@ -909,11 +939,11 @@
                     <input type="text" id="editName" required>
                 </div>
                 <div class="form-group">
-                    <label>نوع المادة / القسم</label>
+                    <label>النوع / القسم</label>
                     <input type="text" id="editType" required>
                 </div>
                 <div class="form-group">
-                    <label>الشركة المنتجة</label>
+                    <label>الشركة</label>
                     <input type="text" id="editCompany" required>
                 </div>
                 <div class="form-group">
@@ -921,7 +951,7 @@
                     <input type="date" id="editExpiry" required>
                 </div>
                 <div class="form-group">
-                    <label>كارتون / كمية</label>
+                    <label>كارتون</label>
                     <input type="number" id="editQty" min="0" required>
                 </div>
                 <div class="form-group">
@@ -929,15 +959,15 @@
                     <input type="number" id="editBonus" min="0">
                 </div>
                 <div class="form-group">
-                    <label>سعر المفرد (د.ع)</label>
+                    <label>سعر المفرد</label>
                     <input type="number" id="editPrice" min="0">
                 </div>
                 <div class="form-group">
-                    <label>المجموع (د.ع)</label>
+                    <label>المجموع</label>
                     <input type="number" id="editTotal" min="0">
                 </div>
             </div>
-            <div style="margin-top:18px; display:flex; gap:10px; justify-content:flex-end;">
+            <div style="margin-top:14px; display:flex; gap:8px; justify-content:flex-end;">
                 <button type="button" class="btn btn-light" style="color:var(--text); border-color:var(--border);" onclick="closeEditModal()">إلغاء</button>
                 <button type="submit" class="btn btn-success">💾 حفظ التعديلات</button>
             </div>
@@ -946,7 +976,6 @@
 </div>
 
 <script>
-    // البيانات الأولية المستخرجة من قائمة مذخر أدوية الفردوس رقم 342077
     const initialAlferdosData = [
         { id: 1, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "بارستول حب", type: "Vial", company: "-", expiry: "2028-07-01", qty: 10, bonus: 0, price: 3762, total: 37620 },
         { id: 2, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "باندج قهوائي 10سم", type: "BANDAGE", company: "CHINA", expiry: "2028-01-01", qty: 4, bonus: 0, price: 7200, total: 28800 },
@@ -984,14 +1013,15 @@
         { id: 34, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "راس ممة ثنائي AVEAT", type: "مستلزمات", company: "AVEAT", expiry: "2028-01-01", qty: 10, bonus: 0, price: 1653, total: 16530 }
     ];
 
-    let inventory = JSON.parse(localStorage.getItem('pharmacy_inventory_v3')) || initialAlferdosData;
-    let userSettings = JSON.parse(localStorage.getItem('pharmacy_settings_v3')) || {
+    let inventory = JSON.parse(localStorage.getItem('pharmacy_inventory_v4')) || initialAlferdosData;
+    let uploadedLists = JSON.parse(localStorage.getItem('pharmacy_uploaded_lists_v4')) || [];
+    let userSettings = JSON.parse(localStorage.getItem('pharmacy_settings_v4')) || {
         fontFamily: "'Cairo', sans-serif",
-        fontSize: "15",
+        fontSize: "13.5",
         primary: "#0f766e",
         primaryDark: "#115e59",
         theme: "light",
-        tablePadding: "10px",
+        tablePadding: "8px",
         tableBorders: "1px",
         lowStockLimit: 3,
         expiryMonths: 6
@@ -1000,8 +1030,10 @@
     let currentScannedId = null;
     let html5QrCode = null;
     let scanTimeout = null;
+    let pendingImages = [];
+    let pendingPdfUrl = null;
+    let pendingPdfName = null;
 
-    // ==================== الإعدادات ====================
     function loadSettingsToUI() {
         document.getElementById('settingFontFamily').value = userSettings.fontFamily;
         document.getElementById('settingFontSize').value = userSettings.fontSize;
@@ -1034,7 +1066,7 @@
         document.body.setAttribute('data-theme', userSettings.theme);
 
         if (save) {
-            localStorage.setItem('pharmacy_settings_v3', JSON.stringify(userSettings));
+            localStorage.setItem('pharmacy_settings_v4', JSON.stringify(userSettings));
             renderTables();
             updateAlerts();
         }
@@ -1054,34 +1086,104 @@
         applySettings(true);
     }
 
-    // ==================== الباركود الفوري والكاميرا والصور ====================
+    function switchTab(pageId, btn) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.nav-pill').forEach(b => b.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        btn.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (pageId === 'page1') {
+            setTimeout(() => document.getElementById('barcodeScanInput').focus(), 120);
+        }
+    }
+
+    // رفع الصور والكاميرا والـ PDF
+    function handleMediaFiles(event, sourceType) {
+        const files = Array.from(event.target.files || []);
+        files.forEach(file => {
+            const reader = new FileReader();
+            reader.onload = e => {
+                pendingImages.push({ name: file.name, src: sourceType, dataUrl: e.target.result });
+                renderMediaPreview();
+            };
+            reader.readAsDataURL(file);
+        });
+        event.target.value = '';
+    }
+
+    function handlePdfFile(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        pendingPdfName = file.name;
+        pendingPdfUrl = URL.createObjectURL(file);
+        document.getElementById('pdfViewerArea').style.display = 'block';
+        document.getElementById('pdfFrame').src = pendingPdfUrl;
+        event.target.value = '';
+    }
+
+    function renderMediaPreview() {
+        const area = document.getElementById('mediaPreviewArea');
+        area.innerHTML = '';
+        pendingImages.forEach(img => {
+            area.innerHTML += `
+                <div class="media-thumb">
+                    <img src="${img.dataUrl}" alt="${img.name}">
+                    <div>${img.src === 'camera' ? '📷 كاميرا' : '🖼️ معرض'}</div>
+                </div>
+            `;
+        });
+    }
+
+    function clearUploadedMedia() {
+        pendingImages = [];
+        pendingPdfUrl = null;
+        pendingPdfName = null;
+        document.getElementById('mediaPreviewArea').innerHTML = '';
+        document.getElementById('pdfFrame').src = '';
+        document.getElementById('pdfViewerArea').style.display = 'none';
+    }
+
+    function saveUploadedListRecord() {
+        const title = document.getElementById('uploadInvoiceName').value.trim() || `قائمة مرفقة (${new Date().toLocaleDateString('ar-IQ')})`;
+        if (!pendingImages.length && !pendingPdfName) {
+            alert('التقط صورة بالكاميرا أو اختر صوراً من المعرض أو حمّل ملف PDF أولاً.');
+            return;
+        }
+        uploadedLists.unshift({
+            id: Date.now(),
+            title,
+            imagesCount: pendingImages.length,
+            pdfName: pendingPdfName || '—',
+            date: new Date().toLocaleDateString('ar-IQ')
+        });
+        localStorage.setItem('pharmacy_uploaded_lists_v4', JSON.stringify(uploadedLists));
+        clearUploadedMedia();
+        document.getElementById('uploadInvoiceName').value = '';
+        renderInvoicesSummary();
+        alert('تم حفظ القائمة المرفقة بنجاح!');
+    }
+
+    // الباركود الفوري والكاميرا والصور
     function autoDetectBarcode() {
         clearTimeout(scanTimeout);
         scanTimeout = setTimeout(() => {
             const val = document.getElementById('barcodeScanInput').value.trim();
-            if (val.length >= 2) {
-                executeBarcodeLookup(val);
-            }
+            if (val.length >= 2) executeBarcodeLookup(val);
         }, 150);
     }
 
     function executeBarcodeLookup(codeOrName) {
         const query = codeOrName.trim().toLowerCase();
         const box = document.getElementById('scanResultBox');
-        if (!query) {
-            box.style.display = 'none';
-            return;
-        }
+        if (!query) { box.style.display = 'none'; return; }
 
         let item = inventory.find(d => d.barcode && d.barcode.toLowerCase() === query);
-        if (!item) {
-            item = inventory.find(d => d.name.toLowerCase().includes(query));
-        }
+        if (!item) item = inventory.find(d => d.name.toLowerCase().includes(query));
 
         if (item) {
             currentScannedId = item.id;
             document.getElementById('resName').textContent = item.name;
-            document.getElementById('resBarcode').textContent = item.barcode || 'غير مربوط بعد';
+            document.getElementById('resBarcode').textContent = item.barcode || 'غير مربوط';
             document.getElementById('resType').textContent = item.type;
             document.getElementById('resCompany').textContent = item.company;
             document.getElementById('resExpiry').textContent = item.expiry;
@@ -1107,7 +1209,7 @@
         html5QrCode = new Html5Qrcode("reader");
         html5QrCode.start(
             { facingMode: "environment" },
-            { fps: 10, qrbox: { width: 250, height: 150 } },
+            { fps: 10, qrbox: { width: 240, height: 140 } },
             (decodedText) => {
                 document.getElementById('barcodeScanInput').value = decodedText;
                 executeBarcodeLookup(decodedText);
@@ -1140,13 +1242,8 @@
             .then(decodedText => {
                 document.getElementById('barcodeScanInput').value = decodedText;
                 executeBarcodeLookup(decodedText);
-                if (!currentScannedId) {
-                    alert(`تمت قراءة الباركود (${decodedText}) من الصورة، لكنه غير مربوط بعلاج بعد.`);
-                }
             })
-            .catch(() => {
-                alert("لم يتم العثور على باركود واضح في الصورة.");
-            });
+            .catch(() => alert("لم يتم العثور على باركود واضح في الصورة."));
         event.target.value = '';
     }
 
@@ -1155,16 +1252,11 @@
         if (!file) return;
         const fileScanner = new Html5Qrcode("fileReaderHidden");
         fileScanner.scanFile(file, true)
-            .then(decodedText => {
-                document.getElementById(targetInputId).value = decodedText;
-            })
-            .catch(() => {
-                alert("تعذر قراءة الباركود من الصورة.");
-            });
+            .then(decodedText => { document.getElementById(targetInputId).value = decodedText; })
+            .catch(() => alert("تعذر قراءة الباركود من الصورة."));
         event.target.value = '';
     }
 
-    // ==================== التعديل الشامل في كل الأقسام ====================
     function openEditModal(id) {
         const item = inventory.find(d => d.id === id);
         if (!item) return;
@@ -1182,16 +1274,13 @@
         document.getElementById('editDrugModal').style.display = 'flex';
     }
 
-    function closeEditModal() {
-        document.getElementById('editDrugModal').style.display = 'none';
-    }
+    function closeEditModal() { document.getElementById('editDrugModal').style.display = 'none'; }
 
     function saveEditedDrug(e) {
         e.preventDefault();
         const id = Number(document.getElementById('editId').value);
         const idx = inventory.findIndex(d => d.id === id);
         if (idx === -1) return;
-
         inventory[idx] = {
             ...inventory[idx],
             invoice: document.getElementById('editInvoice').value.trim(),
@@ -1205,31 +1294,17 @@
             price: parseInt(document.getElementById('editPrice').value) || 0,
             total: parseInt(document.getElementById('editTotal').value) || 0
         };
-
         saveData();
         closeEditModal();
-        if (currentScannedId === id) {
-            executeBarcodeLookup(inventory[idx].barcode || inventory[idx].name);
-        }
+        if (currentScannedId === id) executeBarcodeLookup(inventory[idx].barcode || inventory[idx].name);
     }
 
-    // ==================== العمليات الأساسية وإدارة القوائم ====================
     function saveData() {
-        localStorage.setItem('pharmacy_inventory_v3', JSON.stringify(inventory));
+        localStorage.setItem('pharmacy_inventory_v4', JSON.stringify(inventory));
         renderTables();
         updateAlerts();
         updateInvoiceDropdown();
         renderInvoicesSummary();
-    }
-
-    function switchTab(pageId, btn) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(pageId).classList.add('active');
-        btn.classList.add('active');
-        if (pageId === 'page1') {
-            setTimeout(() => document.getElementById('barcodeScanInput').focus(), 100);
-        }
     }
 
     function dispenseOneItem() {
@@ -1240,13 +1315,13 @@
             saveData();
             executeBarcodeLookup(inventory[idx].barcode || inventory[idx].name);
         } else {
-            alert('الكمية نفدت بالكامل!');
+            alert('الكمية نفدت!');
         }
     }
 
     function addNewDrug(e) {
         e.preventDefault();
-        const newItem = {
+        inventory.unshift({
             id: Date.now(),
             invoice: "إدخال مباشر للصيدلية",
             barcode: document.getElementById('inBarcode').value.trim(),
@@ -1258,11 +1333,9 @@
             bonus: parseInt(document.getElementById('inBonus').value) || 0,
             price: 0,
             total: 0
-        };
-        inventory.unshift(newItem);
+        });
         saveData();
         document.getElementById('addDrugForm').reset();
-        document.getElementById('barcodeScanInput').focus();
     }
 
     function autoCalcInvoiceTotal() {
@@ -1273,7 +1346,7 @@
 
     function addItemToSpecificInvoice(e) {
         e.preventDefault();
-        const newItem = {
+        inventory.unshift({
             id: Date.now(),
             invoice: document.getElementById('invTitleInput').value.trim(),
             barcode: document.getElementById('invBarcodeInput').value.trim(),
@@ -1285,15 +1358,14 @@
             bonus: parseInt(document.getElementById('invBonusInput').value) || 0,
             price: parseInt(document.getElementById('invPriceInput').value) || 0,
             total: parseInt(document.getElementById('invTotalInput').value) || 0
-        };
-        inventory.unshift(newItem);
+        });
         saveData();
         ['invBarcodeInput', 'invNameInput', 'invTypeInput', 'invCompanyInput', 'invExpiryInput'].forEach(id => document.getElementById(id).value = '');
         document.getElementById('invQtyInput').value = 1;
         document.getElementById('invBonusInput').value = 0;
         document.getElementById('invPriceInput').value = 0;
         document.getElementById('invTotalInput').value = 0;
-        alert('تمت إضافة المادة وحفظها ضمن القائمة بنجاح!');
+        alert('تمت إضافة المادة وحفظها في القائمة!');
     }
 
     function renderInvoicesSummary() {
@@ -1316,10 +1388,22 @@
             container.innerHTML += `
                 <div class="invoice-chip">
                     <div>
-                        <strong style="display:block; font-size:0.95rem;">${key}</strong>
-                        <span style="font-size:0.82rem; color:var(--text-muted);">${val.count} مادة</span>
+                        <strong style="display:block; font-size:0.86rem;">${key}</strong>
+                        <span style="font-size:0.76rem; color:var(--text-muted);">${val.count} مادة</span>
                     </div>
-                    <strong style="color:var(--primary);">${val.sum.toLocaleString()} د.ع</strong>
+                    <strong style="color:var(--primary); font-size:0.86rem;">${val.sum.toLocaleString()} د.ع</strong>
+                </div>
+            `;
+        });
+
+        uploadedLists.forEach(ul => {
+            container.innerHTML += `
+                <div class="invoice-chip" style="border-right-color: var(--success);">
+                    <div>
+                        <strong style="display:block; font-size:0.86rem;">${ul.title}</strong>
+                        <span style="font-size:0.75rem; color:var(--text-muted);">صور: ${ul.imagesCount} | PDF: ${ul.pdfName}</span>
+                    </div>
+                    <span class="status-pill pill-success">${ul.date}</span>
                 </div>
             `;
         });
@@ -1331,7 +1415,6 @@
         const invFilter = document.getElementById('invoiceFilter').value;
         const limit = userSettings.lowStockLimit;
 
-        // الصفحة الأولى (بدون أسعار)
         const tbody1 = document.getElementById('tablePage1Body');
         tbody1.innerHTML = '';
         inventory.filter(d =>
@@ -1351,24 +1434,17 @@
                     <td>${item.expiry}</td>
                     <td>${qtyBadge}</td>
                     <td>${item.bonus}</td>
-                    <td class="no-print">
-                        <button class="btn btn-secondary" style="padding:4px 10px; font-size:0.8rem;" onclick="openEditModal(${item.id})">✏️ تعديل</button>
-                    </td>
+                    <td class="no-print"><button class="btn btn-secondary" style="padding:3px 8px; font-size:0.76rem;" onclick="openEditModal(${item.id})">✏️</button></td>
                 </tr>
             `;
         });
 
-        // الصفحة الثانية (مع الأسعار)
         const tbody2 = document.getElementById('tablePage2Body');
         tbody2.innerHTML = '';
         let totalSum = 0;
         const filtered2 = inventory.filter(d => {
             const matchInv = invFilter === 'ALL' || d.invoice === invFilter;
-            const matchText =
-                d.name.toLowerCase().includes(q2) ||
-                d.company.toLowerCase().includes(q2) ||
-                d.type.toLowerCase().includes(q2) ||
-                (d.barcode && d.barcode.toLowerCase().includes(q2));
+            const matchText = d.name.toLowerCase().includes(q2) || d.company.toLowerCase().includes(q2) || d.type.toLowerCase().includes(q2);
             return matchInv && matchText;
         });
 
@@ -1377,7 +1453,7 @@
             tbody2.innerHTML += `
                 <tr>
                     <td>${index + 1}</td>
-                    <td style="font-size:0.82rem; color:var(--text-muted);">${item.invoice}</td>
+                    <td style="font-size:0.78rem; color:var(--text-muted);">${item.invoice}</td>
                     <td><strong>${item.barcode || '—'}</strong></td>
                     <td><strong>${item.name}</strong></td>
                     <td>${item.type}</td>
@@ -1385,11 +1461,11 @@
                     <td>${item.expiry}</td>
                     <td>${item.qty}</td>
                     <td>${item.bonus}</td>
-                    <td>${Number(item.price).toLocaleString()} د.ع</td>
-                    <td><strong>${Number(item.total).toLocaleString()} د.ع</strong></td>
+                    <td>${Number(item.price).toLocaleString()}</td>
+                    <td><strong>${Number(item.total).toLocaleString()}</strong></td>
                     <td class="no-print">
-                        <button class="btn btn-secondary" style="padding:3px 8px; font-size:0.8rem;" onclick="openEditModal(${item.id})">✏️</button>
-                        <button class="btn btn-danger" style="padding:3px 8px; font-size:0.8rem;" onclick="deleteItem(${item.id})">🗑️</button>
+                        <button class="btn btn-secondary" style="padding:2px 6px; font-size:0.75rem;" onclick="openEditModal(${item.id})">✏️</button>
+                        <button class="btn btn-danger" style="padding:2px 6px; font-size:0.75rem;" onclick="deleteItem(${item.id})">🗑️</button>
                     </td>
                 </tr>
             `;
@@ -1421,9 +1497,9 @@
                             <td><strong>${item.name}</strong></td>
                             <td>${item.company}</td>
                             <td>${item.expiry}</td>
-                            <td><span class="status-pill ${isExpired ? 'pill-danger' : 'pill-warning'}">${isExpired ? 'منتهي الصلاحية!' : 'قريب الانتهاء'}</span></td>
+                            <td><span class="status-pill ${isExpired ? 'pill-danger' : 'pill-warning'}">${isExpired ? 'منتهي' : 'قريب'}</span></td>
                             <td>${item.qty}</td>
-                            <td class="no-print"><button class="btn btn-secondary" style="padding:3px 8px; font-size:0.8rem;" onclick="openEditModal(${item.id})">✏️ تعديل</button></td>
+                            <td class="no-print"><button class="btn btn-secondary" style="padding:2px 6px; font-size:0.75rem;" onclick="openEditModal(${item.id})">✏️</button></td>
                         </tr>
                     `;
                 }
@@ -1436,9 +1512,9 @@
                         <td><strong>${item.name}</strong></td>
                         <td>${item.type}</td>
                         <td>${item.company}</td>
-                        <td><span class="status-pill pill-danger">${item.qty} متبقي</span></td>
+                        <td><span class="status-pill pill-danger">${item.qty}</span></td>
                         <td>${item.invoice}</td>
-                        <td class="no-print"><button class="btn btn-secondary" style="padding:3px 8px; font-size:0.8rem;" onclick="openEditModal(${item.id})">✏️ تعديل</button></td>
+                        <td class="no-print"><button class="btn btn-secondary" style="padding:2px 6px; font-size:0.75rem;" onclick="openEditModal(${item.id})">✏️</button></td>
                     </tr>
                 `;
             }
@@ -1452,98 +1528,18 @@
         const current = select.value;
         const invoices = [...new Set(inventory.map(i => i.invoice))];
         select.innerHTML = '<option value="ALL">كل القوائم</option>';
-        invoices.forEach(inv => {
-            select.innerHTML += `<option value="${inv}">${inv}</option>`;
-        });
+        invoices.forEach(inv => { select.innerHTML += `<option value="${inv}">${inv}</option>`; });
         select.value = current || 'ALL';
-        if (invoices.length > 0) {
-            document.getElementById('statLastInvoice').textContent = invoices[0];
-        }
+        if (invoices.length > 0) document.getElementById('statLastInvoice').textContent = invoices[0];
     }
 
     function deleteItem(id) {
-        if (confirm('هل أنت متأكد من حذف هذه المادة؟')) {
+        if (confirm('حذف هذه المادة؟')) {
             inventory = inventory.filter(i => i.id !== id);
             saveData();
         }
     }
 
-    function openImportModal() { document.getElementById('importModal').style.display = 'flex'; }
-    function closeImportModal() { document.getElementById('importModal').style.display = 'none'; }
-
-    function ingestItemsArray(rawText, clearAreaId = null) {
-        try {
-            const parsed = JSON.parse(rawText.trim());
-            const list = Array.isArray(parsed) ? parsed : [parsed];
-            if (!list.length) throw new Error();
-            list.forEach((item, i) => {
-                const qty = parseInt(item.qty) || 0;
-                const price = parseInt(item.price) || 0;
-                const total = item.total !== undefined ? (parseInt(item.total) || 0) : (qty * price);
-                inventory.unshift({
-                    id: Date.now() + i + Math.floor(Math.random() * 1000),
-                    invoice: item.invoice || "قائمة مذخر جديدة",
-                    barcode: item.barcode || "",
-                    name: item.name || "مادة جديدة",
-                    type: item.type || "عام",
-                    company: item.company || "-",
-                    expiry: item.expiry || "2028-12-01",
-                    qty: qty,
-                    bonus: parseInt(item.bonus) || 0,
-                    price: price,
-                    total: total
-                });
-            });
-            saveData();
-            if (clearAreaId) document.getElementById(clearAreaId).value = '';
-            alert(`تمت إضافة ${list.length} مادة وترتيبها وحفظها مع القوائم السابقة بنجاح!`);
-            return true;
-        } catch (err) {
-            alert('تأكد من لصق الكود المرتب للقائمة بشكل صحيح.');
-            return false;
-        }
-    }
-
-    function processImportFromModal() {
-        const raw = document.getElementById('importJsonArea').value;
-        if (ingestItemsArray(raw, 'importJsonArea')) {
-            closeImportModal();
-        }
-    }
-
-    function importFromPage3() {
-        const raw = document.getElementById('page3ImportArea').value;
-        ingestItemsArray(raw, 'page3ImportArea');
-    }
-
-    function exportBackup() {
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(inventory, null, 2));
-        const a = document.createElement('a');
-        a.href = dataStr;
-        a.download = `pharmacy_backup_${new Date().toISOString().slice(0,10)}.json`;
-        a.click();
-    }
-
-    function restoreBackup(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            try {
-                const imported = JSON.parse(e.target.result);
-                if (Array.isArray(imported)) {
-                    inventory = imported;
-                    saveData();
-                    alert('تمت استعادة النسخة الاحتياطية بنجاح!');
-                }
-            } catch {
-                alert('ملف النسخة الاحتياطية غير صالح.');
-            }
-        };
-        reader.readAsText(file);
-    }
-
-    // التشغيل عند الفتح
     loadSettingsToUI();
     saveData();
 </script>
