@@ -289,7 +289,7 @@
 
         .img-preview {
             margin-top: 10px;
-            max-width: 340px;
+            max-width: 360px;
             border-radius: 8px;
             border: 1px solid var(--border);
             display: none;
@@ -578,7 +578,7 @@
     <div id="p-list-img" class="page">
         <div class="card">
             <div class="card-title">
-                <span>📸 استخراج المعلومات من صورة القائمة تلقائياً إلى الجدول</span>
+                <span>📸 استخراج معلومات القائمة من الصورة وتنزيلها في الجدول</span>
             </div>
 
             <div class="grid">
@@ -597,20 +597,25 @@
                     </select>
                 </div>
                 <div class="field">
-                    <label>رفع صورة القائمة للاستخراج التلقائي</label>
+                    <label>رفع صورة القائمة</label>
                     <input type="file" accept="image/*" onchange="processImageAndExtract(event)">
                 </div>
             </div>
 
             <div id="ocrProgressBanner" class="ocr-banner">
-                اختر صورة قائمة المذخر من الأعلى — سيقوم النظام بقراءة الأسطر وتدقيق (العدد × السعر = المجموع) وإنزالها في الجدول أدناه تلقائياً.
+                اختر صورة القائمة من الأعلى — يتم عرضها مع تدقيق الأسطر، وإذا أردت دقة مطابقة لما أستخرجه لك هنا، يمكنك لصق النص المستخرج في صندوق التحويل السريع بالأسفل ليتحول مباشرة إلى جدول كامل.
             </div>
 
             <img id="listImgPreview" class="img-preview" alt="معاينة القائمة">
 
+            <div class="field" style="margin-top:12px;">
+                <label>صندوق تحويل سطور القائمة إلى جدول (لصق السطور أو نص القائمة هنا لتحويلها فوراً بدون أخطاء)</label>
+                <textarea id="rawListPasteInput" rows="4" placeholder="الصق هنا سطور القائمة (مثل: AMOXIL 1000 CAP | 10 | 2750 | 27500 | 2027-03) أو أي نص قائمة..." oninput="parsePastedLinesToTable(this.value)"></textarea>
+            </div>
+
             <div class="price-box" style="margin-top:12px;">
                 <div>
-                    <span style="font-size:0.8rem; color:var(--muted);">عدد المواد المستخرجة:</span>
+                    <span style="font-size:0.8rem; color:var(--muted);">عدد المواد في الجدول:</span>
                     <strong id="imgExtractedCount" style="font-size:1.05rem; margin-right:6px;">0</strong>
                 </div>
                 <div>
@@ -625,7 +630,7 @@
 
             <div style="margin-top:12px;">
                 <div class="card-title" style="margin-bottom:8px;">
-                    <span>📋 جدول المواد المستخرجة من الصورة</span>
+                    <span>📋 جدول المواد المستخرجة</span>
                     <div style="display:flex; gap:6px; flex-wrap:wrap;">
                         <button class="btn btn-sub" onclick="addImgRow()">➕ إضافة سطر</button>
                         <button class="btn btn-bad" onclick="clearImgRows()">🗑️ تفريغ الجدول</button>
@@ -661,7 +666,7 @@
 <div id="toast" class="toast"></div>
 
 <script>
-    const STORAGE_KEY = 'ibrahim_pharmacy_clean_v2';
+    const STORAGE_KEY = 'ibrahim_pharmacy_clean_v3';
     const ALPHABET = ["الكل", "أ", "ب", "ت", "ث", "ج", "ح", "خ", "د", "ذ", "ر", "ز", "س", "ش", "ص", "ض", "ط", "ظ", "ع", "غ", "ف", "ق", "ك", "ل", "م", "ن", "هـ", "و", "ي"];
 
     let db = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
@@ -743,7 +748,134 @@
         saveDB();
     }
 
-    /* تحسين الصورة قبل القراءة لرفع دقة الأرقام والكتابة */
+    /* تحويل أي سطور نصية أو جدولية إلى صفوف منظمة ومدققة */
+    function parseSingleLineSmart(rawLine, defaultPct) {
+        const line = normalizeDigits(rawLine).replace(/\s+/g, ' ').trim();
+        if (!line || line.length < 3) return null;
+
+        const headerRegex = /^(التسلسل|الباركود|الاسم العلمي|الاسم التجاري|الشركة|العدد|البونص|الاكسباير|الإكسباير|السعر|المجموع|مذخر|قائمة رقم|المجموع الكلي)/i;
+        if (headerRegex.test(line)) return null;
+
+        // إذا السطر مفصول بـ | أو أعمدة جدول
+        if (line.includes('|')) {
+            const cols = line.split('|').map(c => c.trim());
+            const nameCol = cols.find(c => /[A-Za-z\u0600-\u06FF]{3,}/.test(c) && !/^(G\.S\.K|ABBOTT|PFIZER|NOVARTIS|LEO|MSD|JANSSEN|SCHERING)$/i.test(c)) || cols[0] || '';
+            const dateCol = cols.find(c => /\b20\d{2}[-/.]\d{1,2}(?:[-/.]\d{1,2})?\b/.test(c)) || '';
+            const numCols = cols.filter(c => /^\s*[\d,]+\s*$/.test(c)).map(c => parseInt(c.replace(/,/g, ''), 10));
+
+            let qty = 1, price = 0, total = 0;
+            if (numCols.length >= 2) {
+                const last = numCols[numCols.length - 1];
+                const prev = numCols[numCols.length - 2];
+                const firstNum = numCols[0];
+                if (firstNum >= 1 && firstNum <= 500 && prev >= 250 && last >= prev) {
+                    qty = firstNum;
+                    price = prev;
+                    total = last;
+                } else if (last >= prev && prev >= 250) {
+                    total = last;
+                    price = prev;
+                    qty = Math.max(1, Math.round(total / price));
+                } else {
+                    qty = Math.max(1, firstNum || 1);
+                    price = prev || 0;
+                    total = qty * price;
+                }
+            } else if (numCols.length === 1) {
+                if (numCols[0] >= 250) { price = numCols[0]; total = numCols[0]; }
+                else { qty = Math.max(1, numCols[0] || 1); }
+            }
+
+            if (!nameCol) return null;
+            return {
+                id: Date.now() + Math.random(),
+                name: nameCol,
+                qty,
+                price,
+                total,
+                date: dateCol,
+                fixedBonus: 0,
+                pct: defaultPct
+            };
+        }
+
+        let work = line.replace(/[|_=~`•*]+/g, ' ').replace(/\s+/g, ' ').trim();
+        let expiry = '';
+        const expMatch = work.match(/\b(20\d{2}[-/.]\d{1,2}(?:[-/.]\d{1,2})?|\d{1,2}[-/.]20\d{2})\b/);
+        if (expMatch) {
+            expiry = expMatch[0];
+            work = work.replace(expMatch[0], ' ');
+        }
+
+        work = work.replace(/^\d{1,3}\s+/, ' ');
+        const numMatches = work.match(/\b\d{1,3}(?:,\d{3})+|\b\d+\b/g) || [];
+        const numbers = numMatches.map(s => parseInt(s.replace(/,/g, ''), 10)).filter(v => !isNaN(v));
+
+        let qty = 1, price = 0, total = 0;
+        let foundProduct = false;
+        for (let i = 0; i < numbers.length; i++) {
+            for (let j = 0; j < numbers.length; j++) {
+                if (i === j) continue;
+                const qC = numbers[i];
+                const pC = numbers[j];
+                if (qC >= 1 && qC <= 500 && pC >= 250 && numbers.includes(qC * pC)) {
+                    qty = qC;
+                    price = pC;
+                    total = qC * pC;
+                    foundProduct = true;
+                    break;
+                }
+            }
+            if (foundProduct) break;
+        }
+
+        if (!foundProduct && numbers.length >= 2) {
+            const desc = [...numbers].sort((a, b) => b - a);
+            total = desc[0];
+            price = desc[1] >= 250 ? desc[1] : desc[0];
+            qty = price > 0 ? Math.max(1, Math.round(total / price)) : 1;
+            total = qty * price;
+        } else if (!foundProduct && numbers.length === 1) {
+            if (numbers[0] >= 250) { price = numbers[0]; total = numbers[0]; }
+            else { qty = Math.max(1, numbers[0]); }
+        }
+
+        const cleanName = work
+            .replace(/\b\d{1,3}(?:,\d{3})+\b/g, ' ')
+            .replace(/(?<![A-Za-z])\b\d+\b(?![A-Za-z%])/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+
+        if (cleanName.length < 2) return null;
+        return {
+            id: Date.now() + Math.random(),
+            name: cleanName,
+            qty,
+            price,
+            total,
+            date: expiry,
+            fixedBonus: 0,
+            pct: defaultPct
+        };
+    }
+
+    function parsePastedLinesToTable(text) {
+        const raw = (text || '').trim();
+        if (!raw) return;
+        const defaultPct = clampPct(document.getElementById('imgBonusPctSelect').value);
+        const lines = raw.split(/\n+/);
+        const rows = [];
+        lines.forEach(l => {
+            const r = parseSingleLineSmart(l, defaultPct);
+            if (r) rows.push(r);
+        });
+        if (rows.length > 0) {
+            imgRows = rows;
+            renderImgRows();
+            document.getElementById('ocrProgressBanner').textContent = `✅ تم تحويل ${rows.length} مادة إلى الجدول بدقة — راجع أو احفظ مباشرة.`;
+        }
+    }
+
     function preprocessImageForOCR(file) {
         return new Promise((resolve, reject) => {
             const img = new Image();
@@ -756,13 +888,12 @@
                 canvas.height = h;
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, w, h);
-
                 const imgData = ctx.getImageData(0, 0, w, h);
                 const d = imgData.data;
                 for (let i = 0; i < d.length; i += 4) {
                     const gray = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
-                    const enhanced = gray < 165 ? 0 : 255;
-                    d[i] = d[i + 1] = d[i + 2] = enhanced;
+                    const v = gray < 165 ? 0 : 255;
+                    d[i] = d[i + 1] = d[i + 2] = v;
                 }
                 ctx.putImageData(imgData, 0, 0);
                 resolve(canvas.toDataURL('image/png'));
@@ -772,137 +903,43 @@
         });
     }
 
-    /* تحليل كل سطر من الصورة مع تدقيق معادلة (العدد × السعر = المجموع) */
-    function parseExtractedInvoiceLine(rawLine, defaultPct) {
-        const line = normalizeDigits(rawLine).replace(/\s+/g, ' ').trim();
-        if (!line || line.length < 4) return null;
-
-        const headerPattern = /(التسلسل|الباركود|الاسم العلمي|الاسم التجاري|الشركة|العدد|البونص|الاكسباير|الإكسباير|السعر|المجموع|مذخر|قائمة رقم|المجموع الكلي)/i;
-        if (headerPattern.test(line)) return null;
-
-        let work = line.replace(/[|_=~`•*]+/g, ' ').replace(/\s+/g, ' ').trim();
-
-        // استخراج تاريخ الانتهاء (YYYY-MM أو MM/YYYY أو YYYY-MM-DD)
-        let expiry = '';
-        const expMatch = work.match(/\b(20\d{2}[-/.]\d{1,2}(?:[-/.]\d{1,2})?|\d{1,2}[-/.]20\d{2})\b/);
-        if (expMatch) {
-            expiry = expMatch[0];
-            work = work.replace(expMatch[0], ' ');
-        }
-
-        // استبعاد التسلسل في بداية السطر أو الباركود
-        work = work.replace(/^\d{1,3}\s+/, ' ');
-
-        // استخراج كل الأرقام الموجودة في السطر
-        const numMatches = work.match(/\b\d{1,3}(?:,\d{3})+|\b\d+\b/g) || [];
-        const numbers = numMatches.map(s => parseInt(s.replace(/,/g, ''), 10)).filter(v => !isNaN(v));
-
-        let qty = 1;
-        let price = 0;
-        let total = 0;
-        let fixedBonus = 0;
-
-        // البحث عن ثلاثية أو ثنائية تحقق: العدد × السعر = المجموع
-        let matchedMath = false;
-        for (let i = 0; i < numbers.length; i++) {
-            for (let j = 0; j < numbers.length; j++) {
-                if (i === j) continue;
-                const qCand = numbers[i];
-                const pCand = numbers[j];
-                if (qCand >= 1 && qCand <= 500 && pCand >= 250) {
-                    const expectedTotal = qCand * pCand;
-                    if (numbers.includes(expectedTotal)) {
-                        qty = qCand;
-                        price = pCand;
-                        total = expectedTotal;
-                        matchedMath = true;
-                        break;
-                    }
-                }
-            }
-            if (matchedMath) break;
-        }
-
-        if (!matchedMath && numbers.length >= 2) {
-            const sortedDesc = [...numbers].sort((a, b) => b - a);
-            if (sortedDesc[0] >= 250 && sortedDesc[1] >= 250 && sortedDesc[0] >= sortedDesc[1]) {
-                total = sortedDesc[0];
-                price = sortedDesc[1];
-                qty = Math.max(1, Math.round(total / price));
-                total = qty * price;
-            } else if (sortedDesc[0] >= 250) {
-                price = sortedDesc[0];
-                const small = numbers.find(x => x >= 1 && x <= 200);
-                qty = small || 1;
-                total = qty * price;
-            }
-        } else if (!matchedMath && numbers.length === 1 && numbers[0] >= 250) {
-            price = numbers[0];
-            qty = 1;
-            total = price;
-        }
-
-        // تنظيف اسم المادة من الأرقام المنفصلة الخاصة بالأسعار والكميات مع الإبقاء على العيار مثل 500MG أو 1000MG
-        let cleanName = work
-            .replace(/\b\d{1,3}(?:,\d{3})+\b/g, ' ')
-            .replace(/(?<![A-Za-z])\b\d+\b(?![A-Za-z%])/g, ' ')
-            .replace(/\s+/g, ' ')
-            .trim();
-
-        if (cleanName.length < 3) return null;
-
-        return {
-            id: Date.now() + Math.random(),
-            name: cleanName,
-            qty,
-            price,
-            total,
-            date: expiry,
-            fixedBonus,
-            pct: defaultPct
-        };
-    }
-
     async function processImageAndExtract(ev) {
         const file = ev.target.files[0];
         if (!file) return;
-
         const imgEl = document.getElementById('listImgPreview');
         imgEl.src = URL.createObjectURL(file);
         imgEl.style.display = 'block';
 
         const banner = document.getElementById('ocrProgressBanner');
         const defaultPct = clampPct(document.getElementById('imgBonusPctSelect').value);
-        banner.textContent = '⏳ جاري تحسين وضوح الصورة واستخراج المواد والأسعار والكميات وتدقيقها...';
+        banner.textContent = '⏳ جاري قراءة الصورة وتدقيق الأسطر...';
 
         try {
             const processedDataUrl = await preprocessImageForOCR(file);
             const result = await Tesseract.recognize(processedDataUrl, 'eng+ara', {
                 logger: m => {
                     if (m.status === 'recognizing text') {
-                        const pct = Math.round((m.progress || 0) * 100);
-                        banner.textContent = `⏳ جاري استخراج البيانات من الصورة... (${pct}%)`;
+                        banner.textContent = `⏳ جاري استخراج بيانات الصورة... (${Math.round((m.progress || 0) * 100)}%)`;
                     }
                 }
             });
 
             const lines = (result.data.text || '').split(/\n+/);
-            const parsedList = [];
+            const parsed = [];
             lines.forEach(line => {
-                const row = parseExtractedInvoiceLine(line, defaultPct);
-                if (row) parsedList.push(row);
+                const row = parseSingleLineSmart(line, defaultPct);
+                if (row) parsed.push(row);
             });
 
-            if (parsedList.length > 0) {
-                imgRows = parsedList;
+            if (parsed.length > 0) {
+                imgRows = parsed;
                 renderImgRows();
-                banner.textContent = `✅ تم استخراج ${parsedList.length} مادة وتدقيق (العدد × السعر = المجموع) بنجاح — راجع الجدول أدناه أو احفظه مباشرة.`;
-                showToast(`تم استخراج ${parsedList.length} مادة من الصورة`);
+                banner.textContent = `✅ تم استخراج ${parsed.length} سطر من الصورة — راجع الأرقام والأسماء وعدّل أي خانة قبل الحفظ.`;
             } else {
-                banner.textContent = '⚠️ لم يتم التعرف على أسطر واضحة — تأكد من وضوح الصورة وإضاءتها أو أضف الأسطر يدوياً.';
+                banner.textContent = '⚠️ قراءة المتصفح لم تلتقط الأسطر بوضوح — يمكنك إدخال الأسطر يدوياً أو لصقها في الصندوق أعلاه لتحويلها فوراً.';
             }
-        } catch (err) {
-            banner.textContent = '⚠️ تعذر قراءة الصورة، جرّب صورة أوضح.';
+        } catch {
+            banner.textContent = '⚠️ تعذر استخراج النص تلقائياً من الصورة.';
         }
 
         ev.target.value = '';
@@ -945,7 +982,7 @@
         let sumTotal = 0;
 
         if (!imgRows.length) {
-            body.innerHTML = '<tr><td colspan="10" style="text-align:center; color:var(--muted);">ارفع صورة القائمة من الأعلى ليتم تفريغها هنا تلقائياً</td></tr>';
+            body.innerHTML = '<tr><td colspan="10" style="text-align:center; color:var(--muted);">لا توجد مواد في الجدول حالياً</td></tr>';
             document.getElementById('imgExtractedCount').textContent = '0';
             document.getElementById('imgExtractedBonus').textContent = '0';
             document.getElementById('imgExtractedTotal').textContent = '0 د.ع';
