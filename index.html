@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>نظام إدارة الصيدلية والديون والمذاخر الذكي</title>
+    <title>نظام إدارة الصيدلية والديون والمذاخر</title>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@400;600;700;800&family=Changa:wght@400;600;700&family=El+Messiri:wght@400;600;700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=Lateef&family=Lalezar&family=Lemonada:wght@400;600;700&family=Mada:wght@400;600;700&family=Markazi+Text:wght@400;600;700&family=Mirza:wght@400;700&family=Noto+Kufi+Arabic:wght@400;600;700&family=Noto+Naskh+Arabic:wght@400;600;700&family=Noto+Sans+Arabic:wght@400;600;700&family=Rakkas&family=Readex+Pro:wght@400;600;700&family=Reem+Kufi:wght@400;600;700&family=Rubik:wght@400;600;700&family=Scheherazade+New:wght@400;700&family=Tajawal:wght@400;500;700;800&family=Vazirmatn:wght@400;600;700&display=swap" rel="stylesheet">
     
@@ -562,7 +562,7 @@
 
 <header class="no-print">
     <div class="header-top">
-        <h1>💊 نظام إدارة الصيدلية والديون والمذاخر الذكي</h1>
+        <h1>💊 نظام إدارة الصيدلية والديون والمذاخر</h1>
         <div class="header-actions">
             <button class="btn btn-light" onclick="window.print()">🖨️ طباعة</button>
             <button class="btn btn-light" onclick="toggleTheme()">🌓 ليلي / نهاري</button>
@@ -758,7 +758,7 @@
 
         <div class="smart-box no-print">
             <div class="card-title" style="color:var(--secondary); margin-bottom:6px;">
-                <span>🤖 إضافة سجل ديون من صورة أو نص (ترتيب تلقائي من أ إلى ي وحساب المجموع)</span>
+                <span>🤖 إضافة سجل ديون (ترتيب تلقائي من أ إلى ي وحساب المجموع)</span>
             </div>
             <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">
                 أدخل أو الصق السجل (مثال: <strong>علي حسين - Atacand 16mg (2) - 34000</strong>) أو التقط صورة السجل ليُضاف مباشرة على اسمه ويُحسب مجموع ديونه:
@@ -766,7 +766,7 @@
             <div class="form-grid" style="margin-bottom:8px;">
                 <div class="form-group">
                     <label>التقاط / رفع صورة سجل دين</label>
-                    <input type="file" accept="image/*" capture="environment" onchange="handleMediaFiles(event, 'camera')">
+                    <input type="file" accept="image/*" capture="environment" onchange="handleMediaFiles(event, 'camera', false)">
                 </div>
                 <div class="form-group">
                     <label>تاريخ الوجبة</label>
@@ -836,7 +836,7 @@
         </div>
 
         <div class="card">
-            <div class="card-title"><span>🗂️ بطاقات القوائم المحفوظة (مذخر الفردوس / تجهيزات أريس / المرفقات)</span></div>
+            <div class="card-title"><span>🗂️ القوائم المحفوظة في الأرشيف (حسب المذخر / التجهيزات والتاريخ)</span></div>
             <div id="invoicesSummaryCards" class="invoice-summary-list"></div>
         </div>
 
@@ -880,7 +880,7 @@
                 <span>🤖 إضافة قائمة وتحديث الأسعار القديمة وحساب العدد والمجموع أوتوماتيكياً</span>
             </div>
             <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">
-                اختر أو اكتب اسم المذخر أو التجهيزات (مثل <strong>مذخر الفردوس</strong> أو <strong>تجهيزات أريس</strong>) والتاريخ، والصق المواد (<strong>اسم المادة | العدد | سعر المفرد | سعر البيع الجديد</strong>)، وسيُحفظ مباشرة في أرشيف القوائم ويحدّث الأسعار والكميات:
+                اكتب اسم المذخر أو التجهيزات (مثل <strong>مذخر الفردوس</strong> أو <strong>تجهيزات أريس</strong>) والتاريخ، والصق المواد (<strong>اسم المادة | العدد | سعر المفرد | سعر البيع الجديد</strong>)، وسيُحفظ مباشرة في أرشيف القوائم ويحدّث الأسعار والكميات:
             </p>
             <div class="form-grid" style="margin-bottom:8px;">
                 <div class="form-group">
@@ -898,7 +898,7 @@
 
         <div class="card" style="border-right: 4px solid var(--secondary);">
             <div class="card-title" style="color: var(--secondary);">
-                <span>📸 رفع صورة قائمة أو ملف PDF (تُحفظ وتُصنّف تلقائياً في أرشيف القوائم)</span>
+                <span>📸 رفع صورة قائمة أو ملف PDF (تُضاف وتُحفظ تلقائياً في أرشيف القوائم)</span>
             </div>
             <div class="form-grid" style="margin-bottom:12px;">
                 <div class="form-group">
@@ -1271,10 +1271,10 @@
 
     const arabicLetters = ["الكل", "أ", "ب", "ت", "ث", "ج", "ح", "خ", "د", "ذ", "ر", "ز", "س", "ش", "ص", "ض", "ط", "ظ", "ع", "غ", "ف", "ق", "ك", "ل", "م", "ن", "هـ", "و", "ي"];
 
-    let inventory = JSON.parse(localStorage.getItem('pharmacy_inventory_v9')) || initialAlferdosData;
-    let debtors = JSON.parse(localStorage.getItem('pharmacy_debtors_v9')) || [];
-    let uploadedLists = JSON.parse(localStorage.getItem('pharmacy_uploaded_lists_v9')) || [];
-    let userSettings = JSON.parse(localStorage.getItem('pharmacy_settings_v9')) || {
+    let inventory = JSON.parse(localStorage.getItem('pharmacy_inventory_v10')) || initialAlferdosData;
+    let debtors = JSON.parse(localStorage.getItem('pharmacy_debtors_v10')) || [];
+    let uploadedLists = JSON.parse(localStorage.getItem('pharmacy_uploaded_lists_v10')) || [];
+    let userSettings = JSON.parse(localStorage.getItem('pharmacy_settings_v10')) || {
         fontFamily: "'Cairo', sans-serif",
         fontSize: "13.5",
         primary: "#0f766e",
@@ -1343,7 +1343,7 @@
         document.body.setAttribute('data-theme', userSettings.theme);
 
         if (save) {
-            localStorage.setItem('pharmacy_settings_v9', JSON.stringify(userSettings));
+            localStorage.setItem('pharmacy_settings_v10', JSON.stringify(userSettings));
             renderTables();
             updateAlerts();
         }
@@ -1618,7 +1618,7 @@
             amount: Number(amount) || 0
         });
         debtors.sort((a, b) => a.name.localeCompare(b.name, 'ar'));
-        localStorage.setItem('pharmacy_debtors_v9', JSON.stringify(debtors));
+        localStorage.setItem('pharmacy_debtors_v10', JSON.stringify(debtors));
         renderDebtors();
         updateDebtorDropdown();
     }
@@ -1736,14 +1736,14 @@
             items: "تسديد دفعة نقدية من الدين",
             amount: -paid
         });
-        localStorage.setItem('pharmacy_debtors_v9', JSON.stringify(debtors));
+        localStorage.setItem('pharmacy_debtors_v10', JSON.stringify(debtors));
         renderDebtors();
     }
 
     function deleteDebtor(debtorId) {
         if (confirm('حذف سجل هذا المديون نهائياً؟')) {
             debtors = debtors.filter(d => d.id !== debtorId);
-            localStorage.setItem('pharmacy_debtors_v9', JSON.stringify(debtors));
+            localStorage.setItem('pharmacy_debtors_v10', JSON.stringify(debtors));
             renderDebtors();
             updateDebtorDropdown();
         }
@@ -1879,7 +1879,7 @@
     }
 
     function saveData() {
-        localStorage.setItem('pharmacy_inventory_v9', JSON.stringify(inventory));
+        localStorage.setItem('pharmacy_inventory_v10', JSON.stringify(inventory));
         renderTables();
         updateAlerts();
         updateInvoiceDropdown();
@@ -1984,7 +1984,7 @@
                         imagePreview: e.target.result,
                         pdfName: '—'
                     });
-                    localStorage.setItem('pharmacy_uploaded_lists_v9', JSON.stringify(uploadedLists));
+                    localStorage.setItem('pharmacy_uploaded_lists_v10', JSON.stringify(uploadedLists));
                     updateInvoiceDropdown();
                     renderInvoicesSummary();
                 }
@@ -2048,7 +2048,7 @@
             imagePreview: firstImg,
             pdfName: pendingPdfName || '—'
         });
-        localStorage.setItem('pharmacy_uploaded_lists_v9', JSON.stringify(uploadedLists));
+        localStorage.setItem('pharmacy_uploaded_lists_v10', JSON.stringify(uploadedLists));
         clearUploadedMedia();
         updateInvoiceDropdown();
         renderInvoicesSummary();
