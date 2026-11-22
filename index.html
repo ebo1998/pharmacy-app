@@ -51,7 +51,7 @@
         body {
             background-color: var(--bg);
             color: var(--text);
-            transition: background 0.25s, color 0.25s;
+            transition: background 0.2s, color 0.2s;
             padding-bottom: 50px;
             overflow-x: hidden;
             width: 100%;
@@ -111,7 +111,7 @@
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            transition: 0.2s;
+            transition: 0.15s;
         }
 
         .nav-pill.active {
@@ -138,7 +138,7 @@
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            transition: 0.2s;
+            transition: 0.15s;
         }
 
         .btn:hover { opacity: 0.92; }
@@ -158,9 +158,7 @@
         }
 
         .page { display: none; width: 100%; }
-        .page.active { display: block; animation: fadeIn 0.2s; }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .page.active { display: block; }
 
         .card {
             background: var(--card);
@@ -497,15 +495,6 @@
             gap: 8px;
         }
 
-        .invoice-chip-img {
-            width: 100%;
-            height: 110px;
-            object-fit: cover;
-            border-radius: 7px;
-            border: 1px solid var(--border);
-            margin-top: 4px;
-        }
-
         .settings-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -761,12 +750,12 @@
                 <span>🤖 إضافة سجل ديون (ترتيب تلقائي من أ إلى ي وحساب المجموع)</span>
             </div>
             <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">
-                أدخل أو الصق السجل (مثال: <strong>علي حسين - Atacand 16mg (2) - 34000</strong>) أو التقط صورة السجل ليُضاف مباشرة على اسمه ويُحسب مجموع ديونه:
+                الصق سجل الديون (مثال: <strong>علي حسين - Atacand 16mg (2) - 34000</strong>) ليُضاف مباشرة على اسمه ويُحسب مجموع ديونه:
             </p>
             <div class="form-grid" style="margin-bottom:8px;">
                 <div class="form-group">
-                    <label>التقاط / رفع صورة سجل دين</label>
-                    <input type="file" accept="image/*" capture="environment" onchange="handleMediaFiles(event, 'camera', false)">
+                    <label>إرفاق صورة سجل دين (اختياري)</label>
+                    <input type="file" accept="image/*" onchange="handleMediaFiles(event, 'camera', false)">
                 </div>
                 <div class="form-group">
                     <label>تاريخ الوجبة</label>
@@ -836,7 +825,31 @@
         </div>
 
         <div class="card">
-            <div class="card-title"><span>🗂️ القوائم المحفوظة في الأرشيف (حسب المذخر / التجهيزات والتاريخ)</span></div>
+            <div class="card-title">
+                <span>🗓️ أرشيف السنوات والأشهر (01 إلى 12 — مثل 2026 و2027)</span>
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <select id="yearFilter" onchange="renderArchiveByYearMonth()" style="max-width:130px; font-weight:700;">
+                        <option value="ALL">كل السنوات</option>
+                        <option value="2026" selected>2026</option>
+                        <option value="2027">2027</option>
+                    </select>
+                    <select id="monthFilter" onchange="renderArchiveByYearMonth()" style="max-width:150px; font-weight:700;">
+                        <option value="ALL">كل الأشهر (1-12)</option>
+                        <option value="01">شهر 01 (يناير)</option>
+                        <option value="02">شهر 02 (فبراير)</option>
+                        <option value="03">شهر 03 (مارس)</option>
+                        <option value="04">شهر 04 (أبريل)</option>
+                        <option value="05">شهر 05 (مايو)</option>
+                        <option value="06">شهر 06 (يونيو)</option>
+                        <option value="07">شهر 07 (يوليو)</option>
+                        <option value="08">شهر 08 (أغسطس)</option>
+                        <option value="09">شهر 09 (سبتمبر)</option>
+                        <option value="10">شهر 10 (أكتوبر)</option>
+                        <option value="11">شهر 11 (نوفمبر)</option>
+                        <option value="12">شهر 12 (ديسمبر)</option>
+                    </select>
+                </div>
+            </div>
             <div id="invoicesSummaryCards" class="invoice-summary-list"></div>
         </div>
 
@@ -855,7 +868,7 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>القائمة / المذخر / التجهيزات</th>
+                            <th>القائمة / المذخر</th>
                             <th>التاريخ</th>
                             <th>الباركود</th>
                             <th>اسم المادة</th>
@@ -877,18 +890,18 @@
     <div id="page4" class="page">
         <div class="smart-box no-print">
             <div class="card-title" style="color:var(--primary); margin-bottom:6px;">
-                <span>🤖 إضافة قائمة وتحديث الأسعار القديمة وحساب العدد والمجموع أوتوماتيكياً</span>
+                <span>🤖 إضافة قائمة وتحديث الأسعار القديمة وحساب العدد والمجموع حسب السنة والشهر</span>
             </div>
             <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">
-                اكتب اسم المذخر أو التجهيزات (مثل <strong>مذخر الفردوس</strong> أو <strong>تجهيزات أريس</strong>) والتاريخ، والصق المواد (<strong>اسم المادة | العدد | سعر المفرد | سعر البيع الجديد</strong>)، وسيُحفظ مباشرة في أرشيف القوائم ويحدّث الأسعار والكميات:
+                اكتب اسم المذخر (مثل <strong>مذخر الفردوس</strong>) وحدد التاريخ (مثال <strong>2026-11-22</strong> أو <strong>2027-01-10</strong>)، والصق المواد (<strong>اسم المادة | العدد | سعر المفرد | سعر البيع الجديد</strong>)، ليُضاف على أرشيف المذخر ويُحدّث السعر والعدد تلقائياً:
             </p>
             <div class="form-grid" style="margin-bottom:8px;">
                 <div class="form-group">
                     <label>اسم المذخر / التجهيزات</label>
-                    <input type="text" id="smartListTitle" placeholder="مثال: مذخر الفردوس أو تجهيزات أريس" list="existingInvoicesList">
+                    <input type="text" id="smartListTitle" placeholder="مثال: مذخر الفردوس" list="existingInvoicesList">
                 </div>
                 <div class="form-group">
-                    <label>تاريخ القائمة</label>
+                    <label>تاريخ القائمة (سنة - شهر - يوم)</label>
                     <input type="date" id="smartListDate">
                 </div>
             </div>
@@ -898,12 +911,12 @@
 
         <div class="card" style="border-right: 4px solid var(--secondary);">
             <div class="card-title" style="color: var(--secondary);">
-                <span>📸 رفع صورة قائمة أو ملف PDF (تُضاف وتُحفظ تلقائياً في أرشيف القوائم)</span>
+                <span>📸 رفع صورة قائمة أو ملف PDF (تُصنّف حسب المذخر والسنة والشهر)</span>
             </div>
             <div class="form-grid" style="margin-bottom:12px;">
                 <div class="form-group">
-                    <label>اسم المذخر / التجهيزات ورقم القائمة</label>
-                    <input type="text" id="uploadInvoiceName" placeholder="مثال: مذخر الفردوس أو تجهيزات أريس" list="existingInvoicesList">
+                    <label>اسم المذخر ورقم القائمة</label>
+                    <input type="text" id="uploadInvoiceName" placeholder="مثال: مذخر الفردوس" list="existingInvoicesList">
                     <datalist id="existingInvoicesList"></datalist>
                 </div>
                 <div class="form-group">
@@ -911,7 +924,7 @@
                     <input type="date" id="uploadInvoiceDate">
                 </div>
                 <div class="form-group">
-                    <label>حالة المواد المرفقة</label>
+                    <label>حالة المواد</label>
                     <select id="uploadItemsStatus">
                         <option value="متاحة ومستخدمة في الصيدلية">متاحة ومستخدمة في الصيدلية</option>
                         <option value="مواد متاحة في المخزون">مواد متاحة في المخزون</option>
@@ -946,7 +959,7 @@
             </div>
 
             <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
-                <button class="btn btn-success" onclick="saveUploadedListRecord()">💾 تأكيد وحفظ القائمة في الأرشيف</button>
+                <button class="btn btn-success" onclick="saveUploadedListRecord()">💾 حفظ القائمة في الأرشيف</button>
                 <button class="btn btn-danger" onclick="clearUploadedMedia()">🗑️ مسح المرفقات</button>
             </div>
         </div>
@@ -958,7 +971,7 @@
             <form onsubmit="addItemToSpecificInvoice(event)">
                 <div class="form-grid">
                     <div class="form-group" style="grid-column: span 2;">
-                        <label>اسم المذخر / التجهيزات ورقم القائمة</label>
+                        <label>اسم المذخر ورقم القائمة</label>
                         <input type="text" id="invTitleInput" list="existingInvoicesList" required>
                     </div>
                     <div class="form-group">
@@ -1168,7 +1181,7 @@
             <input type="hidden" id="editId">
             <div class="form-grid">
                 <div class="form-group" style="grid-column: span 2;">
-                    <label>القائمة / المذخر / التجهيزات</label>
+                    <label>القائمة / المذخر</label>
                     <input type="text" id="editInvoice" required>
                 </div>
                 <div class="form-group">
@@ -1271,10 +1284,10 @@
 
     const arabicLetters = ["الكل", "أ", "ب", "ت", "ث", "ج", "ح", "خ", "د", "ذ", "ر", "ز", "س", "ش", "ص", "ض", "ط", "ظ", "ع", "غ", "ف", "ق", "ك", "ل", "م", "ن", "هـ", "و", "ي"];
 
-    let inventory = JSON.parse(localStorage.getItem('pharmacy_inventory_v10')) || initialAlferdosData;
-    let debtors = JSON.parse(localStorage.getItem('pharmacy_debtors_v10')) || [];
-    let uploadedLists = JSON.parse(localStorage.getItem('pharmacy_uploaded_lists_v10')) || [];
-    let userSettings = JSON.parse(localStorage.getItem('pharmacy_settings_v10')) || {
+    let inventory = JSON.parse(localStorage.getItem('pharmacy_inventory_v11')) || initialAlferdosData;
+    let debtors = JSON.parse(localStorage.getItem('pharmacy_debtors_v11')) || [];
+    let uploadedLists = JSON.parse(localStorage.getItem('pharmacy_uploaded_lists_v11')) || [];
+    let userSettings = JSON.parse(localStorage.getItem('pharmacy_settings_v11')) || {
         fontFamily: "'Cairo', sans-serif",
         fontSize: "13.5",
         primary: "#0f766e",
@@ -1295,6 +1308,7 @@
     let pendingImages = [];
     let pendingPdfUrl = null;
     let pendingPdfName = null;
+    let isRendering = false;
 
     const todayStr = new Date().toISOString().slice(0, 10);
     document.getElementById('debtorDateInput').value = todayStr;
@@ -1305,10 +1319,17 @@
 
     function detectSupplierLabel(text) {
         const t = (text || "").trim();
-        if (!t) return "قائمة مذخر / تجهيزات";
-        if (t.includes("فردوس")) return t.includes("مذخر") ? t : "مذخر الفردوس - " + t;
-        if (t.includes("اريس") || t.includes("أريس")) return t.includes("تجهيزات") ? t : "تجهيزات أريس - " + t;
+        if (!t) return "مذخر الفردوس";
+        if (t.includes("فردوس")) return "مذخر الفردوس";
         return t;
+    }
+
+    function getYearFromDate(d) {
+        return (d || todayStr).slice(0, 4);
+    }
+
+    function getMonthFromDate(d) {
+        return (d || todayStr).slice(5, 7);
     }
 
     function loadSettingsToUI() {
@@ -1343,9 +1364,8 @@
         document.body.setAttribute('data-theme', userSettings.theme);
 
         if (save) {
-            localStorage.setItem('pharmacy_settings_v10', JSON.stringify(userSettings));
-            renderTables();
-            updateAlerts();
+            localStorage.setItem('pharmacy_settings_v11', JSON.stringify(userSettings));
+            refreshAllUI();
         }
     }
 
@@ -1368,14 +1388,12 @@
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.nav-pill').forEach(b => b.classList.remove('active'));
         document.getElementById(pageId).classList.add('active');
-        btn.classList.add('active');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (btn) btn.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'auto' });
         if (pageId === 'page1') {
-            setTimeout(() => document.getElementById('barcodeScanInput').focus(), 120);
-        }
-        if (pageId === 'page3') {
-            renderInvoicesSummary();
-            renderTables();
+            setTimeout(() => document.getElementById('barcodeScanInput').focus(), 100);
+        } else if (pageId === 'page3') {
+            refreshAllUI();
         }
     }
 
@@ -1453,7 +1471,6 @@
 
     function renderCart() {
         const tbody = document.getElementById('posCartBody');
-        tbody.innerHTML = '';
         let grandTotal = 0;
 
         if (!salesCart.length) {
@@ -1462,10 +1479,10 @@
             return;
         }
 
-        salesCart.forEach((c, idx) => {
+        const rows = salesCart.map((c, idx) => {
             const sub = c.price * c.count;
             grandTotal += sub;
-            tbody.innerHTML += `
+            return `
                 <tr>
                     <td>${idx + 1}</td>
                     <td><strong>${c.name}</strong></td>
@@ -1479,8 +1496,9 @@
                     <td><button class="btn btn-danger" style="padding:2px 7px;" onclick="removeCartItem(${idx})">✕</button></td>
                 </tr>
             `;
-        });
+        }).join('');
 
+        tbody.innerHTML = rows;
         document.getElementById('posGrandTotal').textContent = grandTotal.toLocaleString() + ' د.ع';
     }
 
@@ -1511,7 +1529,7 @@
                 return;
             }
             const summaryText = salesCart.map(c => `${c.name} (${c.count})`).join(' + ');
-            addDebtEntry(chosenName, "", new Date().toISOString().slice(0, 10), summaryText, totalAmount);
+            addDebtEntry(chosenName, "", todayStr, summaryText, totalAmount);
             alert(`تم تسجيل القائمة بالدين على (${chosenName}) بمبلغ ${totalAmount.toLocaleString()} د.ع.`);
         } else {
             alert(`تم إتمام البيع النقدي بنجاح بمجموع ${totalAmount.toLocaleString()} د.ع.`);
@@ -1613,19 +1631,19 @@
         if (phone && !debtor.phone) debtor.phone = phone;
         debtor.batches.unshift({
             id: Date.now() + Math.floor(Math.random() * 10),
-            date: date || new Date().toISOString().slice(0, 10),
+            date: date || todayStr,
             items: itemsText || "وجبة علاج بالدين",
             amount: Number(amount) || 0
         });
         debtors.sort((a, b) => a.name.localeCompare(b.name, 'ar'));
-        localStorage.setItem('pharmacy_debtors_v10', JSON.stringify(debtors));
+        localStorage.setItem('pharmacy_debtors_v11', JSON.stringify(debtors));
         renderDebtors();
         updateDebtorDropdown();
     }
 
     function applySmartDebtorImport() {
         const raw = (document.getElementById('smartDebtorText').value || '').trim();
-        const dateVal = document.getElementById('smartDebtorDate').value || new Date().toISOString().slice(0, 10);
+        const dateVal = document.getElementById('smartDebtorDate').value || todayStr;
         if (!raw) {
             alert('اكتب أو الصق سطر واحد على الأقل من سجل الديون.');
             return;
@@ -1651,8 +1669,8 @@
     function applySmartInvoiceImport() {
         const raw = (document.getElementById('smartListText').value || '').trim();
         const titleInput = (document.getElementById('smartListTitle').value || '').trim();
-        const dateVal = document.getElementById('smartListDate').value || new Date().toISOString().slice(0, 10);
-        const invoiceTitle = detectSupplierLabel(titleInput || "قائمة مذخر / تجهيزات");
+        const dateVal = document.getElementById('smartListDate').value || todayStr;
+        const invoiceTitle = detectSupplierLabel(titleInput || "مذخر الفردوس");
 
         if (!raw) {
             alert('الصق سطور القائمة الجديدة أولاً.');
@@ -1725,25 +1743,25 @@
         const debtor = debtors.find(d => d.id === debtorId);
         if (!debtor) return;
         const currentTotal = debtor.batches.reduce((s, b) => s + Number(b.amount || 0), 0);
-        const inputVal = prompt(`المطلوب الحالي على (${debtor.name}): ${currentTotal.toLocaleString()} د.ع\nأدخل المبلغ المسدد بالدينار (أو اكتب المبلغ الكامل للتصفير):`, currentTotal);
+        const inputVal = prompt(`المطلوب الحالي على (${debtor.name}): ${currentTotal.toLocaleString()} د.ع\nأدخل المبلغ المسدد بالدينار:`, currentTotal);
         if (inputVal === null) return;
         const paid = parseInt(inputVal);
         if (isNaN(paid) || paid <= 0) return;
 
         debtor.batches.push({
             id: Date.now(),
-            date: new Date().toISOString().slice(0, 10),
+            date: todayStr,
             items: "تسديد دفعة نقدية من الدين",
             amount: -paid
         });
-        localStorage.setItem('pharmacy_debtors_v10', JSON.stringify(debtors));
+        localStorage.setItem('pharmacy_debtors_v11', JSON.stringify(debtors));
         renderDebtors();
     }
 
     function deleteDebtor(debtorId) {
         if (confirm('حذف سجل هذا المديون نهائياً؟')) {
             debtors = debtors.filter(d => d.id !== debtorId);
-            localStorage.setItem('pharmacy_debtors_v10', JSON.stringify(debtors));
+            localStorage.setItem('pharmacy_debtors_v11', JSON.stringify(debtors));
             renderDebtors();
             updateDebtorDropdown();
         }
@@ -1751,24 +1769,20 @@
 
     function buildAlphaBar() {
         const bar = document.getElementById('alphaFilterBar');
-        bar.innerHTML = '';
-        arabicLetters.forEach(ltr => {
-            const btn = document.createElement('button');
-            btn.className = 'alpha-btn' + (activeLetter === ltr ? ' active' : '');
-            btn.textContent = ltr;
-            btn.onclick = () => {
-                activeLetter = ltr;
-                buildAlphaBar();
-                renderDebtors();
-            };
-            bar.appendChild(btn);
-        });
+        bar.innerHTML = arabicLetters.map(ltr => `
+            <button class="alpha-btn ${activeLetter === ltr ? 'active' : ''}" onclick="selectAlpha('${ltr}')">${ltr}</button>
+        `).join('');
+    }
+
+    function selectAlpha(ltr) {
+        activeLetter = ltr;
+        buildAlphaBar();
+        renderDebtors();
     }
 
     function renderDebtors() {
         const search = (document.getElementById('debtorSearchInput').value || '').trim().toLowerCase();
         const container = document.getElementById('debtorsListContainer');
-        container.innerHTML = '';
 
         let totalAllDebts = 0;
         debtors.forEach(d => {
@@ -1788,12 +1802,11 @@
             return;
         }
 
-        filtered.forEach(d => {
+        container.innerHTML = filtered.map(d => {
             const balance = d.batches.reduce((s, b) => s + Number(b.amount || 0), 0);
-            let batchesHtml = '';
-            d.batches.forEach(b => {
+            const batchesHtml = d.batches.map(b => {
                 const isPayment = Number(b.amount) < 0;
-                batchesHtml += `
+                return `
                     <div class="batch-box">
                         <div style="display:flex; justify-content:space-between; gap:8px;">
                             <span>📅 <strong>${b.date}</strong> — ${b.items}</span>
@@ -1803,9 +1816,9 @@
                         </div>
                     </div>
                 `;
-            });
+            }).join('');
 
-            container.innerHTML += `
+            return `
                 <div class="debtor-card">
                     <div class="debtor-header">
                         <div>
@@ -1821,15 +1834,13 @@
                     ${batchesHtml || '<div style="font-size:0.8rem; color:var(--text-muted);">لا توجد وجبات مسجلة</div>'}
                 </div>
             `;
-        });
+        }).join('');
     }
 
     function updateDebtorDropdown() {
         const sel = document.getElementById('posDebtorSelect');
-        sel.innerHTML = '<option value="">اختر اسم المديون...</option>';
-        debtors.forEach(d => {
-            sel.innerHTML += `<option value="${d.name}">${d.name}</option>`;
-        });
+        sel.innerHTML = '<option value="">اختر اسم المديون...</option>' +
+            debtors.map(d => `<option value="${d.name}">${d.name}</option>`).join('');
     }
 
     function openEditModal(id) {
@@ -1879,13 +1890,8 @@
     }
 
     function saveData() {
-        localStorage.setItem('pharmacy_inventory_v10', JSON.stringify(inventory));
-        renderTables();
-        updateAlerts();
-        updateInvoiceDropdown();
-        renderInvoicesSummary();
-        renderDebtors();
-        updateDebtorDropdown();
+        localStorage.setItem('pharmacy_inventory_v11', JSON.stringify(inventory));
+        refreshAllUI();
     }
 
     function addNewDrug(e) {
@@ -1965,12 +1971,11 @@
         files.forEach(file => {
             const reader = new FileReader();
             reader.onload = e => {
-                const imgObj = { name: file.name, src: sourceType, dataUrl: e.target.result };
-                pendingImages.push(imgObj);
+                pendingImages.push({ name: file.name, src: sourceType, dataUrl: e.target.result });
                 renderMediaPreview();
 
                 if (autoArchiveImage) {
-                    const rawTitle = document.getElementById('uploadInvoiceName').value.trim() || "مذخر الفردوس / تجهيزات أريس";
+                    const rawTitle = document.getElementById('uploadInvoiceName').value.trim() || "مذخر الفردوس";
                     const title = detectSupplierLabel(rawTitle);
                     const dateVal = document.getElementById('uploadInvoiceDate').value || todayStr;
                     const statusVal = document.getElementById('uploadItemsStatus').value;
@@ -1979,14 +1984,11 @@
                         title,
                         date: dateVal,
                         status: statusVal,
-                        sourceLabel: sourceType === 'camera' ? 'صورة ملتقطة بالكاميرا' : 'صورة قائمة من المعرض',
-                        imagesCount: 1,
-                        imagePreview: e.target.result,
+                        sourceLabel: sourceType === 'camera' ? 'صورة قائمة بالكاميرا' : 'صورة قائمة من المعرض',
                         pdfName: '—'
                     });
-                    localStorage.setItem('pharmacy_uploaded_lists_v10', JSON.stringify(uploadedLists));
-                    updateInvoiceDropdown();
-                    renderInvoicesSummary();
+                    localStorage.setItem('pharmacy_uploaded_lists_v11', JSON.stringify(uploadedLists));
+                    refreshAllUI();
                 }
             };
             reader.readAsDataURL(file);
@@ -2006,15 +2008,12 @@
 
     function renderMediaPreview() {
         const area = document.getElementById('mediaPreviewArea');
-        area.innerHTML = '';
-        pendingImages.forEach(img => {
-            area.innerHTML += `
-                <div class="media-thumb">
-                    <img src="${img.dataUrl}" alt="${img.name}">
-                    <div>${img.src === 'camera' ? '📷 كاميرا' : '🖼️ معرض'}</div>
-                </div>
-            `;
-        });
+        area.innerHTML = pendingImages.map(img => `
+            <div class="media-thumb">
+                <img src="${img.dataUrl}" alt="${img.name}">
+                <div>${img.src === 'camera' ? '📷 كاميرا' : '🖼️ معرض'}</div>
+            </div>
+        `).join('');
     }
 
     function clearUploadedMedia() {
@@ -2028,121 +2027,130 @@
 
     function saveUploadedListRecord() {
         const rawTitle = document.getElementById('uploadInvoiceName').value.trim();
-        const title = detectSupplierLabel(rawTitle || "مذخر الفردوس / تجهيزات أريس");
+        const title = detectSupplierLabel(rawTitle || "مذخر الفردوس");
         const dateVal = document.getElementById('uploadInvoiceDate').value || todayStr;
         const statusVal = document.getElementById('uploadItemsStatus').value;
 
-        if (!pendingImages.length && !pendingPdfName && !rawTitle) {
-            alert('التقط صورة بالكاميرا أو اختر صوراً أو اكتب اسم المذخر/التجهيزات أولاً.');
-            return;
-        }
-
-        const firstImg = pendingImages.length ? pendingImages[0].dataUrl : null;
         uploadedLists.unshift({
             id: Date.now(),
             title,
             date: dateVal,
             status: statusVal,
-            sourceLabel: pendingImages.length ? 'قائمة مصورة محفوظة' : (pendingPdfName ? 'ملف PDF محفوظ' : 'قائمة مسجلة'),
-            imagesCount: pendingImages.length,
-            imagePreview: firstImg,
+            sourceLabel: pendingImages.length ? 'قائمة مصورة' : (pendingPdfName ? 'ملف PDF' : 'قائمة مسجلة'),
             pdfName: pendingPdfName || '—'
         });
-        localStorage.setItem('pharmacy_uploaded_lists_v10', JSON.stringify(uploadedLists));
+        localStorage.setItem('pharmacy_uploaded_lists_v11', JSON.stringify(uploadedLists));
         clearUploadedMedia();
-        updateInvoiceDropdown();
-        renderInvoicesSummary();
-        alert(`تم حفظ (${title}) بتاريخ ${dateVal} في أرشيف القوائم!`);
+        refreshAllUI();
+        alert(`تم حفظ (${title}) بتاريخ ${dateVal} في الأرشيف!`);
     }
 
-    function filterByInvoiceCard(invoiceName) {
-        const select = document.getElementById('invoiceFilter');
-        const exists = Array.from(select.options).some(o => o.value === invoiceName);
-        if (exists) {
-            select.value = invoiceName;
-        } else {
-            select.value = 'ALL';
-        }
-        renderTables();
-        document.getElementById('tablePage2Body').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    function renderArchiveByYearMonth() {
+        if (isRendering) return;
+        isRendering = true;
+        try {
+            const yr = document.getElementById('yearFilter').value;
+            const mo = document.getElementById('monthFilter').value;
+            const container = document.getElementById('invoicesSummaryCards');
+            const datalist = document.getElementById('existingInvoicesList');
 
-    function renderInvoicesSummary() {
-        const container = document.getElementById('invoicesSummaryCards');
-        const datalist = document.getElementById('existingInvoicesList');
-        container.innerHTML = '';
-        datalist.innerHTML = '';
+            const map = new Map();
+            inventory.forEach(item => {
+                const dStr = item.invoiceDate || todayStr;
+                const iYr = getYearFromDate(dStr);
+                const iMo = getMonthFromDate(dStr);
+                if ((yr === 'ALL' || yr === iYr) && (mo === 'ALL' || mo === iMo)) {
+                    const key = `${item.invoice} — ${iYr}/${iMo}`;
+                    if (!map.has(key)) {
+                        map.set(key, {
+                            invoice: item.invoice,
+                            count: 0,
+                            sum: 0,
+                            date: dStr,
+                            status: 'متاحة ومستخدمة في الصيدلية'
+                        });
+                    }
+                    const cur = map.get(key);
+                    cur.count += 1;
+                    cur.sum += Number(item.total || 0);
+                }
+            });
 
-        const map = new Map();
-        inventory.forEach(item => {
-            const key = item.invoice || 'قائمة عامة';
-            if (!map.has(key)) {
-                map.set(key, {
-                    count: 0,
-                    sum: 0,
-                    date: item.invoiceDate || todayStr,
-                    status: 'متاحة ومستخدمة في الصيدلية'
-                });
+            uploadedLists.forEach(ul => {
+                const dStr = ul.date || todayStr;
+                const iYr = getYearFromDate(dStr);
+                const iMo = getMonthFromDate(dStr);
+                if ((yr === 'ALL' || yr === iYr) && (mo === 'ALL' || mo === iMo)) {
+                    const key = `${ul.title} (${ul.sourceLabel}) — ${iYr}/${iMo}`;
+                    if (!map.has(key)) {
+                        map.set(key, {
+                            invoice: ul.title,
+                            count: 1,
+                            sum: 0,
+                            date: dStr,
+                            status: ul.status || 'قائمة مرفقة'
+                        });
+                    }
+                }
+            });
+
+            const allInvoiceNames = [...new Set([
+                ...uploadedLists.map(u => u.title),
+                ...inventory.map(i => i.invoice)
+            ])].filter(Boolean);
+
+            datalist.innerHTML = allInvoiceNames.map(n => `<option value="${n}">`).join('');
+
+            if (!map.size) {
+                container.innerHTML = `<p style="color:var(--text-muted); padding:10px;">لا توجد قوائم مسجلة ضمن الفلتر المختار (${yr === 'ALL' ? 'كل السنوات' : yr} / ${mo === 'ALL' ? 'كل الأشهر' : 'شهر ' + mo}).</p>`;
+                return;
             }
-            const cur = map.get(key);
-            cur.count += 1;
-            cur.sum += Number(item.total || 0);
-            if (item.invoiceDate && item.invoiceDate > cur.date) cur.date = item.invoiceDate;
-        });
 
-        map.forEach((val, key) => {
-            datalist.innerHTML += `<option value="${key}">`;
-            container.innerHTML += `
+            container.innerHTML = Array.from(map.entries()).map(([label, val]) => `
                 <div class="invoice-chip">
                     <div class="invoice-chip-top">
-                        <strong style="font-size:0.9rem; color:var(--primary);">📦 ${key}</strong>
+                        <strong style="font-size:0.88rem; color:var(--primary);">📦 ${label}</strong>
                         <span class="status-pill pill-success">📅 ${val.date}</span>
                     </div>
                     <div style="font-size:0.78rem; color:var(--text-muted);">
                         ${val.count} مادة • ${val.status}
                     </div>
                     <div class="invoice-chip-top" style="margin-top:4px;">
-                        <strong style="color:var(--secondary); font-size:0.88rem;">المجموع: ${val.sum.toLocaleString()} د.ع</strong>
-                        <button class="btn btn-primary" style="padding:3px 8px; font-size:0.75rem;" onclick="filterByInvoiceCard('${key.replace(/'/g, "\\'")}')">عرض المواد</button>
+                        <strong style="color:var(--secondary); font-size:0.86rem;">المجموع: ${val.sum.toLocaleString()} د.ع</strong>
+                        <button class="btn btn-primary" style="padding:3px 8px; font-size:0.75rem;" onclick="selectInvoiceInDropdown('${val.invoice.replace(/'/g, "\\'")}')">عرض المواد</button>
                     </div>
                 </div>
-            `;
-        });
+            `).join('');
+        } finally {
+            isRendering = false;
+        }
+    }
 
-        uploadedLists.forEach(ul => {
-            datalist.innerHTML += `<option value="${ul.title}">`;
-            container.innerHTML += `
-                <div class="invoice-chip" style="border-right-color: var(--success);">
-                    <div class="invoice-chip-top">
-                        <strong style="font-size:0.9rem; color:var(--success);">📸 ${ul.title}</strong>
-                        <span class="status-pill pill-warning">📅 ${ul.date || todayStr}</span>
-                    </div>
-                    <div style="font-size:0.78rem; color:var(--text-muted);">
-                        ${ul.sourceLabel || 'قائمة مرفقة'} • ${ul.status || 'متاحة ومستخدمة'} • PDF: ${ul.pdfName || '—'}
-                    </div>
-                    ${ul.imagePreview ? `<img src="${ul.imagePreview}" alt="${ul.title}" class="invoice-chip-img">` : ''}
-                </div>
-            `;
-        });
+    function selectInvoiceInDropdown(invName) {
+        const select = document.getElementById('invoiceFilter');
+        const exists = Array.from(select.options).some(o => o.value === invName);
+        select.value = exists ? invName : 'ALL';
+        renderTables();
     }
 
     function renderTables() {
-        const q1 = document.getElementById('filterPage1').value.toLowerCase();
-        const q2 = document.getElementById('filterPage2').value.toLowerCase();
+        const q1 = (document.getElementById('filterPage1').value || '').toLowerCase();
+        const q2 = (document.getElementById('filterPage2').value || '').toLowerCase();
         const invFilter = document.getElementById('invoiceFilter').value;
         const limit = userSettings.lowStockLimit;
 
         const tbody1 = document.getElementById('tablePage1Body');
-        tbody1.innerHTML = '';
-        inventory.filter(d =>
+        const list1 = inventory.filter(d =>
             d.name.toLowerCase().includes(q1) ||
             d.company.toLowerCase().includes(q1) ||
             d.type.toLowerCase().includes(q1) ||
             (d.barcode && d.barcode.toLowerCase().includes(q1))
-        ).forEach((item, index) => {
+        );
+
+        tbody1.innerHTML = list1.map((item, index) => {
             const sPrice = Number(item.salePrice || item.price || 0);
             const qtyBadge = item.qty <= limit ? `<span class="status-pill pill-danger">${item.qty}</span>` : `<span class="status-pill pill-success">${item.qty}</span>`;
-            tbody1.innerHTML += `
+            return `
                 <tr>
                     <td>${index + 1}</td>
                     <td><strong>${item.barcode || '—'}</strong></td>
@@ -2155,10 +2163,9 @@
                     <td class="no-print"><button class="btn btn-secondary" style="padding:3px 8px; font-size:0.76rem;" onclick="openEditModal(${item.id})">✏️</button></td>
                 </tr>
             `;
-        });
+        }).join('');
 
         const tbody2 = document.getElementById('tablePage2Body');
-        tbody2.innerHTML = '';
         let totalSum = 0;
         const filtered2 = inventory.filter(d => {
             const matchInv = invFilter === 'ALL' || d.invoice === invFilter;
@@ -2166,9 +2173,9 @@
             return matchInv && matchText;
         });
 
-        filtered2.forEach((item, index) => {
+        tbody2.innerHTML = filtered2.map((item, index) => {
             totalSum += Number(item.total || 0);
-            tbody2.innerHTML += `
+            return `
                 <tr>
                     <td>${index + 1}</td>
                     <td style="font-size:0.8rem; font-weight:700; color:var(--primary);">${item.invoice}</td>
@@ -2188,7 +2195,7 @@
                     </td>
                 </tr>
             `;
-        });
+        }).join('');
 
         document.getElementById('statTotalItems').textContent = filtered2.length;
         document.getElementById('statTotalCost').textContent = totalSum.toLocaleString() + ' د.ع';
@@ -2197,13 +2204,13 @@
     function updateAlerts() {
         const expBody = document.getElementById('expiryAlertBody');
         const lowBody = document.getElementById('lowStockAlertBody');
-        expBody.innerHTML = '';
-        lowBody.innerHTML = '';
-
         let alertCount = 0;
         const today = new Date();
         const alertDateLimit = new Date();
         alertDateLimit.setMonth(today.getMonth() + userSettings.expiryMonths);
+
+        const expRows = [];
+        const lowRows = [];
 
         inventory.forEach(item => {
             if (item.expiry) {
@@ -2211,7 +2218,7 @@
                 if (expDate <= alertDateLimit) {
                     alertCount++;
                     const isExpired = expDate < today;
-                    expBody.innerHTML += `
+                    expRows.push(`
                         <tr>
                             <td><strong>${item.name}</strong></td>
                             <td>${item.company}</td>
@@ -2220,13 +2227,13 @@
                             <td>${item.qty}</td>
                             <td class="no-print"><button class="btn btn-secondary" style="padding:2px 6px; font-size:0.75rem;" onclick="openEditModal(${item.id})">✏️</button></td>
                         </tr>
-                    `;
+                    `);
                 }
             }
 
             if (item.qty <= userSettings.lowStockLimit) {
                 alertCount++;
-                lowBody.innerHTML += `
+                lowRows.push(`
                     <tr>
                         <td><strong>${item.name}</strong></td>
                         <td>${item.type}</td>
@@ -2235,21 +2242,21 @@
                         <td>${item.invoice}</td>
                         <td class="no-print"><button class="btn btn-secondary" style="padding:2px 6px; font-size:0.75rem;" onclick="openEditModal(${item.id})">✏️</button></td>
                     </tr>
-                `;
+                `);
             }
         });
 
+        expBody.innerHTML = expRows.join('');
+        lowBody.innerHTML = lowRows.join('');
         document.getElementById('alertBadge').textContent = alertCount;
     }
 
     function updateInvoiceDropdown() {
         const select = document.getElementById('invoiceFilter');
         const current = select.value;
-        const fromInv = inventory.map(i => i.invoice).filter(Boolean);
-        const fromUp = uploadedLists.map(u => u.title).filter(Boolean);
-        const invoices = [...new Set([...fromUp, ...fromInv])];
-        select.innerHTML = '<option value="ALL">كل القوائم</option>';
-        invoices.forEach(inv => { select.innerHTML += `<option value="${inv}">${inv}</option>`; });
+        const invoices = [...new Set([...uploadedLists.map(u => u.title), ...inventory.map(i => i.invoice)])].filter(Boolean);
+        select.innerHTML = '<option value="ALL">كل القوائم</option>' +
+            invoices.map(inv => `<option value="${inv}">${inv}</option>`).join('');
         select.value = current || 'ALL';
         if (invoices.length > 0) document.getElementById('statLastInvoice').textContent = invoices[0];
     }
@@ -2261,9 +2268,18 @@
         }
     }
 
+    function refreshAllUI() {
+        renderTables();
+        updateAlerts();
+        updateInvoiceDropdown();
+        renderArchiveByYearMonth();
+        renderDebtors();
+        updateDebtorDropdown();
+    }
+
     buildAlphaBar();
     loadSettingsToUI();
-    saveData();
+    refreshAllUI();
 </script>
 </body>
 </html>
