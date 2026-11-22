@@ -475,20 +475,35 @@
 
         .invoice-summary-list {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 12px;
         }
 
         .invoice-chip {
             background: var(--bg);
             border: 1px solid var(--border);
             border-right: 4px solid var(--secondary);
-            padding: 10px 12px;
-            border-radius: 8px;
+            padding: 12px;
+            border-radius: 9px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .invoice-chip-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 8px;
+        }
+
+        .invoice-chip-img {
+            width: 100%;
+            height: 110px;
+            object-fit: cover;
+            border-radius: 7px;
+            border: 1px solid var(--border);
+            margin-top: 4px;
         }
 
         .settings-grid {
@@ -746,7 +761,7 @@
                 <span>🤖 إضافة سجل ديون من صورة أو نص (ترتيب تلقائي من أ إلى ي وحساب المجموع)</span>
             </div>
             <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">
-                أدخل أو الصق السجل (مثال: <strong>علي حسين - 2026-11-22 - Atacand 16mg (2) - 34000</strong>) أو التقط صورة السجل ليُضاف مباشرة على اسمه ويُحسب مجموع ديونه:
+                أدخل أو الصق السجل (مثال: <strong>علي حسين - Atacand 16mg (2) - 34000</strong>) أو التقط صورة السجل ليُضاف مباشرة على اسمه ويُحسب مجموع ديونه:
             </p>
             <div class="form-grid" style="margin-bottom:8px;">
                 <div class="form-group">
@@ -821,10 +836,15 @@
         </div>
 
         <div class="card">
+            <div class="card-title"><span>🗂️ بطاقات القوائم المحفوظة (مذخر الفردوس / تجهيزات أريس / المرفقات)</span></div>
+            <div id="invoicesSummaryCards" class="invoice-summary-list"></div>
+        </div>
+
+        <div class="card">
             <div class="card-title">
                 <span>🧾 أرشيف قوائم المذاخر والأسعار</span>
                 <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                    <select id="invoiceFilter" onchange="renderTables()" style="max-width:220px;">
+                    <select id="invoiceFilter" onchange="renderTables()" style="max-width:240px;">
                         <option value="ALL">كل القوائم</option>
                     </select>
                     <input type="text" id="filterPage2" placeholder="بحث..." style="max-width:180px;" onkeyup="renderTables()">
@@ -835,13 +855,14 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>القائمة / المذخر</th>
+                            <th>القائمة / المذخر / التجهيزات</th>
+                            <th>التاريخ</th>
                             <th>الباركود</th>
                             <th>اسم المادة</th>
                             <th>النوع / القسم</th>
                             <th>الشركة</th>
                             <th>الانتهاء</th>
-                            <th>كارتون</th>
+                            <th>المتوفر / كارتون</th>
                             <th>بونص</th>
                             <th>سعر المفرد</th>
                             <th>المجموع</th>
@@ -856,15 +877,15 @@
     <div id="page4" class="page">
         <div class="smart-box no-print">
             <div class="card-title" style="color:var(--primary); margin-bottom:6px;">
-                <span>🤖 إضافة قائمة جديدة وتحديث الأسعار القديمة وحساب العدد والمجموع أوتوماتيكياً</span>
+                <span>🤖 إضافة قائمة وتحديث الأسعار القديمة وحساب العدد والمجموع أوتوماتيكياً</span>
             </div>
             <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">
-                الصق سطور القائمة الجديدة (مثال: <strong>Atacand 16 mg | 2 | 15000 | 18000</strong>: اسم المادة | العدد | سعر المفرد | سعر البيع الجديد)، وسيقوم النظام بحساب المجموع، زيادة العدد، وتحديث السعر القديم تلقائياً:
+                اختر أو اكتب اسم المذخر أو التجهيزات (مثل <strong>مذخر الفردوس</strong> أو <strong>تجهيزات أريس</strong>) والتاريخ، والصق المواد (<strong>اسم المادة | العدد | سعر المفرد | سعر البيع الجديد</strong>)، وسيُحفظ مباشرة في أرشيف القوائم ويحدّث الأسعار والكميات:
             </p>
             <div class="form-grid" style="margin-bottom:8px;">
                 <div class="form-group">
-                    <label>اسم المذخر ورقم القائمة</label>
-                    <input type="text" id="smartListTitle" placeholder="مثال: مذخر الفردوس - قائمة جديدة">
+                    <label>اسم المذخر / التجهيزات</label>
+                    <input type="text" id="smartListTitle" placeholder="مثال: مذخر الفردوس أو تجهيزات أريس" list="existingInvoicesList">
                 </div>
                 <div class="form-group">
                     <label>تاريخ القائمة</label>
@@ -877,25 +898,39 @@
 
         <div class="card" style="border-right: 4px solid var(--secondary);">
             <div class="card-title" style="color: var(--secondary);">
-                <span>📸 رفع القوائم بالكاميرا أو من المعرض أو ملف PDF</span>
+                <span>📸 رفع صورة قائمة أو ملف PDF (تُحفظ وتُصنّف تلقائياً في أرشيف القوائم)</span>
             </div>
-            <div class="form-group" style="margin-bottom:12px;">
-                <label>اسم المذخر / رقم القائمة والتاريخ</label>
-                <input type="text" id="uploadInvoiceName" placeholder="مثال: مذخر الفردوس - قائمة جديدة" list="existingInvoicesList">
-                <datalist id="existingInvoicesList"></datalist>
+            <div class="form-grid" style="margin-bottom:12px;">
+                <div class="form-group">
+                    <label>اسم المذخر / التجهيزات ورقم القائمة</label>
+                    <input type="text" id="uploadInvoiceName" placeholder="مثال: مذخر الفردوس أو تجهيزات أريس" list="existingInvoicesList">
+                    <datalist id="existingInvoicesList"></datalist>
+                </div>
+                <div class="form-group">
+                    <label>تاريخ القائمة</label>
+                    <input type="date" id="uploadInvoiceDate">
+                </div>
+                <div class="form-group">
+                    <label>حالة المواد المرفقة</label>
+                    <select id="uploadItemsStatus">
+                        <option value="متاحة ومستخدمة في الصيدلية">متاحة ومستخدمة في الصيدلية</option>
+                        <option value="مواد متاحة في المخزون">مواد متاحة في المخزون</option>
+                        <option value="قائمة مشتريات جديدة">قائمة مشتريات جديدة</option>
+                    </select>
+                </div>
             </div>
 
             <div class="media-upload-grid">
                 <label class="media-btn">
                     <span style="font-size:1.5rem;">📷</span>
-                    <span>التقاط بالكاميرا</span>
-                    <input type="file" accept="image/*" capture="environment" style="display:none;" onchange="handleMediaFiles(event, 'camera')">
+                    <span>التقاط صورة قائمة بالكاميرا</span>
+                    <input type="file" accept="image/*" capture="environment" style="display:none;" onchange="handleMediaFiles(event, 'camera', true)">
                 </label>
 
                 <label class="media-btn">
                     <span style="font-size:1.5rem;">🖼️</span>
-                    <span>اختيار من المعرض</span>
-                    <input type="file" accept="image/*" multiple style="display:none;" onchange="handleMediaFiles(event, 'gallery')">
+                    <span>اختيار صور قائمة من المعرض</span>
+                    <input type="file" accept="image/*" multiple style="display:none;" onchange="handleMediaFiles(event, 'gallery', true)">
                 </label>
 
                 <label class="media-btn">
@@ -911,7 +946,7 @@
             </div>
 
             <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
-                <button class="btn btn-success" onclick="saveUploadedListRecord()">💾 حفظ القائمة المرفقة</button>
+                <button class="btn btn-success" onclick="saveUploadedListRecord()">💾 تأكيد وحفظ القائمة في الأرشيف</button>
                 <button class="btn btn-danger" onclick="clearUploadedMedia()">🗑️ مسح المرفقات</button>
             </div>
         </div>
@@ -923,8 +958,12 @@
             <form onsubmit="addItemToSpecificInvoice(event)">
                 <div class="form-grid">
                     <div class="form-group" style="grid-column: span 2;">
-                        <label>اسم المذخر ورقم القائمة</label>
+                        <label>اسم المذخر / التجهيزات ورقم القائمة</label>
                         <input type="text" id="invTitleInput" list="existingInvoicesList" required>
+                    </div>
+                    <div class="form-group">
+                        <label>تاريخ القائمة</label>
+                        <input type="date" id="invDateInput">
                     </div>
                     <div class="form-group">
                         <label>الباركود</label>
@@ -951,7 +990,7 @@
                         <input type="date" id="invExpiryInput" required>
                     </div>
                     <div class="form-group">
-                        <label>كارتون</label>
+                        <label>كارتون / عدد</label>
                         <input type="number" id="invQtyInput" value="1" min="0" required oninput="autoCalcInvoiceTotal()">
                     </div>
                     <div class="form-group">
@@ -969,11 +1008,6 @@
                 </div>
                 <button type="submit" class="btn btn-success" style="margin-top:12px; width:100%; justify-content:center;">➕ حفظ المادة في القائمة</button>
             </form>
-        </div>
-
-        <div class="card">
-            <div class="card-title"><span>🗂️ القوائم المحفوظة في النظام</span></div>
-            <div id="invoicesSummaryCards" class="invoice-summary-list"></div>
         </div>
     </div>
 
@@ -1134,8 +1168,12 @@
             <input type="hidden" id="editId">
             <div class="form-grid">
                 <div class="form-group" style="grid-column: span 2;">
-                    <label>القائمة / المذخر</label>
+                    <label>القائمة / المذخر / التجهيزات</label>
                     <input type="text" id="editInvoice" required>
+                </div>
+                <div class="form-group">
+                    <label>التاريخ</label>
+                    <input type="date" id="editInvoiceDate">
                 </div>
                 <div class="form-group">
                     <label>الباركود</label>
@@ -1195,48 +1233,48 @@
 
 <script>
     const initialAlferdosData = [
-        { id: 1, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "بارستول حب", salePrice: 5000, type: "Vial", company: "-", expiry: "2028-07-01", qty: 10, bonus: 0, price: 3762, total: 37620 },
-        { id: 2, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "باندج قهوائي 10سم", salePrice: 8500, type: "BANDAGE", company: "CHINA", expiry: "2028-01-01", qty: 4, bonus: 0, price: 7200, total: 28800 },
-        { id: 3, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "حب بارستول ازرق", salePrice: 4000, type: "Tablet", company: "-", expiry: "2029-06-01", qty: 14, bonus: 0, price: 3300, total: 46200 },
-        { id: 4, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "حفاضه اولويز ازرق", salePrice: 2000, type: "مستلزمات", company: "TURKEY", expiry: "2027-07-01", qty: 12, bonus: 0, price: 1300, total: 15600 },
-        { id: 5, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "خافضة لسان", salePrice: 2000, type: "مستلزمات", company: "CHINA", expiry: "2028-01-01", qty: 5, bonus: 0, price: 1333, total: 6665 },
-        { id: 6, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "راس ممة ثنائي", salePrice: 1000, type: "مستلزمات", company: "CHINA", expiry: "2030-01-01", qty: 10, bonus: 0, price: 500, total: 5000 },
-        { id: 7, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "زنك كاستراويل 25 غم سامراء", salePrice: 2000, type: "Cream", company: "SDI / IRAQ", expiry: "2028-10-01", qty: 25, bonus: 0, price: 1425, total: 35625 },
-        { id: 8, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "سرنج انسولين 0.5 good", salePrice: 8000, type: "Syringe", company: "good / Turkey", expiry: "2030-01-01", qty: 4, bonus: 0, price: 6900, total: 27600 },
-        { id: 9, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "كمام اسود صيني", salePrice: 2000, type: "Mask", company: "CHINA", expiry: "2028-01-01", qty: 5, bonus: 0, price: 1500, total: 7500 },
-        { id: 10, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "كمامة اطفال", salePrice: 3000, type: "Mask", company: "TURKEY", expiry: "2028-01-01", qty: 1, bonus: 0, price: 2500, total: 2500 },
-        { id: 11, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "لزقة الالام شفاء صيني", salePrice: 500, type: "Patch", company: "unknown", expiry: "2029-12-01", qty: 24, bonus: 0, price: 371, total: 8904 },
-        { id: 12, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "لفاف ابيض بانجي 10 سم", salePrice: 4000, type: "PLASTER", company: "CHINA", expiry: "2028-01-01", qty: 4, bonus: 0, price: 3354, total: 13416 },
-        { id: 13, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "هايدرو فيال ازرق", salePrice: 2500, type: "Vial", company: "-", expiry: "2029-01-01", qty: 20, bonus: 0, price: 1539, total: 30780 },
-        { id: 14, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Acuaiss ULTRA ( 10 ml )", salePrice: 20000, type: "Drops", company: "DISOP / Spain", expiry: "2029-02-01", qty: 2, bonus: 0, price: 17055, total: 34110 },
-        { id: 15, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Adol ( Paracetamol 250 mg ) 10 Supp", salePrice: 3500, type: "Suppositories", company: "Julphar", expiry: "2027-05-01", qty: 10, bonus: 0, price: 2332, total: 23320 },
-        { id: 16, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Afrafast ( 30 Sachets )", salePrice: 11000, type: "Sachets", company: "APC / IRAQ", expiry: "2028-03-01", qty: 10, bonus: 0, price: 9000, total: 90000 },
-        { id: 17, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "ALLERCEN 10MG (10AMP)", salePrice: 8000, type: "Ampoule", company: "ocean", expiry: "2027-10-01", qty: 4, bonus: 0, price: 6607, total: 26428 },
-        { id: 18, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Anginovag Spray 10 ml", salePrice: 10000, type: "Spray", company: "ferrer / ESP", expiry: "2028-04-01", qty: 2, bonus: 0, price: 8512, total: 17024 },
-        { id: 19, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Angiosar-Plus ( 160/5/12.5mg ) 30 tab", salePrice: 18000, type: "Tablet", company: "Dar Al Dawa", expiry: "2028-11-01", qty: 5, bonus: 0, price: 15151, total: 75755 },
-        { id: 20, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Aqdexa (10Ampoules)", salePrice: 6500, type: "Ampoule", company: "AQUALAB", expiry: "2028-05-01", qty: 6, bonus: 0, price: 5130, total: 30780 },
-        { id: 21, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "AS-Aslavox CREAM", salePrice: 1000, type: "Cream", company: "ASWAR", expiry: "2029-04-01", qty: 15, bonus: 0, price: 544, total: 8160 },
-        { id: 22, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "AS-Betnosun cream", salePrice: 1000, type: "Cream", company: "ASWAR", expiry: "2029-04-01", qty: 15, bonus: 0, price: 513, total: 7695 },
-        { id: 23, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "AS-Dermodeem Cream", salePrice: 1000, type: "Cream", company: "ASWAR", expiry: "2029-04-01", qty: 25, bonus: 0, price: 493, total: 12325 },
-        { id: 24, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "AS-DERMODEEM OINTMENT", salePrice: 1000, type: "Ointment", company: "ASWAR", expiry: "2029-04-01", qty: 25, bonus: 0, price: 590, total: 14750 },
-        { id: 25, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "As-Fugidin Cream", salePrice: 1000, type: "Cream", company: "ASWAR", expiry: "2028-02-01", qty: 15, bonus: 0, price: 483, total: 7245 },
-        { id: 26, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "As-Hydrocortison Cream", salePrice: 1250, type: "Cream", company: "ASWAR", expiry: "2027-05-01", qty: 15, bonus: 0, price: 749, total: 11235 },
-        { id: 27, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "AS-NYESTOCORT OINTMENT", salePrice: 1500, type: "Ointment", company: "ASWAR", expiry: "2028-09-01", qty: 25, bonus: 0, price: 1029, total: 25725 },
-        { id: 28, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "ASALORMINE SYRUP ASWAR", salePrice: 1000, type: "Syrup", company: "ASWAR", expiry: "2029-04-01", qty: 20, bonus: 0, price: 491, total: 9820 },
-        { id: 29, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "ASMAFORT ( Ketotifen 1 mg ) 100 ml", salePrice: 4500, type: "Syrup", company: "Julphar", expiry: "2028-08-01", qty: 15, bonus: 0, price: 3250, total: 48750 },
-        { id: 30, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "ASWARFOCEN Ointment", salePrice: 2000, type: "Ointment", company: "ASWAR", expiry: "2029-06-01", qty: 12, bonus: 0, price: 1406, total: 16872 },
-        { id: 31, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Atacand 16 mg ( 28 tab ) اصلي", salePrice: 17000, type: "Tablet", company: "ASTRAZENECA", expiry: "2028-01-01", qty: 2, bonus: 0, price: 14295, total: 28590 },
-        { id: 32, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Atacand 8 mg ( 28 tab ) اصلي", salePrice: 13500, type: "Tablet", company: "ASTRAZENECA", expiry: "2028-04-01", qty: 2, bonus: 0, price: 11028, total: 22056 },
-        { id: 33, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Atacand Plus ( 16/12.5 mg ) 28 tab اصلي", salePrice: 17000, type: "Tablet", company: "ASTRAZENECA", expiry: "2028-07-01", qty: 2, bonus: 0, price: 14320, total: 28640 },
-        { id: 34, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "راس ممة ثنائي AVEAT", salePrice: 2500, type: "مستلزمات", company: "AVEAT", expiry: "2028-01-01", qty: 10, bonus: 0, price: 1653, total: 16530 }
+        { id: 1, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "بارستول حب", salePrice: 5000, type: "Vial", company: "-", expiry: "2028-07-01", qty: 10, bonus: 0, price: 3762, total: 37620 },
+        { id: 2, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "باندج قهوائي 10سم", salePrice: 8500, type: "BANDAGE", company: "CHINA", expiry: "2028-01-01", qty: 4, bonus: 0, price: 7200, total: 28800 },
+        { id: 3, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "حب بارستول ازرق", salePrice: 4000, type: "Tablet", company: "-", expiry: "2029-06-01", qty: 14, bonus: 0, price: 3300, total: 46200 },
+        { id: 4, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "حفاضه اولويز ازرق", salePrice: 2000, type: "مستلزمات", company: "TURKEY", expiry: "2027-07-01", qty: 12, bonus: 0, price: 1300, total: 15600 },
+        { id: 5, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "خافضة لسان", salePrice: 2000, type: "مستلزمات", company: "CHINA", expiry: "2028-01-01", qty: 5, bonus: 0, price: 1333, total: 6665 },
+        { id: 6, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "راس ممة ثنائي", salePrice: 1000, type: "مستلزمات", company: "CHINA", expiry: "2030-01-01", qty: 10, bonus: 0, price: 500, total: 5000 },
+        { id: 7, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "زنك كاستراويل 25 غم سامراء", salePrice: 2000, type: "Cream", company: "SDI / IRAQ", expiry: "2028-10-01", qty: 25, bonus: 0, price: 1425, total: 35625 },
+        { id: 8, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "سرنج انسولين 0.5 good", salePrice: 8000, type: "Syringe", company: "good / Turkey", expiry: "2030-01-01", qty: 4, bonus: 0, price: 6900, total: 27600 },
+        { id: 9, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "كمام اسود صيني", salePrice: 2000, type: "Mask", company: "CHINA", expiry: "2028-01-01", qty: 5, bonus: 0, price: 1500, total: 7500 },
+        { id: 10, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "كمامة اطفال", salePrice: 3000, type: "Mask", company: "TURKEY", expiry: "2028-01-01", qty: 1, bonus: 0, price: 2500, total: 2500 },
+        { id: 11, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "لزقة الالام شفاء صيني", salePrice: 500, type: "Patch", company: "unknown", expiry: "2029-12-01", qty: 24, bonus: 0, price: 371, total: 8904 },
+        { id: 12, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "لفاف ابيض بانجي 10 سم", salePrice: 4000, type: "PLASTER", company: "CHINA", expiry: "2028-01-01", qty: 4, bonus: 0, price: 3354, total: 13416 },
+        { id: 13, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "هايدرو فيال ازرق", salePrice: 2500, type: "Vial", company: "-", expiry: "2029-01-01", qty: 20, bonus: 0, price: 1539, total: 30780 },
+        { id: 14, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "Acuaiss ULTRA ( 10 ml )", salePrice: 20000, type: "Drops", company: "DISOP / Spain", expiry: "2029-02-01", qty: 2, bonus: 0, price: 17055, total: 34110 },
+        { id: 15, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "Adol ( Paracetamol 250 mg ) 10 Supp", salePrice: 3500, type: "Suppositories", company: "Julphar", expiry: "2027-05-01", qty: 10, bonus: 0, price: 2332, total: 23320 },
+        { id: 16, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "Afrafast ( 30 Sachets )", salePrice: 11000, type: "Sachets", company: "APC / IRAQ", expiry: "2028-03-01", qty: 10, bonus: 0, price: 9000, total: 90000 },
+        { id: 17, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "ALLERCEN 10MG (10AMP)", salePrice: 8000, type: "Ampoule", company: "ocean", expiry: "2027-10-01", qty: 4, bonus: 0, price: 6607, total: 26428 },
+        { id: 18, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "Anginovag Spray 10 ml", salePrice: 10000, type: "Spray", company: "ferrer / ESP", expiry: "2028-04-01", qty: 2, bonus: 0, price: 8512, total: 17024 },
+        { id: 19, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "Angiosar-Plus ( 160/5/12.5mg ) 30 tab", salePrice: 18000, type: "Tablet", company: "Dar Al Dawa", expiry: "2028-11-01", qty: 5, bonus: 0, price: 15151, total: 75755 },
+        { id: 20, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "Aqdexa (10Ampoules)", salePrice: 6500, type: "Ampoule", company: "AQUALAB", expiry: "2028-05-01", qty: 6, bonus: 0, price: 5130, total: 30780 },
+        { id: 21, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "AS-Aslavox CREAM", salePrice: 1000, type: "Cream", company: "ASWAR", expiry: "2029-04-01", qty: 15, bonus: 0, price: 544, total: 8160 },
+        { id: 22, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "AS-Betnosun cream", salePrice: 1000, type: "Cream", company: "ASWAR", expiry: "2029-04-01", qty: 15, bonus: 0, price: 513, total: 7695 },
+        { id: 23, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "AS-Dermodeem Cream", salePrice: 1000, type: "Cream", company: "ASWAR", expiry: "2029-04-01", qty: 25, bonus: 0, price: 493, total: 12325 },
+        { id: 24, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "AS-DERMODEEM OINTMENT", salePrice: 1000, type: "Ointment", company: "ASWAR", expiry: "2029-04-01", qty: 25, bonus: 0, price: 590, total: 14750 },
+        { id: 25, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "As-Fugidin Cream", salePrice: 1000, type: "Cream", company: "ASWAR", expiry: "2028-02-01", qty: 15, bonus: 0, price: 483, total: 7245 },
+        { id: 26, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "As-Hydrocortison Cream", salePrice: 1250, type: "Cream", company: "ASWAR", expiry: "2027-05-01", qty: 15, bonus: 0, price: 749, total: 11235 },
+        { id: 27, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "AS-NYESTOCORT OINTMENT", salePrice: 1500, type: "Ointment", company: "ASWAR", expiry: "2028-09-01", qty: 25, bonus: 0, price: 1029, total: 25725 },
+        { id: 28, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "ASALORMINE SYRUP ASWAR", salePrice: 1000, type: "Syrup", company: "ASWAR", expiry: "2029-04-01", qty: 20, bonus: 0, price: 491, total: 9820 },
+        { id: 29, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "ASMAFORT ( Ketotifen 1 mg ) 100 ml", salePrice: 4500, type: "Syrup", company: "Julphar", expiry: "2028-08-01", qty: 15, bonus: 0, price: 3250, total: 48750 },
+        { id: 30, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "ASWARFOCEN Ointment", salePrice: 2000, type: "Ointment", company: "ASWAR", expiry: "2029-06-01", qty: 12, bonus: 0, price: 1406, total: 16872 },
+        { id: 31, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "Atacand 16 mg ( 28 tab ) اصلي", salePrice: 17000, type: "Tablet", company: "ASTRAZENECA", expiry: "2028-01-01", qty: 2, bonus: 0, price: 14295, total: 28590 },
+        { id: 32, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "Atacand 8 mg ( 28 tab ) اصلي", salePrice: 13500, type: "Tablet", company: "ASTRAZENECA", expiry: "2028-04-01", qty: 2, bonus: 0, price: 11028, total: 22056 },
+        { id: 33, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "Atacand Plus ( 16/12.5 mg ) 28 tab اصلي", salePrice: 17000, type: "Tablet", company: "ASTRAZENECA", expiry: "2028-07-01", qty: 2, bonus: 0, price: 14320, total: 28640 },
+        { id: 34, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "راس ممة ثنائي AVEAT", salePrice: 2500, type: "مستلزمات", company: "AVEAT", expiry: "2028-01-01", qty: 10, bonus: 0, price: 1653, total: 16530 }
     ];
 
     const arabicLetters = ["الكل", "أ", "ب", "ت", "ث", "ج", "ح", "خ", "د", "ذ", "ر", "ز", "س", "ش", "ص", "ض", "ط", "ظ", "ع", "غ", "ف", "ق", "ك", "ل", "م", "ن", "هـ", "و", "ي"];
 
-    let inventory = JSON.parse(localStorage.getItem('pharmacy_inventory_v8')) || initialAlferdosData;
-    let debtors = JSON.parse(localStorage.getItem('pharmacy_debtors_v8')) || [];
-    let uploadedLists = JSON.parse(localStorage.getItem('pharmacy_uploaded_lists_v8')) || [];
-    let userSettings = JSON.parse(localStorage.getItem('pharmacy_settings_v8')) || {
+    let inventory = JSON.parse(localStorage.getItem('pharmacy_inventory_v9')) || initialAlferdosData;
+    let debtors = JSON.parse(localStorage.getItem('pharmacy_debtors_v9')) || [];
+    let uploadedLists = JSON.parse(localStorage.getItem('pharmacy_uploaded_lists_v9')) || [];
+    let userSettings = JSON.parse(localStorage.getItem('pharmacy_settings_v9')) || {
         fontFamily: "'Cairo', sans-serif",
         fontSize: "13.5",
         primary: "#0f766e",
@@ -1262,6 +1300,16 @@
     document.getElementById('debtorDateInput').value = todayStr;
     document.getElementById('smartDebtorDate').value = todayStr;
     document.getElementById('smartListDate').value = todayStr;
+    document.getElementById('uploadInvoiceDate').value = todayStr;
+    document.getElementById('invDateInput').value = todayStr;
+
+    function detectSupplierLabel(text) {
+        const t = (text || "").trim();
+        if (!t) return "قائمة مذخر / تجهيزات";
+        if (t.includes("فردوس")) return t.includes("مذخر") ? t : "مذخر الفردوس - " + t;
+        if (t.includes("اريس") || t.includes("أريس")) return t.includes("تجهيزات") ? t : "تجهيزات أريس - " + t;
+        return t;
+    }
 
     function loadSettingsToUI() {
         document.getElementById('settingFontFamily').value = userSettings.fontFamily;
@@ -1295,7 +1343,7 @@
         document.body.setAttribute('data-theme', userSettings.theme);
 
         if (save) {
-            localStorage.setItem('pharmacy_settings_v8', JSON.stringify(userSettings));
+            localStorage.setItem('pharmacy_settings_v9', JSON.stringify(userSettings));
             renderTables();
             updateAlerts();
         }
@@ -1324,6 +1372,10 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
         if (pageId === 'page1') {
             setTimeout(() => document.getElementById('barcodeScanInput').focus(), 120);
+        }
+        if (pageId === 'page3') {
+            renderInvoicesSummary();
+            renderTables();
         }
     }
 
@@ -1566,7 +1618,7 @@
             amount: Number(amount) || 0
         });
         debtors.sort((a, b) => a.name.localeCompare(b.name, 'ar'));
-        localStorage.setItem('pharmacy_debtors_v8', JSON.stringify(debtors));
+        localStorage.setItem('pharmacy_debtors_v9', JSON.stringify(debtors));
         renderDebtors();
         updateDebtorDropdown();
     }
@@ -1600,7 +1652,7 @@
         const raw = (document.getElementById('smartListText').value || '').trim();
         const titleInput = (document.getElementById('smartListTitle').value || '').trim();
         const dateVal = document.getElementById('smartListDate').value || new Date().toISOString().slice(0, 10);
-        const invoiceTitle = `${titleInput || 'قائمة مذخر'} (${dateVal})`;
+        const invoiceTitle = detectSupplierLabel(titleInput || "قائمة مذخر / تجهيزات");
 
         if (!raw) {
             alert('الصق سطور القائمة الجديدة أولاً.');
@@ -1625,10 +1677,12 @@
                 if (newSalePrice > 0) existing.salePrice = newSalePrice;
                 existing.total = Number(existing.total || 0) + lineTotal;
                 existing.invoice = invoiceTitle;
+                existing.invoiceDate = dateVal;
             } else {
                 inventory.unshift({
                     id: Date.now() + Math.floor(Math.random() * 1000),
                     invoice: invoiceTitle,
+                    invoiceDate: dateVal,
                     barcode: "",
                     name: name,
                     salePrice: newSalePrice || unitPrice,
@@ -1647,7 +1701,7 @@
         if (processed > 0) {
             document.getElementById('smartListText').value = '';
             saveData();
-            alert(`تم حفظ (${invoiceTitle})، زيادة العدد، وحساب المجموع، وتحديث أسعار المواد تلقائياً.`);
+            alert(`تم حفظ (${invoiceTitle}) بتاريخ ${dateVal}، زيادة العدد، وحساب المجموع، وتحديث الأسعار تلقائياً.`);
         }
     }
 
@@ -1682,14 +1736,14 @@
             items: "تسديد دفعة نقدية من الدين",
             amount: -paid
         });
-        localStorage.setItem('pharmacy_debtors_v8', JSON.stringify(debtors));
+        localStorage.setItem('pharmacy_debtors_v9', JSON.stringify(debtors));
         renderDebtors();
     }
 
     function deleteDebtor(debtorId) {
         if (confirm('حذف سجل هذا المديون نهائياً؟')) {
             debtors = debtors.filter(d => d.id !== debtorId);
-            localStorage.setItem('pharmacy_debtors_v8', JSON.stringify(debtors));
+            localStorage.setItem('pharmacy_debtors_v9', JSON.stringify(debtors));
             renderDebtors();
             updateDebtorDropdown();
         }
@@ -1783,6 +1837,7 @@
         if (!item) return;
         document.getElementById('editId').value = item.id;
         document.getElementById('editInvoice').value = item.invoice || '';
+        document.getElementById('editInvoiceDate').value = item.invoiceDate || todayStr;
         document.getElementById('editBarcode').value = item.barcode || '';
         document.getElementById('editName').value = item.name || '';
         document.getElementById('editSalePrice').value = item.salePrice ?? item.price ?? 0;
@@ -1805,7 +1860,8 @@
         if (idx === -1) return;
         inventory[idx] = {
             ...inventory[idx],
-            invoice: document.getElementById('editInvoice').value.trim(),
+            invoice: detectSupplierLabel(document.getElementById('editInvoice').value.trim()),
+            invoiceDate: document.getElementById('editInvoiceDate').value || todayStr,
             barcode: document.getElementById('editBarcode').value.trim(),
             name: document.getElementById('editName').value.trim(),
             salePrice: parseInt(document.getElementById('editSalePrice').value) || 0,
@@ -1823,7 +1879,7 @@
     }
 
     function saveData() {
-        localStorage.setItem('pharmacy_inventory_v8', JSON.stringify(inventory));
+        localStorage.setItem('pharmacy_inventory_v9', JSON.stringify(inventory));
         renderTables();
         updateAlerts();
         updateInvoiceDropdown();
@@ -1837,6 +1893,7 @@
         inventory.unshift({
             id: Date.now(),
             invoice: "إدخال مباشر للصيدلية",
+            invoiceDate: todayStr,
             barcode: document.getElementById('inBarcode').value.trim(),
             name: document.getElementById('inName').value.trim(),
             salePrice: parseInt(document.getElementById('inSalePrice').value) || 0,
@@ -1865,6 +1922,8 @@
         const nameVal = document.getElementById('invNameInput').value.trim();
         const qtyVal = parseInt(document.getElementById('invQtyInput').value) || 0;
         const totalVal = parseInt(document.getElementById('invTotalInput').value) || 0;
+        const invName = detectSupplierLabel(document.getElementById('invTitleInput').value.trim());
+        const invDate = document.getElementById('invDateInput').value || todayStr;
 
         const existing = inventory.find(d => d.name.toLowerCase() === nameVal.toLowerCase());
         if (existing) {
@@ -1872,10 +1931,13 @@
             if (salePrice > 0) existing.salePrice = salePrice;
             if (unitPrice > 0) existing.price = unitPrice;
             existing.total = Number(existing.total || 0) + totalVal;
+            existing.invoice = invName;
+            existing.invoiceDate = invDate;
         } else {
             inventory.unshift({
                 id: Date.now(),
-                invoice: document.getElementById('invTitleInput').value.trim(),
+                invoice: invName,
+                invoiceDate: invDate,
                 barcode: document.getElementById('invBarcodeInput').value.trim(),
                 name: nameVal,
                 salePrice: salePrice,
@@ -1898,13 +1960,34 @@
         alert('تمت إضافة المادة وتحديث العدد والأسعار تلقائياً!');
     }
 
-    function handleMediaFiles(event, sourceType) {
+    function handleMediaFiles(event, sourceType, autoArchiveImage = false) {
         const files = Array.from(event.target.files || []);
         files.forEach(file => {
             const reader = new FileReader();
             reader.onload = e => {
-                pendingImages.push({ name: file.name, src: sourceType, dataUrl: e.target.result });
+                const imgObj = { name: file.name, src: sourceType, dataUrl: e.target.result };
+                pendingImages.push(imgObj);
                 renderMediaPreview();
+
+                if (autoArchiveImage) {
+                    const rawTitle = document.getElementById('uploadInvoiceName').value.trim() || "مذخر الفردوس / تجهيزات أريس";
+                    const title = detectSupplierLabel(rawTitle);
+                    const dateVal = document.getElementById('uploadInvoiceDate').value || todayStr;
+                    const statusVal = document.getElementById('uploadItemsStatus').value;
+                    uploadedLists.unshift({
+                        id: Date.now() + Math.floor(Math.random() * 100),
+                        title,
+                        date: dateVal,
+                        status: statusVal,
+                        sourceLabel: sourceType === 'camera' ? 'صورة ملتقطة بالكاميرا' : 'صورة قائمة من المعرض',
+                        imagesCount: 1,
+                        imagePreview: e.target.result,
+                        pdfName: '—'
+                    });
+                    localStorage.setItem('pharmacy_uploaded_lists_v9', JSON.stringify(uploadedLists));
+                    updateInvoiceDropdown();
+                    renderInvoicesSummary();
+                }
             };
             reader.readAsDataURL(file);
         });
@@ -1944,23 +2027,44 @@
     }
 
     function saveUploadedListRecord() {
-        const title = document.getElementById('uploadInvoiceName').value.trim() || `قائمة مرفقة (${new Date().toLocaleDateString('ar-IQ')})`;
-        if (!pendingImages.length && !pendingPdfName) {
-            alert('التقط صورة بالكاميرا أو اختر صوراً من المعرض أو حمّل ملف PDF أولاً.');
+        const rawTitle = document.getElementById('uploadInvoiceName').value.trim();
+        const title = detectSupplierLabel(rawTitle || "مذخر الفردوس / تجهيزات أريس");
+        const dateVal = document.getElementById('uploadInvoiceDate').value || todayStr;
+        const statusVal = document.getElementById('uploadItemsStatus').value;
+
+        if (!pendingImages.length && !pendingPdfName && !rawTitle) {
+            alert('التقط صورة بالكاميرا أو اختر صوراً أو اكتب اسم المذخر/التجهيزات أولاً.');
             return;
         }
+
+        const firstImg = pendingImages.length ? pendingImages[0].dataUrl : null;
         uploadedLists.unshift({
             id: Date.now(),
             title,
+            date: dateVal,
+            status: statusVal,
+            sourceLabel: pendingImages.length ? 'قائمة مصورة محفوظة' : (pendingPdfName ? 'ملف PDF محفوظ' : 'قائمة مسجلة'),
             imagesCount: pendingImages.length,
-            pdfName: pendingPdfName || '—',
-            date: new Date().toLocaleDateString('ar-IQ')
+            imagePreview: firstImg,
+            pdfName: pendingPdfName || '—'
         });
-        localStorage.setItem('pharmacy_uploaded_lists_v8', JSON.stringify(uploadedLists));
+        localStorage.setItem('pharmacy_uploaded_lists_v9', JSON.stringify(uploadedLists));
         clearUploadedMedia();
-        document.getElementById('uploadInvoiceName').value = '';
+        updateInvoiceDropdown();
         renderInvoicesSummary();
-        alert('تم حفظ القائمة المرفقة بنجاح!');
+        alert(`تم حفظ (${title}) بتاريخ ${dateVal} في أرشيف القوائم!`);
+    }
+
+    function filterByInvoiceCard(invoiceName) {
+        const select = document.getElementById('invoiceFilter');
+        const exists = Array.from(select.options).some(o => o.value === invoiceName);
+        if (exists) {
+            select.value = invoiceName;
+        } else {
+            select.value = 'ALL';
+        }
+        renderTables();
+        document.getElementById('tablePage2Body').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     function renderInvoicesSummary() {
@@ -1972,33 +2076,51 @@
         const map = new Map();
         inventory.forEach(item => {
             const key = item.invoice || 'قائمة عامة';
-            if (!map.has(key)) map.set(key, { count: 0, sum: 0 });
+            if (!map.has(key)) {
+                map.set(key, {
+                    count: 0,
+                    sum: 0,
+                    date: item.invoiceDate || todayStr,
+                    status: 'متاحة ومستخدمة في الصيدلية'
+                });
+            }
             const cur = map.get(key);
             cur.count += 1;
             cur.sum += Number(item.total || 0);
+            if (item.invoiceDate && item.invoiceDate > cur.date) cur.date = item.invoiceDate;
         });
 
         map.forEach((val, key) => {
             datalist.innerHTML += `<option value="${key}">`;
             container.innerHTML += `
                 <div class="invoice-chip">
-                    <div>
-                        <strong style="display:block; font-size:0.86rem;">${key}</strong>
-                        <span style="font-size:0.76rem; color:var(--text-muted);">${val.count} مادة</span>
+                    <div class="invoice-chip-top">
+                        <strong style="font-size:0.9rem; color:var(--primary);">📦 ${key}</strong>
+                        <span class="status-pill pill-success">📅 ${val.date}</span>
                     </div>
-                    <strong style="color:var(--primary); font-size:0.86rem;">${val.sum.toLocaleString()} د.ع</strong>
+                    <div style="font-size:0.78rem; color:var(--text-muted);">
+                        ${val.count} مادة • ${val.status}
+                    </div>
+                    <div class="invoice-chip-top" style="margin-top:4px;">
+                        <strong style="color:var(--secondary); font-size:0.88rem;">المجموع: ${val.sum.toLocaleString()} د.ع</strong>
+                        <button class="btn btn-primary" style="padding:3px 8px; font-size:0.75rem;" onclick="filterByInvoiceCard('${key.replace(/'/g, "\\'")}')">عرض المواد</button>
+                    </div>
                 </div>
             `;
         });
 
         uploadedLists.forEach(ul => {
+            datalist.innerHTML += `<option value="${ul.title}">`;
             container.innerHTML += `
                 <div class="invoice-chip" style="border-right-color: var(--success);">
-                    <div>
-                        <strong style="display:block; font-size:0.86rem;">${ul.title}</strong>
-                        <span style="font-size:0.75rem; color:var(--text-muted);">صور: ${ul.imagesCount} | PDF: ${ul.pdfName}</span>
+                    <div class="invoice-chip-top">
+                        <strong style="font-size:0.9rem; color:var(--success);">📸 ${ul.title}</strong>
+                        <span class="status-pill pill-warning">📅 ${ul.date || todayStr}</span>
                     </div>
-                    <span class="status-pill pill-success">${ul.date}</span>
+                    <div style="font-size:0.78rem; color:var(--text-muted);">
+                        ${ul.sourceLabel || 'قائمة مرفقة'} • ${ul.status || 'متاحة ومستخدمة'} • PDF: ${ul.pdfName || '—'}
+                    </div>
+                    ${ul.imagePreview ? `<img src="${ul.imagePreview}" alt="${ul.title}" class="invoice-chip-img">` : ''}
                 </div>
             `;
         });
@@ -2040,7 +2162,7 @@
         let totalSum = 0;
         const filtered2 = inventory.filter(d => {
             const matchInv = invFilter === 'ALL' || d.invoice === invFilter;
-            const matchText = d.name.toLowerCase().includes(q2) || d.company.toLowerCase().includes(q2) || d.type.toLowerCase().includes(q2);
+            const matchText = d.name.toLowerCase().includes(q2) || d.company.toLowerCase().includes(q2) || d.type.toLowerCase().includes(q2) || (d.invoice && d.invoice.toLowerCase().includes(q2));
             return matchInv && matchText;
         });
 
@@ -2049,7 +2171,8 @@
             tbody2.innerHTML += `
                 <tr>
                     <td>${index + 1}</td>
-                    <td style="font-size:0.78rem; color:var(--text-muted);">${item.invoice}</td>
+                    <td style="font-size:0.8rem; font-weight:700; color:var(--primary);">${item.invoice}</td>
+                    <td>${item.invoiceDate || todayStr}</td>
                     <td><strong>${item.barcode || '—'}</strong></td>
                     <td><strong>${item.name}</strong></td>
                     <td>${item.type}</td>
@@ -2122,7 +2245,9 @@
     function updateInvoiceDropdown() {
         const select = document.getElementById('invoiceFilter');
         const current = select.value;
-        const invoices = [...new Set(inventory.map(i => i.invoice))];
+        const fromInv = inventory.map(i => i.invoice).filter(Boolean);
+        const fromUp = uploadedLists.map(u => u.title).filter(Boolean);
+        const invoices = [...new Set([...fromUp, ...fromInv])];
         select.innerHTML = '<option value="ALL">كل القوائم</option>';
         invoices.forEach(inv => { select.innerHTML += `<option value="${inv}">${inv}</option>`; });
         select.value = current || 'ALL';
