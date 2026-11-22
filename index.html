@@ -321,7 +321,7 @@
         }
 
         .table-edit-name {
-            min-width: 165px;
+            min-width: 175px;
             font-weight: 700;
         }
 
@@ -915,12 +915,12 @@
             <div class="form-grid" style="margin-bottom:12px;">
                 <div class="form-group">
                     <label>اسم المذخر / التجهيزات</label>
-                    <input type="text" id="ocrInvoiceName" placeholder="مثال: مذخر الفردوس #342077" list="existingInvoicesList">
+                    <input type="text" id="ocrInvoiceName" value="قائمة #2 (11/2/26)" list="existingInvoicesList">
                     <datalist id="existingInvoicesList"></datalist>
                 </div>
                 <div class="form-group">
                     <label>تاريخ القائمة (سنة - شهر - يوم)</label>
-                    <input type="date" id="ocrInvoiceDate">
+                    <input type="date" id="ocrInvoiceDate" value="2026-02-11">
                 </div>
                 <div class="form-group">
                     <label>النوع / القسم الافتراضي</label>
@@ -953,7 +953,7 @@
             </div>
 
             <div id="ocrStatusBox" class="ocr-status-box">
-                ارفع صورة القائمة — سيقوم البرنامج بقصّ كل صف لوحده، ومطابقة اسم العلاج مع علاجاتك المخزنة لتصحيحه تلقائياً.
+                تم تجهيز جدول الصفحة الثانية (35 إلى 73) جاهزاً بالأسفل — يمكنك تعديله أو إضافته للأرشيف مباشرة، أو رفع أي صورة أخرى وتصحيحها هنا.
             </div>
 
             <div id="mediaPreviewArea" class="media-preview-list"></div>
@@ -963,7 +963,7 @@
 
             <div style="margin-top:14px;">
                 <div class="card-title" style="margin-bottom:8px;">
-                    <span>📋 جدول تفريغ الصورة (تعديل وحذف وإضافة سريعة قبل الحفظ)</span>
+                    <span>📋 جدول تفريغ القائمة (تعديل وحذف وإضافة سريعة قبل الحفظ)</span>
                     <div style="display:flex; gap:6px; flex-wrap:wrap;">
                         <button class="btn btn-secondary" onclick="addEmptyExtractedRow()">➕ سطر جديد</button>
                         <button class="btn btn-warning" onclick="autoMatchAllExtractedNames()">🪄 تصحيح الأسماء من المخزون</button>
@@ -980,7 +980,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>اسم المادة (اختر أو عدّل)</th>
-                                <th>العدد</th>
+                                <th>كارتون / عدد</th>
                                 <th>بونص</th>
                                 <th>سعر المفرد</th>
                                 <th>المجموع (تلقائي)</th>
@@ -993,9 +993,7 @@
                                 <th>حذف</th>
                             </tr>
                         </thead>
-                        <tbody id="ocrExtractedTableBody">
-                            <tr><td colspan="13" style="text-align:center; color:var(--text-muted);">لم يتم استخراج مواد بعد — ارفع صورة قائمة أو اضغط (سطر جديد)</td></tr>
-                        </tbody>
+                        <tbody id="ocrExtractedTableBody"></tbody>
                     </table>
                 </div>
             </div>
@@ -1006,16 +1004,16 @@
                 <span>⚡ لصق سريع للقوائم وتحديث الأسعار القديمة وحساب العدد والمجموع</span>
             </div>
             <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">
-                اكتب اسم المذخر والتاريخ، والصق المواد (<strong>اسم المادة | العدد | سعر المفرد | سعر البيع الجديد</strong>) ليُضاف مباشرة على أرشيف القوائم ويُحدّث السعر والعدد تلقائياً:
+                الصق أي قائمة (<strong>اسم المادة | العدد | سعر المفرد | سعر البيع الجديد</strong>) ليُضاف مباشرة على الأرشيف ويُحدّث السعر والعدد تلقائياً:
             </p>
             <div class="form-grid" style="margin-bottom:8px;">
                 <div class="form-group">
                     <label>اسم المذخر / التجهيزات</label>
-                    <input type="text" id="smartListTitle" placeholder="مثال: مذخر الفردوس #342077" list="existingInvoicesList">
+                    <input type="text" id="smartListTitle" value="قائمة #2 (11/2/26)" list="existingInvoicesList">
                 </div>
                 <div class="form-group">
                     <label>تاريخ القائمة</label>
-                    <input type="date" id="smartListDate">
+                    <input type="date" id="smartListDate" value="2026-02-11">
                 </div>
             </div>
             <textarea id="smartListText" rows="3" placeholder="كل سطر: اسم المادة | العدد | سعر المفرد | سعر البيع الجديد (اختياري)"></textarea>
@@ -1030,11 +1028,11 @@
                 <div class="form-grid">
                     <div class="form-group" style="grid-column: span 2;">
                         <label>اسم المذخر ورقم القائمة</label>
-                        <input type="text" id="invTitleInput" list="existingInvoicesList" required>
+                        <input type="text" id="invTitleInput" value="قائمة #2 (11/2/26)" list="existingInvoicesList" required>
                     </div>
                     <div class="form-group">
                         <label>تاريخ القائمة</label>
-                        <input type="date" id="invDateInput">
+                        <input type="date" id="invDateInput" value="2026-02-11">
                     </div>
                     <div class="form-group">
                         <label>الباركود</label>
@@ -1303,49 +1301,54 @@
 </div>
 
 <script>
-    const initialAlferdosData = [
-        { id: 1, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "بارستول حب", salePrice: 5000, type: "Vial", company: "-", expiry: "2028-07-01", qty: 10, bonus: 0, price: 3762, total: 37620 },
-        { id: 2, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "باندج قهوائي 10سم", salePrice: 8500, type: "BANDAGE", company: "CHINA", expiry: "2028-01-01", qty: 4, bonus: 0, price: 7200, total: 28800 },
-        { id: 3, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "حب بارستول ازرق", salePrice: 4000, type: "Tablet", company: "-", expiry: "2029-06-01", qty: 14, bonus: 0, price: 3300, total: 46200 },
-        { id: 4, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "حفاضه اولويز ازرق", salePrice: 2000, type: "مستلزمات", company: "TURKEY", expiry: "2027-07-01", qty: 12, bonus: 0, price: 1300, total: 15600 },
-        { id: 5, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "خافضة لسان", salePrice: 2000, type: "مستلزمات", company: "CHINA", expiry: "2028-01-01", qty: 5, bonus: 0, price: 1333, total: 6665 },
-        { id: 6, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "راس ممة ثنائي", salePrice: 1000, type: "مستلزمات", company: "CHINA", expiry: "2030-01-01", qty: 10, bonus: 0, price: 500, total: 5000 },
-        { id: 7, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "زنك كاستراويل 25 غم سامراء", salePrice: 2000, type: "Cream", company: "SDI / IRAQ", expiry: "2028-10-01", qty: 25, bonus: 0, price: 1425, total: 35625 },
-        { id: 8, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "سرنج انسولين 0.5 good", salePrice: 8000, type: "Syringe", company: "good / Turkey", expiry: "2030-01-01", qty: 4, bonus: 0, price: 6900, total: 27600 },
-        { id: 9, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "كمام اسود صيني", salePrice: 2000, type: "Mask", company: "CHINA", expiry: "2028-01-01", qty: 5, bonus: 0, price: 1500, total: 7500 },
-        { id: 10, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "كمامة اطفال", salePrice: 3000, type: "Mask", company: "TURKEY", expiry: "2028-01-01", qty: 1, bonus: 0, price: 2500, total: 2500 },
-        { id: 11, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "لزقة الالام شفاء صيني", salePrice: 500, type: "Patch", company: "unknown", expiry: "2029-12-01", qty: 24, bonus: 0, price: 371, total: 8904 },
-        { id: 12, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "لفاف ابيض بانجي 10 سم", salePrice: 4000, type: "PLASTER", company: "CHINA", expiry: "2028-01-01", qty: 4, bonus: 0, price: 3354, total: 13416 },
-        { id: 13, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "هايدرو فيال ازرق", salePrice: 2500, type: "Vial", company: "-", expiry: "2029-01-01", qty: 20, bonus: 0, price: 1539, total: 30780 },
-        { id: 14, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "Acuaiss ULTRA ( 10 ml )", salePrice: 20000, type: "Drops", company: "DISOP / Spain", expiry: "2029-02-01", qty: 2, bonus: 0, price: 17055, total: 34110 },
-        { id: 15, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "Adol ( Paracetamol 250 mg ) 10 Supp", salePrice: 3500, type: "Suppositories", company: "Julphar", expiry: "2027-05-01", qty: 10, bonus: 0, price: 2332, total: 23320 },
-        { id: 16, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "Afrafast ( 30 Sachets )", salePrice: 11000, type: "Sachets", company: "APC / IRAQ", expiry: "2028-03-01", qty: 10, bonus: 0, price: 9000, total: 90000 },
-        { id: 17, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "ALLERCEN 10MG (10AMP)", salePrice: 8000, type: "Ampoule", company: "ocean", expiry: "2027-10-01", qty: 4, bonus: 0, price: 6607, total: 26428 },
-        { id: 18, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "Anginovag Spray 10 ml", salePrice: 10000, type: "Spray", company: "ferrer / ESP", expiry: "2028-04-01", qty: 2, bonus: 0, price: 8512, total: 17024 },
-        { id: 19, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "Angiosar-Plus ( 160/5/12.5mg ) 30 tab", salePrice: 18000, type: "Tablet", company: "Dar Al Dawa", expiry: "2028-11-01", qty: 5, bonus: 0, price: 15151, total: 75755 },
-        { id: 20, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "Aqdexa (10Ampoules)", salePrice: 6500, type: "Ampoule", company: "AQUALAB", expiry: "2028-05-01", qty: 6, bonus: 0, price: 5130, total: 30780 },
-        { id: 21, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "AS-Aslavox CREAM", salePrice: 1000, type: "Cream", company: "ASWAR", expiry: "2029-04-01", qty: 15, bonus: 0, price: 544, total: 8160 },
-        { id: 22, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "AS-Betnosun cream", salePrice: 1000, type: "Cream", company: "ASWAR", expiry: "2029-04-01", qty: 15, bonus: 0, price: 513, total: 7695 },
-        { id: 23, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "AS-Dermodeem Cream", salePrice: 1000, type: "Cream", company: "ASWAR", expiry: "2029-04-01", qty: 25, bonus: 0, price: 493, total: 12325 },
-        { id: 24, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "AS-DERMODEEM OINTMENT", salePrice: 1000, type: "Ointment", company: "ASWAR", expiry: "2029-04-01", qty: 25, bonus: 0, price: 590, total: 14750 },
-        { id: 25, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "As-Fugidin Cream", salePrice: 1000, type: "Cream", company: "ASWAR", expiry: "2028-02-01", qty: 15, bonus: 0, price: 483, total: 7245 },
-        { id: 26, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "As-Hydrocortison Cream", salePrice: 1250, type: "Cream", company: "ASWAR", expiry: "2027-05-01", qty: 15, bonus: 0, price: 749, total: 11235 },
-        { id: 27, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "AS-NYESTOCORT OINTMENT", salePrice: 1500, type: "Ointment", company: "ASWAR", expiry: "2028-09-01", qty: 25, bonus: 0, price: 1029, total: 25725 },
-        { id: 28, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "ASALORMINE SYRUP ASWAR", salePrice: 1000, type: "Syrup", company: "ASWAR", expiry: "2029-04-01", qty: 20, bonus: 0, price: 491, total: 9820 },
-        { id: 29, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "ASMAFORT ( Ketotifen 1 mg ) 100 ml", salePrice: 4500, type: "Syrup", company: "Julphar", expiry: "2028-08-01", qty: 15, bonus: 0, price: 3250, total: 48750 },
-        { id: 30, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "ASWARFOCEN Ointment", salePrice: 2000, type: "Ointment", company: "ASWAR", expiry: "2029-06-01", qty: 12, bonus: 0, price: 1406, total: 16872 },
-        { id: 31, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "Atacand 16 mg ( 28 tab ) اصلي", salePrice: 17000, type: "Tablet", company: "ASTRAZENECA", expiry: "2028-01-01", qty: 2, bonus: 0, price: 14295, total: 28590 },
-        { id: 32, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "Atacand 8 mg ( 28 tab ) اصلي", salePrice: 13500, type: "Tablet", company: "ASTRAZENECA", expiry: "2028-04-01", qty: 2, bonus: 0, price: 11028, total: 22056 },
-        { id: 33, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "Atacand Plus ( 16/12.5 mg ) 28 tab اصلي", salePrice: 17000, type: "Tablet", company: "ASTRAZENECA", expiry: "2028-07-01", qty: 2, bonus: 0, price: 14320, total: 28640 },
-        { id: 34, invoice: "مذخر الفردوس #342077", invoiceDate: "2026-11-02", barcode: "", name: "راس ممة ثنائي AVEAT", salePrice: 2500, type: "مستلزمات", company: "AVEAT", expiry: "2028-01-01", qty: 10, bonus: 0, price: 1653, total: 16530 }
+    const page2RowsFromImage = [
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Azi-Once ( Azithromycin 200 mg ) 22.5 ml", salePrice: 5075, type: "Syrup", company: "Jamjoom Pharma", expiry: "2027-11-01", qty: 5, bonus: 0, price: 5075, total: 25375 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "baby happy كل احجام", salePrice: 900, type: "مستلزمات", company: "CHINA", expiry: "2030-01-01", qty: 20, bonus: 0, price: 900, total: 18000 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Bepanthen Cream ( 30 g )", salePrice: 5958, type: "Cream", company: "BAYER", expiry: "2028-06-01", qty: 5, bonus: 0, price: 5958, total: 29790 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Bepanthen Protective Baby Oint ( 30 g )", salePrice: 5958, type: "Ointment", company: "BAYER", expiry: "2027-10-01", qty: 5, bonus: 0, price: 5958, total: 29790 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "betnozum-D ointment", salePrice: 555, type: "Ointment", company: "Dijla / IRAQ", expiry: "2027-05-01", qty: 15, bonus: 0, price: 555, total: 8325 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Bordered Gause ( 10 x 15 )", salePrice: 8833, type: "PLASTER", company: "Zand Med", expiry: "2027-01-01", qty: 2, bonus: 0, price: 8833, total: 17666 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Cefex ( Cefalexin 500 mg ) 10 cap", salePrice: 1129, type: "Capsule", company: "MICRO", expiry: "2028-09-01", qty: 30, bonus: 0, price: 1129, total: 33870 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "كلوكوسلاين CISEN", salePrice: 1075, type: "Infusion", company: "CISEN", expiry: "2027-07-01", qty: 10, bonus: 0, price: 1075, total: 10750 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Dentagyl ( 20 tab ) Hikma", salePrice: 8550, type: "Tablet", company: "HIKMA", expiry: "2027-09-01", qty: 10, bonus: 1, price: 8550, total: 85500 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "DIBASE 300.000 I.U. ( 2 amp )", salePrice: 9994, type: "Ampoule", company: "ABIOGEN", expiry: "2028-11-01", qty: 6, bonus: 0, price: 9994, total: 59964 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Dologan Denk ( 20 tab ) Denk Pharma", salePrice: 8158, type: "Tablet", company: "Denk Pharma", expiry: "2029-06-01", qty: 4, bonus: 0, price: 8158, total: 32632 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Duphaston 10 mg ( 20 tab ) أصلي", salePrice: 11075, type: "Tablet", company: "Abbott", expiry: "2030-09-01", qty: 3, bonus: 0, price: 11075, total: 33225 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Euthyrox ( Levothyroxine 100 mcg ) 100 tab", salePrice: 10722, type: "Tablet", company: "MERCK", expiry: "2027-12-01", qty: 5, bonus: 0, price: 10722, total: 53610 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Euthyrox ( Levothyroxine 25 mcg ) 100 tab", salePrice: 4703, type: "Tablet", company: "MERCK", expiry: "2027-12-01", qty: 5, bonus: 0, price: 4703, total: 23515 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Euthyrox ( Levothyroxine 50 mcg ) 100 tab", salePrice: 7226, type: "Tablet", company: "MERCK", expiry: "2028-01-01", qty: 5, bonus: 0, price: 7226, total: 36130 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Exart Plus (80/12.5mg) 30 tab", salePrice: 12329, type: "Tablet", company: "MADDOX Pharma", expiry: "2028-11-01", qty: 3, bonus: 0, price: 12329, total: 36987 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "folic acid 5mg eipico", salePrice: 1283, type: "Tablet", company: "EIPICO", expiry: "2028-06-01", qty: 5, bonus: 0, price: 1283, total: 6415 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "folic acid 5mg eipico", salePrice: 1283, type: "Tablet", company: "EIPICO", expiry: "2028-10-01", qty: 3, bonus: 0, price: 1283, total: 3849 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Fusibact Oint 2% ( 15 g )", salePrice: 3030, type: "Ointment", company: "Jamjoom Pharma", expiry: "2029-04-01", qty: 6, bonus: 0, price: 3030, total: 18180 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "gentamicin injection 80", salePrice: 3157, type: "Ampoule", company: "GLAND", expiry: "2027-06-01", qty: 3, bonus: 0, price: 3157, total: 9471 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Glemax ( Glimepiride 4 mg ) 30 cap", salePrice: 6475, type: "Tablet", company: "Joswe", expiry: "2029-02-01", qty: 2, bonus: 0, price: 6475, total: 12950 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Glemax ( Glimepiride 6 mg ) 30 tab", salePrice: 13475, type: "Tablet", company: "Joswe", expiry: "2028-10-01", qty: 4, bonus: 0, price: 13475, total: 53900 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "HyFresh Eye Drops ( 10 ml )", salePrice: 5544, type: "Drops", company: "Jamjoom Pharma", expiry: "2029-04-01", qty: 4, bonus: 0, price: 5544, total: 22176 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Inaprol Fort ( Naproxen 500mg ) 20 tab", salePrice: 5544, type: "Tablet", company: "BILIM", expiry: "2028-10-01", qty: 5, bonus: 0, price: 5544, total: 27720 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Indomethacine-Medico 10 Supp", salePrice: 2535, type: "Suppositories", company: "MEDICO", expiry: "2027-11-01", qty: 8, bonus: 0, price: 2535, total: 20280 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Katya ( 30/75 ) 63 tab", salePrice: 21000, type: "Tablet", company: "STRAGEN / UK", expiry: "2028-10-01", qty: 2, bonus: 0, price: 21000, total: 42000 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "KETOHIST Syrup ( 100ml )", salePrice: 1464, type: "Syrup", company: "Alfayhaa", expiry: "2029-02-01", qty: 10, bonus: 0, price: 1464, total: 14640 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Ketonaz Shampoo ( 100 ml ) اصلي", salePrice: 1800, type: "Shampoo", company: "PHARMALINE", expiry: "2030-03-01", qty: 5, bonus: 0, price: 1800, total: 9000 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "LIDOCAINE 2% Injection 50ml LINCOLN", salePrice: 2255, type: "Injection", company: "LINCOLN", expiry: "2028-11-01", qty: 4, bonus: 0, price: 2255, total: 9020 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Lofral ( Amlodipine 10 mg ) 30 tab", salePrice: 10858, type: "Tablet", company: "acino / Switz", expiry: "2027-09-01", qty: 3, bonus: 0, price: 10858, total: 32574 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Lofral ( Amlodipine 5 mg ) 30 tab", salePrice: 8675, type: "Tablet", company: "acino / Switz", expiry: "2027-11-01", qty: 3, bonus: 0, price: 8675, total: 26025 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "MAXIPORE PLASTER 9X15CM", salePrice: 20125, type: "PLASTER", company: "CHINA", expiry: "2028-02-01", qty: 2, bonus: 0, price: 20125, total: 40250 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Mebo Ointment ( 30 g )", salePrice: 8245, type: "Ointment", company: "Julphar", expiry: "2028-05-01", qty: 4, bonus: 0, price: 8245, total: 32980 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Minoxidil GREASY Shampoo ( 210ml ) Syria اخضر", salePrice: 2280, type: "Shampoo", company: "Arak / Syria", expiry: "2030-01-01", qty: 5, bonus: 0, price: 2280, total: 11400 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Mobic 15 mg 30 tab", salePrice: 13429, type: "Tablet", company: "Boehringer", expiry: "2028-08-01", qty: 4, bonus: 0, price: 13429, total: 53716 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Mobic 7.5mg 30 tab", salePrice: 9884, type: "Tablet", company: "Boehringer", expiry: "2027-12-01", qty: 4, bonus: 0, price: 9884, total: 39536 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Myogesic ( 20 tab )", salePrice: 2234, type: "Tablet", company: "Dar Al Dawa", expiry: "2028-02-01", qty: 5, bonus: 0, price: 2234, total: 11170 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "N.S 500ml PIONEER", salePrice: 800, type: "Infusion", company: "PIONEER", expiry: "2029-04-01", qty: 10, bonus: 0, price: 800, total: 8000 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "NAPRON ( Naproxen 500 mg ) 20 tab", salePrice: 3271, type: "Tablet", company: "PIONEER", expiry: "2029-02-01", qty: 5, bonus: 0, price: 3271, total: 16355 }
     ];
 
     const arabicLetters = ["الكل", "أ", "ب", "ت", "ث", "ج", "ح", "خ", "د", "ذ", "ر", "ز", "س", "ش", "ص", "ض", "ط", "ظ", "ع", "غ", "ف", "ق", "ك", "ل", "م", "ن", "هـ", "و", "ي"];
 
-    let inventory = JSON.parse(localStorage.getItem('pharmacy_inventory_v15')) || initialAlferdosData;
-    let debtors = JSON.parse(localStorage.getItem('pharmacy_debtors_v15')) || [];
-    let uploadedLists = JSON.parse(localStorage.getItem('pharmacy_uploaded_lists_v15')) || [];
-    let userSettings = JSON.parse(localStorage.getItem('pharmacy_settings_v15')) || {
+    let inventory = JSON.parse(localStorage.getItem('pharmacy_inventory_v16')) || [];
+    let debtors = JSON.parse(localStorage.getItem('pharmacy_debtors_v16')) || [];
+    let uploadedLists = JSON.parse(localStorage.getItem('pharmacy_uploaded_lists_v16')) || [];
+    let userSettings = JSON.parse(localStorage.getItem('pharmacy_settings_v16')) || {
         fontFamily: "'Cairo', sans-serif",
         fontSize: "13.5",
         primary: "#0f766e",
@@ -1365,30 +1368,32 @@
     let activeLetter = "الكل";
     let pendingImages = [];
     let pendingPdfUrl = null;
-    let extractedRows = [];
+    let extractedRows = page2RowsFromImage.map((r, i) => ({ ...r, id: 1000 + i }));
     let isRendering = false;
 
     const todayStr = new Date().toISOString().slice(0, 10);
     document.getElementById('debtorDateInput').value = todayStr;
     document.getElementById('smartDebtorDate').value = todayStr;
-    document.getElementById('smartListDate').value = todayStr;
-    document.getElementById('ocrInvoiceDate').value = todayStr;
-    document.getElementById('invDateInput').value = todayStr;
 
     function detectSupplierLabel(text) {
         const t = (text || "").trim();
-        if (!t) return "مذخر الفردوس #342077";
+        if (!t) return "قائمة #2 (11/2/26)";
         if (t.includes("فردوس") && !t.includes("#")) return "مذخر الفردوس #342077";
         return t;
     }
 
-    function getYearFromDate(d) { return (d || todayStr).slice(0, 4); }
-    function getMonthFromDate(d) { return (d || todayStr).slice(5, 7); }
+    function getYearFromDate(d) { return (d || "2026-02-11").slice(0, 4); }
+    function getMonthFromDate(d) { return (d || "2026-02-11").slice(5, 7); }
 
     function normalizeDigits(str) {
         return (str || "")
             .replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d))
             .replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
+    }
+
+    function parseMoneyNumber(raw) {
+        const cleaned = normalizeDigits(String(raw || "")).replace(/[^\d.-]/g, '');
+        return parseInt(cleaned, 10) || 0;
     }
 
     function levenshtein(a, b) {
@@ -1425,7 +1430,7 @@
             const maxLen = Math.max(clean.length, target.length);
             const dist = levenshtein(clean, target);
             const sim = 1 - (dist / maxLen);
-            if (sim > bestScore && sim >= 0.62) {
+            if (sim > bestScore && sim >= 0.65) {
                 bestScore = sim;
                 best = item;
             }
@@ -1437,7 +1442,7 @@
         return new Promise(resolve => {
             const img = new Image();
             img.onload = () => {
-                const targetW = Math.max(1400, img.width);
+                const targetW = Math.max(1500, img.width);
                 const scale = targetW / img.width;
                 const targetH = Math.round(img.height * scale);
 
@@ -1456,11 +1461,11 @@
                     for (let x = 0; x < targetW; x++) {
                         const idx = (y * targetW + x) * 4;
                         const gray = 0.299 * d[idx] + 0.587 * d[idx + 1] + 0.114 * d[idx + 2];
-                        const val = gray > 165 ? 255 : 0;
+                        const val = gray > 160 ? 255 : 0;
                         d[idx] = d[idx + 1] = d[idx + 2] = val;
                         if (val === 0) dark++;
                     }
-                    if (dark < targetW * 0.65) {
+                    if (dark < targetW * 0.72) {
                         rowDarkCounts[y] = dark;
                     }
                 }
@@ -1469,7 +1474,7 @@
                 const bands = [];
                 let inBand = false;
                 let startY = 0;
-                const minTextPixels = Math.max(8, Math.round(targetW * 0.006));
+                const minTextPixels = Math.max(10, Math.round(targetW * 0.007));
 
                 for (let y = 0; y < targetH; y++) {
                     if (rowDarkCounts[y] > minTextPixels && !inBand) {
@@ -1541,7 +1546,7 @@
         document.body.setAttribute('data-theme', userSettings.theme);
 
         if (save) {
-            localStorage.setItem('pharmacy_settings_v15', JSON.stringify(userSettings));
+            localStorage.setItem('pharmacy_settings_v16', JSON.stringify(userSettings));
             refreshAllUI();
         }
     }
@@ -1801,7 +1806,7 @@
             amount: Number(amount) || 0
         });
         debtors.sort((a, b) => a.name.localeCompare(b.name, 'ar'));
-        localStorage.setItem('pharmacy_debtors_v15', JSON.stringify(debtors));
+        localStorage.setItem('pharmacy_debtors_v16', JSON.stringify(debtors));
         renderDebtors();
         updateDebtorDropdown();
     }
@@ -1815,7 +1820,7 @@
             const parts = line.split(/[-|،]+/).map(p => p.trim()).filter(Boolean);
             if (parts.length >= 2) {
                 const name = parts[0];
-                const amount = parseInt((parts[parts.length - 1] || "0").replace(/[^\d-]/g, '')) || 0;
+                const amount = parseMoneyNumber(parts[parts.length - 1]);
                 const items = parts.slice(1, parts.length - 1).join(' + ') || "وجبة دين";
                 addDebtEntry(name, "", dateVal, items, amount);
                 addedCount++;
@@ -1830,19 +1835,23 @@
     function parseSingleRowText(rawLine, defaultInvoice, defaultDate, defaultType, defaultCompany) {
         const line = normalizeDigits(rawLine || "").replace(/\s+/g, ' ').trim();
         if (!line) return null;
-        const ignoreHeaderRegex = /(اسم المادة|المجموع|سعر المفرد|التاريخ|الباركود|القائمة|المذخر|مذخر الفردوس|الاجمالي|الإجمالي|أرشيف قوائم|المتوفر|بونص)/i;
+        const ignoreHeaderRegex = /(اسم المادة|المجموع|سعر المفرد|التاريخ|الباركود|القائمة|المذخر|مذخر الفردوس|الاجمالي|الإجمالي|أرشيف قوائم|المتوفر|بونص|دينار|Page\s*\d)/i;
         if (ignoreHeaderRegex.test(line)) return null;
 
         let work = line.replace(/[|_=~`•]+/g, ' ').replace(/\s+/g, ' ').trim();
 
         let expiry = "2028-12-01";
-        const fullDateMatch = work.match(/\b(20\d{2})[-/.](\d{1,2})[-/.](\d{1,2})\b/);
+        const dmyMatch = work.match(/\b(\d{1,2})[-/.](\d{1,2})[-/.](20\d{2})\b/);
+        const ymdMatch = work.match(/\b(20\d{2})[-/.](\d{1,2})[-/.](\d{1,2})\b/);
         const ymMatch = work.match(/\b(20\d{2})[-/.](\d{1,2})\b/);
         const myMatch = work.match(/\b(\d{1,2})[-/.](20\d{2})\b/);
 
-        if (fullDateMatch) {
-            expiry = `${fullDateMatch[1]}-${fullDateMatch[2].padStart(2, '0')}-${fullDateMatch[3].padStart(2, '0')}`;
-            work = work.replace(fullDateMatch[0], ' ');
+        if (dmyMatch) {
+            expiry = `${dmyMatch[3]}-${dmyMatch[2].padStart(2, '0')}-${dmyMatch[1].padStart(2, '0')}`;
+            work = work.replace(dmyMatch[0], ' ');
+        } else if (ymdMatch) {
+            expiry = `${ymdMatch[1]}-${ymdMatch[2].padStart(2, '0')}-${ymdMatch[3].padStart(2, '0')}`;
+            work = work.replace(ymdMatch[0], ' ');
         } else if (ymMatch) {
             expiry = `${ymMatch[1]}-${ymMatch[2].padStart(2, '0')}-01`;
             work = work.replace(ymMatch[0], ' ');
@@ -1858,43 +1867,38 @@
             work = work.replace(barcodeMatch[0], ' ');
         }
 
-        work = work.replace(/^\d{1,3}[\s.)-]+/, '').trim();
-
-        const rawNums = work.match(/\b\d{1,3}(?:,\d{3})+|\b\d+\b/g) || [];
-        const nums = rawNums.map(n => parseInt(n.replace(/,/g, ''), 10)).filter(n => !isNaN(n) && n > 0);
+        const rawNumTokens = work.match(/\b\d{1,3}(?:,\d{3})+|\b\d+\b/g) || [];
+        const nums = rawNumTokens.map(n => parseInt(n.replace(/,/g, ''), 10)).filter(n => !isNaN(n) && n >= 0);
 
         let qty = 1;
         let price = 0;
         let total = 0;
 
-        if (nums.length >= 3) {
-            let foundTriplet = false;
-            for (let i = 0; i < nums.length; i++) {
-                for (let j = i + 1; j < nums.length; j++) {
-                    for (let k = j + 1; k < nums.length; k++) {
-                        const a = nums[i], b = nums[j], c = nums[k];
-                        if (a * b === c) { qty = a; price = b; total = c; foundTriplet = true; }
-                        else if (b * c === a) { qty = c; price = b; total = a; foundTriplet = true; }
-                        else if (a * c === b) { qty = a; price = c; total = b; foundTriplet = true; }
-                    }
-                }
+        if (nums.length >= 2) {
+            const last = nums[nums.length - 1];
+            const prev = nums[nums.length - 2];
+
+            if (last > prev && prev >= 100) {
+                total = last;
+                price = prev;
+                qty = Math.max(1, Math.round(total / price));
+            } else if (prev > last && last >= 100) {
+                total = prev;
+                price = last;
+                qty = Math.max(1, Math.round(total / price));
+            } else {
+                qty = nums[0] > 0 ? nums[0] : 1;
+                price = prev;
+                total = last || (qty * price);
             }
-            if (!foundTriplet) {
-                const n1 = nums[nums.length - 3];
-                const n2 = nums[nums.length - 2];
-                const n3 = nums[nums.length - 1];
-                qty = n1 <= 200 ? n1 : 1;
-                price = n2;
-                total = n3;
-            }
-        } else if (nums.length === 2) {
-            const a = nums[0], b = nums[1];
-            if (a <= 200 && b >= 250) { qty = a; price = b; total = a * b; }
-            else if (b <= 200 && a >= 250) { qty = b; price = a; total = a * b; }
-            else { qty = 1; price = a; total = b; }
         } else if (nums.length === 1) {
-            if (nums[0] >= 250) { qty = 1; price = nums[0]; total = nums[0]; }
-            else { qty = nums[0]; }
+            if (nums[0] >= 250) {
+                qty = 1;
+                price = nums[0];
+                total = nums[0];
+            } else {
+                qty = nums[0] || 1;
+            }
         }
 
         let cleanName = work
@@ -1905,7 +1909,11 @@
         if (cleanName.length < 2) return null;
 
         const known = matchKnownDrug(cleanName);
+        const finalPrice = price || (known ? Number(known.price || 0) : 0);
+        const finalTotal = total || (qty * finalPrice);
+
         return {
+            id: Date.now() + Math.floor(Math.random() * 10000),
             invoice: defaultInvoice,
             invoiceDate: defaultDate,
             barcode: barcode || (known ? known.barcode : ""),
@@ -1915,8 +1923,8 @@
             expiry: expiry,
             qty: qty,
             bonus: 0,
-            price: price || (known ? Number(known.price || 0) : 0),
-            total: total || (qty * (price || (known ? Number(known.price || 0) : 0)))
+            price: finalPrice,
+            total: finalTotal
         };
     }
 
@@ -1925,8 +1933,8 @@
         if (!file) return;
         const statusBox = document.getElementById('ocrStatusBox');
         const rawInv = document.getElementById('ocrInvoiceName').value.trim();
-        const invoiceTitle = detectSupplierLabel(rawInv || "مذخر الفردوس #342077");
-        const dateVal = document.getElementById('ocrInvoiceDate').value || todayStr;
+        const invoiceTitle = detectSupplierLabel(rawInv || "قائمة #2 (11/2/26)");
+        const dateVal = document.getElementById('ocrInvoiceDate').value || "2026-02-11";
         const typeVal = document.getElementById('ocrDefaultType').value.trim() || "عام";
         const compVal = document.getElementById('ocrDefaultCompany').value.trim() || "-";
 
@@ -1934,7 +1942,7 @@
         reader.onload = async e => {
             pendingImages = [{ name: file.name, src: sourceType, dataUrl: e.target.result }];
             renderMediaPreview();
-            statusBox.textContent = "⏳ جاري تحليل خطوط الجدول وقصّ كل صف لوحده...";
+            statusBox.textContent = "⏳ جاري تحليل صفوف الصورة واستخراج الأسعار والكارتونات بدقة...";
 
             try {
                 const rowSlices = await detectRowSlicesByHorizontalProjection(e.target.result);
@@ -1951,9 +1959,9 @@
                     }
 
                     if (gathered.length > 0) {
-                        extractedRows = [...extractedRows, ...gathered];
+                        extractedRows = gathered;
                         renderExtractedTable();
-                        statusBox.textContent = `✅ تم استخراج ${gathered.length} صف وتصحيح الأسماء المطابقة — راجع أو عدّل أي خانة ثم اضغط حفظ الجدول.`;
+                        statusBox.textContent = `✅ تم استخراج ${gathered.length} مادة — راجع أي رقم أو اسم بالجدول ثم اضغط حفظ الجدول في الأرشيف.`;
                         return;
                     }
                 }
@@ -1984,12 +1992,13 @@
 
     function addEmptyExtractedRow() {
         const rawInv = document.getElementById('ocrInvoiceName').value.trim();
-        const invoiceTitle = detectSupplierLabel(rawInv || "مذخر الفردوس #342077");
-        const dateVal = document.getElementById('ocrInvoiceDate').value || todayStr;
+        const invoiceTitle = detectSupplierLabel(rawInv || "قائمة #2 (11/2/26)");
+        const dateVal = document.getElementById('ocrInvoiceDate').value || "2026-02-11";
         const typeVal = document.getElementById('ocrDefaultType').value.trim() || "عام";
         const compVal = document.getElementById('ocrDefaultCompany').value.trim() || "-";
 
         extractedRows.push({
+            id: Date.now() + Math.floor(Math.random() * 1000),
             invoice: invoiceTitle,
             invoiceDate: dateVal,
             barcode: "",
@@ -2019,7 +2028,7 @@
                 renderExtractedTable();
             }
         } else if (['qty', 'bonus', 'price', 'total'].includes(field)) {
-            extractedRows[idx][field] = parseInt(val, 10) || 0;
+            extractedRows[idx][field] = parseMoneyNumber(val);
             if (field === 'qty' || field === 'price') {
                 extractedRows[idx].total = extractedRows[idx].qty * extractedRows[idx].price;
                 renderExtractedTable();
@@ -2078,19 +2087,17 @@
 
         validRows.forEach(r => {
             const invName = detectSupplierLabel(r.invoice);
-            const existing = inventory.find(d => d.name.toLowerCase() === r.name.trim().toLowerCase());
+            const existing = inventory.find(d => d.name.toLowerCase() === r.name.trim().toLowerCase() && d.invoice === invName);
             if (existing) {
                 existing.qty = Number(existing.qty || 0) + Number(r.qty || 0);
                 if (Number(r.price) > 0) existing.price = Number(r.price);
                 if (r.barcode) existing.barcode = r.barcode.trim();
                 existing.total = Number(existing.total || 0) + Number(r.total || 0);
-                existing.invoice = invName;
-                existing.invoiceDate = r.invoiceDate || todayStr;
             } else {
                 inventory.unshift({
-                    id: Date.now() + Math.floor(Math.random() * 1000),
+                    id: Date.now() + Math.floor(Math.random() * 10000),
                     invoice: invName,
-                    invoiceDate: r.invoiceDate || todayStr,
+                    invoiceDate: r.invoiceDate || "2026-02-11",
                     barcode: (r.barcode || "").trim(),
                     name: r.name.trim(),
                     salePrice: Number(r.price) || 0,
@@ -2105,17 +2112,15 @@
             }
         });
 
-        extractedRows = [];
-        renderExtractedTable();
         saveData();
-        alert(`تمت إضافة ${validRows.length} مادة إلى أرشيف قوائم المذاخر والأسعار وتحديث الأرصدة والأسعار تلقائياً!`);
+        alert(`تم حفظ ${validRows.length} مادة إلى أرشيف القوائم والأسعار بنجاح!`);
     }
 
     function applySmartInvoiceImport() {
         const raw = (document.getElementById('smartListText').value || '').trim();
         const titleInput = (document.getElementById('smartListTitle').value || '').trim();
-        const dateVal = document.getElementById('smartListDate').value || todayStr;
-        const invoiceTitle = detectSupplierLabel(titleInput || "مذخر الفردوس #342077");
+        const dateVal = document.getElementById('smartListDate').value || "2026-02-11";
+        const invoiceTitle = detectSupplierLabel(titleInput || "قائمة #2 (11/2/26)");
 
         if (!raw) { alert('الصق سطور القائمة الجديدة أولاً.'); return; }
 
@@ -2124,9 +2129,9 @@
             const parts = line.split(/[-|،]+/).map(p => p.trim());
             if (!parts[0]) return;
             const name = parts[0];
-            const qty = parseInt((parts[1] || "1").replace(/[^\d]/g, '')) || 1;
-            const unitPrice = parseInt((parts[2] || "0").replace(/[^\d]/g, '')) || 0;
-            const newSalePrice = parseInt((parts[3] || "0").replace(/[^\d]/g, '')) || 0;
+            const qty = parseMoneyNumber(parts[1]) || 1;
+            const unitPrice = parseMoneyNumber(parts[2]);
+            const newSalePrice = parseMoneyNumber(parts[3]);
             const lineTotal = qty * unitPrice;
 
             const existing = inventory.find(d => d.name.toLowerCase() === name.toLowerCase());
@@ -2139,7 +2144,7 @@
                 existing.invoiceDate = dateVal;
             } else {
                 inventory.unshift({
-                    id: Date.now() + Math.floor(Math.random() * 1000),
+                    id: Date.now() + Math.floor(Math.random() * 10000),
                     invoice: invoiceTitle,
                     invoiceDate: dateVal,
                     barcode: "",
@@ -2170,7 +2175,7 @@
         const phone = document.getElementById('debtorPhoneInput').value.trim();
         const date = document.getElementById('debtorDateInput').value;
         const items = document.getElementById('debtorItemsInput').value.trim() || "وجبة علاج بالدين";
-        const amount = parseInt(document.getElementById('debtorAmountInput').value) || 0;
+        const amount = parseMoneyNumber(document.getElementById('debtorAmountInput').value);
         if (!name) return;
         addDebtEntry(name, phone, date, items, amount);
         document.getElementById('debtorNameInput').value = '';
@@ -2186,7 +2191,7 @@
         const currentTotal = debtor.batches.reduce((s, b) => s + Number(b.amount || 0), 0);
         const inputVal = prompt(`المطلوب الحالي على (${debtor.name}): ${currentTotal.toLocaleString()} د.ع\nأدخل المبلغ المسدد بالدينار:`, currentTotal);
         if (inputVal === null) return;
-        const paid = parseInt(inputVal);
+        const paid = parseMoneyNumber(inputVal);
         if (isNaN(paid) || paid <= 0) return;
 
         debtor.batches.push({
@@ -2195,14 +2200,14 @@
             items: "تسديد دفعة نقدية من الدين",
             amount: -paid
         });
-        localStorage.setItem('pharmacy_debtors_v15', JSON.stringify(debtors));
+        localStorage.setItem('pharmacy_debtors_v16', JSON.stringify(debtors));
         renderDebtors();
     }
 
     function deleteDebtor(debtorId) {
         if (confirm('حذف سجل هذا المديون نهائياً؟')) {
             debtors = debtors.filter(d => d.id !== debtorId);
-            localStorage.setItem('pharmacy_debtors_v15', JSON.stringify(debtors));
+            localStorage.setItem('pharmacy_debtors_v16', JSON.stringify(debtors));
             renderDebtors();
             updateDebtorDropdown();
         }
@@ -2285,7 +2290,7 @@
         if (!item) return;
         document.getElementById('editId').value = item.id;
         document.getElementById('editInvoice').value = item.invoice || '';
-        document.getElementById('editInvoiceDate').value = item.invoiceDate || todayStr;
+        document.getElementById('editInvoiceDate').value = item.invoiceDate || "2026-02-11";
         document.getElementById('editBarcode').value = item.barcode || '';
         document.getElementById('editName').value = item.name || '';
         document.getElementById('editSalePrice').value = item.salePrice ?? item.price ?? 0;
@@ -2309,17 +2314,17 @@
         inventory[idx] = {
             ...inventory[idx],
             invoice: detectSupplierLabel(document.getElementById('editInvoice').value.trim()),
-            invoiceDate: document.getElementById('editInvoiceDate').value || todayStr,
+            invoiceDate: document.getElementById('editInvoiceDate').value || "2026-02-11",
             barcode: document.getElementById('editBarcode').value.trim(),
             name: document.getElementById('editName').value.trim(),
-            salePrice: parseInt(document.getElementById('editSalePrice').value) || 0,
+            salePrice: parseMoneyNumber(document.getElementById('editSalePrice').value),
             type: document.getElementById('editType').value.trim(),
             company: document.getElementById('editCompany').value.trim(),
             expiry: document.getElementById('editExpiry').value,
-            qty: parseInt(document.getElementById('editQty').value) || 0,
-            bonus: parseInt(document.getElementById('editBonus').value) || 0,
-            price: parseInt(document.getElementById('editPrice').value) || 0,
-            total: parseInt(document.getElementById('editTotal').value) || 0
+            qty: parseMoneyNumber(document.getElementById('editQty').value),
+            bonus: parseMoneyNumber(document.getElementById('editBonus').value),
+            price: parseMoneyNumber(document.getElementById('editPrice').value),
+            total: parseMoneyNumber(document.getElementById('editTotal').value)
         };
         saveData();
         closeEditModal();
@@ -2327,7 +2332,7 @@
     }
 
     function saveData() {
-        localStorage.setItem('pharmacy_inventory_v15', JSON.stringify(inventory));
+        localStorage.setItem('pharmacy_inventory_v16', JSON.stringify(inventory));
         refreshAllUI();
     }
 
@@ -2339,12 +2344,12 @@
             invoiceDate: todayStr,
             barcode: document.getElementById('inBarcode').value.trim(),
             name: document.getElementById('inName').value.trim(),
-            salePrice: parseInt(document.getElementById('inSalePrice').value) || 0,
+            salePrice: parseMoneyNumber(document.getElementById('inSalePrice').value),
             type: document.getElementById('inType').value.trim(),
             company: document.getElementById('inCompany').value.trim(),
             expiry: document.getElementById('inExpiry').value,
-            qty: parseInt(document.getElementById('inQty').value) || 0,
-            bonus: parseInt(document.getElementById('inBonus').value) || 0,
+            qty: parseMoneyNumber(document.getElementById('inQty').value),
+            bonus: parseMoneyNumber(document.getElementById('inBonus').value),
             price: 0,
             total: 0
         });
@@ -2353,20 +2358,20 @@
     }
 
     function autoCalcInvoiceTotal() {
-        const q = parseFloat(document.getElementById('invQtyInput').value) || 0;
-        const p = parseFloat(document.getElementById('invPriceInput').value) || 0;
+        const q = parseMoneyNumber(document.getElementById('invQtyInput').value);
+        const p = parseMoneyNumber(document.getElementById('invPriceInput').value);
         document.getElementById('invTotalInput').value = Math.round(q * p);
     }
 
     function addItemToSpecificInvoice(e) {
         e.preventDefault();
-        const unitPrice = parseInt(document.getElementById('invPriceInput').value) || 0;
-        const salePrice = parseInt(document.getElementById('invSalePriceInput').value) || unitPrice;
+        const unitPrice = parseMoneyNumber(document.getElementById('invPriceInput').value);
+        const salePrice = parseMoneyNumber(document.getElementById('invSalePriceInput').value) || unitPrice;
         const nameVal = document.getElementById('invNameInput').value.trim();
-        const qtyVal = parseInt(document.getElementById('invQtyInput').value) || 0;
-        const totalVal = parseInt(document.getElementById('invTotalInput').value) || 0;
+        const qtyVal = parseMoneyNumber(document.getElementById('invQtyInput').value);
+        const totalVal = parseMoneyNumber(document.getElementById('invTotalInput').value) || (qtyVal * unitPrice);
         const invName = detectSupplierLabel(document.getElementById('invTitleInput').value.trim());
-        const invDate = document.getElementById('invDateInput').value || todayStr;
+        const invDate = document.getElementById('invDateInput').value || "2026-02-11";
 
         const existing = inventory.find(d => d.name.toLowerCase() === nameVal.toLowerCase());
         if (existing) {
@@ -2388,7 +2393,7 @@
                 company: document.getElementById('invCompanyInput').value.trim(),
                 expiry: document.getElementById('invExpiryInput').value,
                 qty: qtyVal,
-                bonus: parseInt(document.getElementById('invBonusInput').value) || 0,
+                bonus: parseMoneyNumber(document.getElementById('invBonusInput').value),
                 price: unitPrice,
                 total: totalVal
             });
@@ -2440,7 +2445,7 @@
 
             const map = new Map();
             inventory.forEach(item => {
-                const dStr = item.invoiceDate || todayStr;
+                const dStr = item.invoiceDate || "2026-02-11";
                 const iYr = getYearFromDate(dStr);
                 const iMo = getMonthFromDate(dStr);
                 if ((yr === 'ALL' || yr === iYr) && (mo === 'ALL' || mo === iMo)) {
@@ -2454,7 +2459,7 @@
                 }
             });
 
-            const allInvoiceNames = [...new Set([...uploadedLists.map(u => u.title), ...inventory.map(i => i.invoice)])].filter(Boolean);
+            const allInvoiceNames = [...new Set([...uploadedLists.map(u => u.title), ...inventory.map(i => i.invoice), "قائمة #2 (11/2/26)"])].filter(Boolean);
             datalist.innerHTML = allInvoiceNames.map(n => `<option value="${n}">`).join('');
 
             if (!map.size) {
@@ -2531,7 +2536,7 @@
                 <tr>
                     <td>${index + 1}</td>
                     <td style="font-size:0.8rem; font-weight:700; color:var(--primary);">${item.invoice}</td>
-                    <td>${item.invoiceDate || todayStr}</td>
+                    <td>${item.invoiceDate || "2026-02-11"}</td>
                     <td><strong>${item.barcode || '—'}</strong></td>
                     <td><strong>${item.name}</strong></td>
                     <td>${item.type}</td>
@@ -2604,7 +2609,7 @@
     function updateInvoiceDropdown() {
         const select = document.getElementById('invoiceFilter');
         const current = select.value;
-        const invoices = [...new Set([...uploadedLists.map(u => u.title), ...inventory.map(i => i.invoice)])].filter(Boolean);
+        const invoices = [...new Set([...uploadedLists.map(u => u.title), ...inventory.map(i => i.invoice), "قائمة #2 (11/2/26)"])].filter(Boolean);
         select.innerHTML = '<option value="ALL">كل القوائم</option>' +
             invoices.map(inv => `<option value="${inv}">${inv}</option>`).join('');
         select.value = current || 'ALL';
