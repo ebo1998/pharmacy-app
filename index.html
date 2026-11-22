@@ -191,6 +191,19 @@
             margin-bottom: 14px;
         }
 
+        .bonus-summary-strip {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg);
+            border: 1.5px solid var(--primary);
+            border-radius: 9px;
+            padding: 10px 12px;
+            margin: 10px 0;
+        }
+
         .scanner-hero {
             background: linear-gradient(135deg, rgba(15, 118, 110, 0.08), rgba(2, 132, 199, 0.08));
             border: 1.5px solid var(--primary);
@@ -838,6 +851,10 @@
                 <div class="num" id="statTotalCost">0 د.ع</div>
             </div>
             <div class="stat-box" style="border-right-color: var(--success);">
+                <h3>إجمالي البونص المكتسب</h3>
+                <div class="num" style="color:var(--success);" id="statTotalBonus">0</div>
+            </div>
+            <div class="stat-box" style="border-right-color: var(--warning);">
                 <h3>آخر قائمة</h3>
                 <div class="num" style="font-size:0.95rem;" id="statLastInvoice">مذخر الفردوس #342077</div>
             </div>
@@ -874,7 +891,7 @@
 
         <div class="card">
             <div class="card-title">
-                <span>🧾 أرشيف قوائم المذاخر والأسعار</span>
+                <span>🧾 أرشيف قوائم المذاخر والأسعار والبونص</span>
                 <div style="display:flex; gap:8px; flex-wrap:wrap;">
                     <select id="invoiceFilter" onchange="renderTables()" style="max-width:240px;">
                         <option value="ALL">كل القوائم</option>
@@ -896,6 +913,7 @@
                             <th>الانتهاء</th>
                             <th>المتوفر / كارتون</th>
                             <th>بونص</th>
+                            <th>نسبة البونص</th>
                             <th>سعر المفرد</th>
                             <th>المجموع</th>
                             <th class="no-print">إجراء</th>
@@ -906,21 +924,32 @@
             </div>
         </div>
     </div>
+
     <div id="page4" class="page">
         <div class="card" style="border-right: 4px solid var(--secondary);">
             <div class="card-title" style="color: var(--secondary);">
-                <span>📸 سحب معلومات الصورة وتصحيح الأسماء والأرقام تلقائياً داخل البرنامج</span>
+                <span>📸 إضافة القوائم — تفريغ أي شكل قائمة وحساب البونص (1% إلى 100%) تلقائياً</span>
             </div>
 
             <div class="form-grid" style="margin-bottom:12px;">
                 <div class="form-group">
-                    <label>اسم المذخر / التجهيزات</label>
+                    <label>اسم المذخر / القائمة</label>
                     <input type="text" id="ocrInvoiceName" value="قائمة #2 (11/2/26)" list="existingInvoicesList">
                     <datalist id="existingInvoicesList"></datalist>
                 </div>
                 <div class="form-group">
-                    <label>تاريخ القائمة (سنة - شهر - يوم)</label>
+                    <label>تاريخ القائمة (اختياري)</label>
                     <input type="date" id="ocrInvoiceDate" value="2026-02-11">
+                </div>
+                <div class="form-group">
+                    <label>نسبة البونص للقائمة (1% - 100%)</label>
+                    <select id="ocrBonusPercentSelect" onchange="syncBonusRateFromSelect()">
+                        <option value="0" selected>0% (بدون نسبة مئوية)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>أو اكتب نسبة البونص مباشرة (1 - 100)</label>
+                    <input type="number" id="ocrBonusPercentInput" min="0" max="100" step="1" value="0" placeholder="مثلاً 7 أو 15" oninput="applyBonusPercentageToExtracted(this.value)">
                 </div>
                 <div class="form-group">
                     <label>النوع / القسم الافتراضي</label>
@@ -930,6 +959,18 @@
                     <label>الشركة الافتراضية</label>
                     <input type="text" id="ocrDefaultCompany" value="-">
                 </div>
+            </div>
+
+            <div class="bonus-summary-strip">
+                <div>
+                    <span style="font-size:0.8rem; color:var(--text-muted);">نسبة البونص المطبقة حالياً:</span>
+                    <strong id="activeBonusRateBadge" style="color:var(--primary); font-size:1rem; margin-right:6px;">0%</strong>
+                </div>
+                <div>
+                    <span style="font-size:0.8rem; color:var(--text-muted);">مجموع البونص المحسوب للقائمة:</span>
+                    <strong id="extractedBonusTotalBadge" style="color:var(--success); font-size:1.05rem; margin-right:6px;">0 قطعة/كارتون</strong>
+                </div>
+                <button class="btn btn-primary" onclick="recalcAllExtractedBonuses()">🎁 تطبيق / إعادة حساب البونص الآن</button>
             </div>
 
             <div class="media-upload-grid">
@@ -953,7 +994,7 @@
             </div>
 
             <div id="ocrStatusBox" class="ocr-status-box">
-                تم تجهيز جدول الصفحة الثانية (35 إلى 73) جاهزاً بالأسفل — يمكنك تعديله أو إضافته للأرشيف مباشرة، أو رفع أي صورة أخرى وتصحيحها هنا.
+                ارفع أو صوّر أي قائمة الآن — سواء فيها تاريخ وسعر وبونص أو فقط سعر وعدد وبونص — واختر نسبة البونص (1% إلى 100%) لتُضاف تلقائياً قبل الحفظ.
             </div>
 
             <div id="mediaPreviewArea" class="media-preview-list"></div>
@@ -981,7 +1022,9 @@
                                 <th>#</th>
                                 <th>اسم المادة (اختر أو عدّل)</th>
                                 <th>كارتون / عدد</th>
-                                <th>بونص</th>
+                                <th>بونص مالي/ثابت</th>
+                                <th>بونص النسبة (%)</th>
+                                <th>إجمالي البونص</th>
                                 <th>سعر المفرد</th>
                                 <th>المجموع (تلقائي)</th>
                                 <th>الباركود</th>
@@ -1001,10 +1044,10 @@
 
         <div class="smart-box no-print">
             <div class="card-title" style="color:var(--primary); margin-bottom:6px;">
-                <span>⚡ لصق سريع للقوائم وتحديث الأسعار القديمة وحساب العدد والمجموع</span>
+                <span>⚡ لصق سريع للقوائم وتحديث الأسعار القديمة وحساب العدد والبونص</span>
             </div>
             <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">
-                الصق أي قائمة (<strong>اسم المادة | العدد | سعر المفرد | سعر البيع الجديد</strong>) ليُضاف مباشرة على الأرشيف ويُحدّث السعر والعدد تلقائياً:
+                الصق أي قائمة (<strong>اسم المادة | العدد | سعر المفرد | نسبة بونص 1-100% أو بونص ثابت</strong>) ليُضاف مباشرة على الأرشيف ويُحدّث السعر والعدد والبونص تلقائياً:
             </p>
             <div class="form-grid" style="margin-bottom:8px;">
                 <div class="form-group">
@@ -1015,9 +1058,13 @@
                     <label>تاريخ القائمة</label>
                     <input type="date" id="smartListDate" value="2026-02-11">
                 </div>
+                <div class="form-group">
+                    <label>نسبة بونص للقائمة (1% - 100%)</label>
+                    <input type="number" id="smartListBonusPct" min="0" max="100" step="1" value="0" placeholder="مثلاً 7 أو 15">
+                </div>
             </div>
-            <textarea id="smartListText" rows="3" placeholder="كل سطر: اسم المادة | العدد | سعر المفرد | سعر البيع الجديد (اختياري)"></textarea>
-            <button class="btn btn-primary" style="margin-top:8px;" onclick="applySmartInvoiceImport()">⚡ حفظ القائمة وتحديث الأسعار والعدد تلقائياً</button>
+            <textarea id="smartListText" rows="3" placeholder="كل سطر: اسم المادة | العدد | سعر المفرد | نسبة البونص أو بونص ثابت (اختياري)"></textarea>
+            <button class="btn btn-primary" style="margin-top:8px;" onclick="applySmartInvoiceImport()">⚡ حفظ القائمة وتحديث الأسعار والعدد والبونص تلقائياً</button>
         </div>
 
         <div class="card" style="border-right: 4px solid var(--success);">
@@ -1031,7 +1078,7 @@
                         <input type="text" id="invTitleInput" value="قائمة #2 (11/2/26)" list="existingInvoicesList" required>
                     </div>
                     <div class="form-group">
-                        <label>تاريخ القائمة</label>
+                        <label>تاريخ القائمة (اختياري)</label>
                         <input type="date" id="invDateInput" value="2026-02-11">
                     </div>
                     <div class="form-group">
@@ -1048,23 +1095,27 @@
                     </div>
                     <div class="form-group">
                         <label>النوع / القسم</label>
-                        <input type="text" id="invTypeInput" required>
+                        <input type="text" id="invTypeInput">
                     </div>
                     <div class="form-group">
                         <label>الشركة</label>
-                        <input type="text" id="invCompanyInput" required>
+                        <input type="text" id="invCompanyInput">
                     </div>
                     <div class="form-group">
-                        <label>تاريخ الانتهاء</label>
-                        <input type="date" id="invExpiryInput" required>
+                        <label>تاريخ الانتهاء (اختياري)</label>
+                        <input type="date" id="invExpiryInput">
                     </div>
                     <div class="form-group">
                         <label>كارتون / عدد</label>
                         <input type="number" id="invQtyInput" value="1" min="0" required oninput="autoCalcInvoiceTotal()">
                     </div>
                     <div class="form-group">
-                        <label>بونص</label>
-                        <input type="number" id="invBonusInput" value="0" min="0">
+                        <label>بونص ثابت</label>
+                        <input type="number" id="invBonusInput" value="0" min="0" oninput="autoCalcInvoiceTotal()">
+                    </div>
+                    <div class="form-group">
+                        <label>نسبة البونص (1% - 100%)</label>
+                        <input type="number" id="invBonusPctInput" value="0" min="0" max="100" step="1" oninput="autoCalcInvoiceTotal()">
                     </div>
                     <div class="form-group">
                         <label>سعر المفرد (د.ع)</label>
@@ -1230,7 +1281,7 @@
 <div id="editDrugModal" class="modal">
     <div class="modal-content">
         <div class="card-title">
-            <span>✏️ تعديل المادة وسعر البيع والباركود</span>
+            <span>✏️ تعديل المادة وسعر البيع والبونص والباركود</span>
             <button class="btn btn-danger" onclick="closeEditModal()">✕</button>
         </div>
         <form id="editDrugForm" onsubmit="saveEditedDrug(event)">
@@ -1265,23 +1316,27 @@
                 </div>
                 <div class="form-group">
                     <label>النوع / القسم</label>
-                    <input type="text" id="editType" required>
+                    <input type="text" id="editType">
                 </div>
                 <div class="form-group">
                     <label>الشركة</label>
-                    <input type="text" id="editCompany" required>
+                    <input type="text" id="editCompany">
                 </div>
                 <div class="form-group">
                     <label>تاريخ الانتهاء</label>
-                    <input type="date" id="editExpiry" required>
+                    <input type="date" id="editExpiry">
                 </div>
                 <div class="form-group">
                     <label>المتوفر / كارتون</label>
                     <input type="number" id="editQty" min="0" required>
                 </div>
                 <div class="form-group">
-                    <label>بونص</label>
+                    <label>بونص ثابت</label>
                     <input type="number" id="editBonus" min="0">
+                </div>
+                <div class="form-group">
+                    <label>نسبة البونص (1% - 100%)</label>
+                    <input type="number" id="editBonusPercent" min="0" max="100" step="1">
                 </div>
                 <div class="form-group">
                     <label>سعر الشراء / المفرد</label>
@@ -1302,53 +1357,53 @@
 
 <script>
     const page2RowsFromImage = [
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Azi-Once ( Azithromycin 200 mg ) 22.5 ml", salePrice: 5075, type: "Syrup", company: "Jamjoom Pharma", expiry: "2027-11-01", qty: 5, bonus: 0, price: 5075, total: 25375 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "baby happy كل احجام", salePrice: 900, type: "مستلزمات", company: "CHINA", expiry: "2030-01-01", qty: 20, bonus: 0, price: 900, total: 18000 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Bepanthen Cream ( 30 g )", salePrice: 5958, type: "Cream", company: "BAYER", expiry: "2028-06-01", qty: 5, bonus: 0, price: 5958, total: 29790 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Bepanthen Protective Baby Oint ( 30 g )", salePrice: 5958, type: "Ointment", company: "BAYER", expiry: "2027-10-01", qty: 5, bonus: 0, price: 5958, total: 29790 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "betnozum-D ointment", salePrice: 555, type: "Ointment", company: "Dijla / IRAQ", expiry: "2027-05-01", qty: 15, bonus: 0, price: 555, total: 8325 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Bordered Gause ( 10 x 15 )", salePrice: 8833, type: "PLASTER", company: "Zand Med", expiry: "2027-01-01", qty: 2, bonus: 0, price: 8833, total: 17666 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Cefex ( Cefalexin 500 mg ) 10 cap", salePrice: 1129, type: "Capsule", company: "MICRO", expiry: "2028-09-01", qty: 30, bonus: 0, price: 1129, total: 33870 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "كلوكوسلاين CISEN", salePrice: 1075, type: "Infusion", company: "CISEN", expiry: "2027-07-01", qty: 10, bonus: 0, price: 1075, total: 10750 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Dentagyl ( 20 tab ) Hikma", salePrice: 8550, type: "Tablet", company: "HIKMA", expiry: "2027-09-01", qty: 10, bonus: 1, price: 8550, total: 85500 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "DIBASE 300.000 I.U. ( 2 amp )", salePrice: 9994, type: "Ampoule", company: "ABIOGEN", expiry: "2028-11-01", qty: 6, bonus: 0, price: 9994, total: 59964 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Dologan Denk ( 20 tab ) Denk Pharma", salePrice: 8158, type: "Tablet", company: "Denk Pharma", expiry: "2029-06-01", qty: 4, bonus: 0, price: 8158, total: 32632 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Duphaston 10 mg ( 20 tab ) أصلي", salePrice: 11075, type: "Tablet", company: "Abbott", expiry: "2030-09-01", qty: 3, bonus: 0, price: 11075, total: 33225 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Euthyrox ( Levothyroxine 100 mcg ) 100 tab", salePrice: 10722, type: "Tablet", company: "MERCK", expiry: "2027-12-01", qty: 5, bonus: 0, price: 10722, total: 53610 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Euthyrox ( Levothyroxine 25 mcg ) 100 tab", salePrice: 4703, type: "Tablet", company: "MERCK", expiry: "2027-12-01", qty: 5, bonus: 0, price: 4703, total: 23515 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Euthyrox ( Levothyroxine 50 mcg ) 100 tab", salePrice: 7226, type: "Tablet", company: "MERCK", expiry: "2028-01-01", qty: 5, bonus: 0, price: 7226, total: 36130 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Exart Plus (80/12.5mg) 30 tab", salePrice: 12329, type: "Tablet", company: "MADDOX Pharma", expiry: "2028-11-01", qty: 3, bonus: 0, price: 12329, total: 36987 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "folic acid 5mg eipico", salePrice: 1283, type: "Tablet", company: "EIPICO", expiry: "2028-06-01", qty: 5, bonus: 0, price: 1283, total: 6415 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "folic acid 5mg eipico", salePrice: 1283, type: "Tablet", company: "EIPICO", expiry: "2028-10-01", qty: 3, bonus: 0, price: 1283, total: 3849 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Fusibact Oint 2% ( 15 g )", salePrice: 3030, type: "Ointment", company: "Jamjoom Pharma", expiry: "2029-04-01", qty: 6, bonus: 0, price: 3030, total: 18180 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "gentamicin injection 80", salePrice: 3157, type: "Ampoule", company: "GLAND", expiry: "2027-06-01", qty: 3, bonus: 0, price: 3157, total: 9471 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Glemax ( Glimepiride 4 mg ) 30 cap", salePrice: 6475, type: "Tablet", company: "Joswe", expiry: "2029-02-01", qty: 2, bonus: 0, price: 6475, total: 12950 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Glemax ( Glimepiride 6 mg ) 30 tab", salePrice: 13475, type: "Tablet", company: "Joswe", expiry: "2028-10-01", qty: 4, bonus: 0, price: 13475, total: 53900 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "HyFresh Eye Drops ( 10 ml )", salePrice: 5544, type: "Drops", company: "Jamjoom Pharma", expiry: "2029-04-01", qty: 4, bonus: 0, price: 5544, total: 22176 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Inaprol Fort ( Naproxen 500mg ) 20 tab", salePrice: 5544, type: "Tablet", company: "BILIM", expiry: "2028-10-01", qty: 5, bonus: 0, price: 5544, total: 27720 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Indomethacine-Medico 10 Supp", salePrice: 2535, type: "Suppositories", company: "MEDICO", expiry: "2027-11-01", qty: 8, bonus: 0, price: 2535, total: 20280 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Katya ( 30/75 ) 63 tab", salePrice: 21000, type: "Tablet", company: "STRAGEN / UK", expiry: "2028-10-01", qty: 2, bonus: 0, price: 21000, total: 42000 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "KETOHIST Syrup ( 100ml )", salePrice: 1464, type: "Syrup", company: "Alfayhaa", expiry: "2029-02-01", qty: 10, bonus: 0, price: 1464, total: 14640 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Ketonaz Shampoo ( 100 ml ) اصلي", salePrice: 1800, type: "Shampoo", company: "PHARMALINE", expiry: "2030-03-01", qty: 5, bonus: 0, price: 1800, total: 9000 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "LIDOCAINE 2% Injection 50ml LINCOLN", salePrice: 2255, type: "Injection", company: "LINCOLN", expiry: "2028-11-01", qty: 4, bonus: 0, price: 2255, total: 9020 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Lofral ( Amlodipine 10 mg ) 30 tab", salePrice: 10858, type: "Tablet", company: "acino / Switz", expiry: "2027-09-01", qty: 3, bonus: 0, price: 10858, total: 32574 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Lofral ( Amlodipine 5 mg ) 30 tab", salePrice: 8675, type: "Tablet", company: "acino / Switz", expiry: "2027-11-01", qty: 3, bonus: 0, price: 8675, total: 26025 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "MAXIPORE PLASTER 9X15CM", salePrice: 20125, type: "PLASTER", company: "CHINA", expiry: "2028-02-01", qty: 2, bonus: 0, price: 20125, total: 40250 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Mebo Ointment ( 30 g )", salePrice: 8245, type: "Ointment", company: "Julphar", expiry: "2028-05-01", qty: 4, bonus: 0, price: 8245, total: 32980 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Minoxidil GREASY Shampoo ( 210ml ) Syria اخضر", salePrice: 2280, type: "Shampoo", company: "Arak / Syria", expiry: "2030-01-01", qty: 5, bonus: 0, price: 2280, total: 11400 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Mobic 15 mg 30 tab", salePrice: 13429, type: "Tablet", company: "Boehringer", expiry: "2028-08-01", qty: 4, bonus: 0, price: 13429, total: 53716 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Mobic 7.5mg 30 tab", salePrice: 9884, type: "Tablet", company: "Boehringer", expiry: "2027-12-01", qty: 4, bonus: 0, price: 9884, total: 39536 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Myogesic ( 20 tab )", salePrice: 2234, type: "Tablet", company: "Dar Al Dawa", expiry: "2028-02-01", qty: 5, bonus: 0, price: 2234, total: 11170 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "N.S 500ml PIONEER", salePrice: 800, type: "Infusion", company: "PIONEER", expiry: "2029-04-01", qty: 10, bonus: 0, price: 800, total: 8000 },
-        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "NAPRON ( Naproxen 500 mg ) 20 tab", salePrice: 3271, type: "Tablet", company: "PIONEER", expiry: "2029-02-01", qty: 5, bonus: 0, price: 3271, total: 16355 }
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Azi-Once ( Azithromycin 200 mg ) 22.5 ml", salePrice: 5075, type: "Syrup", company: "Jamjoom Pharma", expiry: "2027-11-01", qty: 5, bonus: 0, bonusPercent: 0, price: 5075, total: 25375 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "baby happy كل احجام", salePrice: 900, type: "مستلزمات", company: "CHINA", expiry: "2030-01-01", qty: 20, bonus: 0, bonusPercent: 0, price: 900, total: 18000 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Bepanthen Cream ( 30 g )", salePrice: 5958, type: "Cream", company: "BAYER", expiry: "2028-06-01", qty: 5, bonus: 0, bonusPercent: 0, price: 5958, total: 29790 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Bepanthen Protective Baby Oint ( 30 g )", salePrice: 5958, type: "Ointment", company: "BAYER", expiry: "2027-10-01", qty: 5, bonus: 0, bonusPercent: 0, price: 5958, total: 29790 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "betnozum-D ointment", salePrice: 555, type: "Ointment", company: "Dijla / IRAQ", expiry: "2027-05-01", qty: 15, bonus: 0, bonusPercent: 0, price: 555, total: 8325 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Bordered Gause ( 10 x 15 )", salePrice: 8833, type: "PLASTER", company: "Zand Med", expiry: "2027-01-01", qty: 2, bonus: 0, bonusPercent: 0, price: 8833, total: 17666 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Cefex ( Cefalexin 500 mg ) 10 cap", salePrice: 1129, type: "Capsule", company: "MICRO", expiry: "2028-09-01", qty: 30, bonus: 0, bonusPercent: 0, price: 1129, total: 33870 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "كلوكوسلاين CISEN", salePrice: 1075, type: "Infusion", company: "CISEN", expiry: "2027-07-01", qty: 10, bonus: 0, bonusPercent: 0, price: 1075, total: 10750 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Dentagyl ( 20 tab ) Hikma", salePrice: 8550, type: "Tablet", company: "HIKMA", expiry: "2027-09-01", qty: 10, bonus: 1, bonusPercent: 0, price: 8550, total: 85500 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "DIBASE 300.000 I.U. ( 2 amp )", salePrice: 9994, type: "Ampoule", company: "ABIOGEN", expiry: "2028-11-01", qty: 6, bonus: 0, bonusPercent: 0, price: 9994, total: 59964 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Dologan Denk ( 20 tab ) Denk Pharma", salePrice: 8158, type: "Tablet", company: "Denk Pharma", expiry: "2029-06-01", qty: 4, bonus: 0, bonusPercent: 0, price: 8158, total: 32632 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Duphaston 10 mg ( 20 tab ) أصلي", salePrice: 11075, type: "Tablet", company: "Abbott", expiry: "2030-09-01", qty: 3, bonus: 0, bonusPercent: 0, price: 11075, total: 33225 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Euthyrox ( Levothyroxine 100 mcg ) 100 tab", salePrice: 10722, type: "Tablet", company: "MERCK", expiry: "2027-12-01", qty: 5, bonus: 0, bonusPercent: 0, price: 10722, total: 53610 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Euthyrox ( Levothyroxine 25 mcg ) 100 tab", salePrice: 4703, type: "Tablet", company: "MERCK", expiry: "2027-12-01", qty: 5, bonus: 0, bonusPercent: 0, price: 4703, total: 23515 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Euthyrox ( Levothyroxine 50 mcg ) 100 tab", salePrice: 7226, type: "Tablet", company: "MERCK", expiry: "2028-01-01", qty: 5, bonus: 0, bonusPercent: 0, price: 7226, total: 36130 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Exart Plus (80/12.5mg) 30 tab", salePrice: 12329, type: "Tablet", company: "MADDOX Pharma", expiry: "2028-11-01", qty: 3, bonus: 0, bonusPercent: 0, price: 12329, total: 36987 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "folic acid 5mg eipico", salePrice: 1283, type: "Tablet", company: "EIPICO", expiry: "2028-06-01", qty: 5, bonus: 0, bonusPercent: 0, price: 1283, total: 6415 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "folic acid 5mg eipico", salePrice: 1283, type: "Tablet", company: "EIPICO", expiry: "2028-10-01", qty: 3, bonus: 0, bonusPercent: 0, price: 1283, total: 3849 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Fusibact Oint 2% ( 15 g )", salePrice: 3030, type: "Ointment", company: "Jamjoom Pharma", expiry: "2029-04-01", qty: 6, bonus: 0, bonusPercent: 0, price: 3030, total: 18180 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "gentamicin injection 80", salePrice: 3157, type: "Ampoule", company: "GLAND", expiry: "2027-06-01", qty: 3, bonus: 0, bonusPercent: 0, price: 3157, total: 9471 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Glemax ( Glimepiride 4 mg ) 30 cap", salePrice: 6475, type: "Tablet", company: "Joswe", expiry: "2029-02-01", qty: 2, bonus: 0, bonusPercent: 0, price: 6475, total: 12950 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Glemax ( Glimepiride 6 mg ) 30 tab", salePrice: 13475, type: "Tablet", company: "Joswe", expiry: "2028-10-01", qty: 4, bonus: 0, bonusPercent: 0, price: 13475, total: 53900 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "HyFresh Eye Drops ( 10 ml )", salePrice: 5544, type: "Drops", company: "Jamjoom Pharma", expiry: "2029-04-01", qty: 4, bonus: 0, bonusPercent: 0, price: 5544, total: 22176 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Inaprol Fort ( Naproxen 500mg ) 20 tab", salePrice: 5544, type: "Tablet", company: "BILIM", expiry: "2028-10-01", qty: 5, bonus: 0, bonusPercent: 0, price: 5544, total: 27720 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Indomethacine-Medico 10 Supp", salePrice: 2535, type: "Suppositories", company: "MEDICO", expiry: "2027-11-01", qty: 8, bonus: 0, bonusPercent: 0, price: 2535, total: 20280 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Katya ( 30/75 ) 63 tab", salePrice: 21000, type: "Tablet", company: "STRAGEN / UK", expiry: "2028-10-01", qty: 2, bonus: 0, bonusPercent: 0, price: 21000, total: 42000 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "KETOHIST Syrup ( 100ml )", salePrice: 1464, type: "Syrup", company: "Alfayhaa", expiry: "2029-02-01", qty: 10, bonus: 0, bonusPercent: 0, price: 1464, total: 14640 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Ketonaz Shampoo ( 100 ml ) اصلي", salePrice: 1800, type: "Shampoo", company: "PHARMALINE", expiry: "2030-03-01", qty: 5, bonus: 0, bonusPercent: 0, price: 1800, total: 9000 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "LIDOCAINE 2% Injection 50ml LINCOLN", salePrice: 2255, type: "Injection", company: "LINCOLN", expiry: "2028-11-01", qty: 4, bonus: 0, bonusPercent: 0, price: 2255, total: 9020 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Lofral ( Amlodipine 10 mg ) 30 tab", salePrice: 10858, type: "Tablet", company: "acino / Switz", expiry: "2027-09-01", qty: 3, bonus: 0, bonusPercent: 0, price: 10858, total: 32574 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Lofral ( Amlodipine 5 mg ) 30 tab", salePrice: 8675, type: "Tablet", company: "acino / Switz", expiry: "2027-11-01", qty: 3, bonus: 0, bonusPercent: 0, price: 8675, total: 26025 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "MAXIPORE PLASTER 9X15CM", salePrice: 20125, type: "PLASTER", company: "CHINA", expiry: "2028-02-01", qty: 2, bonus: 0, bonusPercent: 0, price: 20125, total: 40250 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Mebo Ointment ( 30 g )", salePrice: 8245, type: "Ointment", company: "Julphar", expiry: "2028-05-01", qty: 4, bonus: 0, bonusPercent: 0, price: 8245, total: 32980 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Minoxidil GREASY Shampoo ( 210ml ) Syria اخضر", salePrice: 2280, type: "Shampoo", company: "Arak / Syria", expiry: "2030-01-01", qty: 5, bonus: 0, bonusPercent: 0, price: 2280, total: 11400 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Mobic 15 mg 30 tab", salePrice: 13429, type: "Tablet", company: "Boehringer", expiry: "2028-08-01", qty: 4, bonus: 0, bonusPercent: 0, price: 13429, total: 53716 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Mobic 7.5mg 30 tab", salePrice: 9884, type: "Tablet", company: "Boehringer", expiry: "2027-12-01", qty: 4, bonus: 0, bonusPercent: 0, price: 9884, total: 39536 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "Myogesic ( 20 tab )", salePrice: 2234, type: "Tablet", company: "Dar Al Dawa", expiry: "2028-02-01", qty: 5, bonus: 0, bonusPercent: 0, price: 2234, total: 11170 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "N.S 500ml PIONEER", salePrice: 800, type: "Infusion", company: "PIONEER", expiry: "2029-04-01", qty: 10, bonus: 0, bonusPercent: 0, price: 800, total: 8000 },
+        { invoice: "قائمة #2 (11/2/26)", invoiceDate: "2026-02-11", barcode: "", name: "NAPRON ( Naproxen 500 mg ) 20 tab", salePrice: 3271, type: "Tablet", company: "PIONEER", expiry: "2029-02-01", qty: 5, bonus: 0, bonusPercent: 0, price: 3271, total: 16355 }
     ];
 
     const arabicLetters = ["الكل", "أ", "ب", "ت", "ث", "ج", "ح", "خ", "د", "ذ", "ر", "ز", "س", "ش", "ص", "ض", "ط", "ظ", "ع", "غ", "ف", "ق", "ك", "ل", "م", "ن", "هـ", "و", "ي"];
 
-    let inventory = JSON.parse(localStorage.getItem('pharmacy_inventory_v16')) || [];
-    let debtors = JSON.parse(localStorage.getItem('pharmacy_debtors_v16')) || [];
-    let uploadedLists = JSON.parse(localStorage.getItem('pharmacy_uploaded_lists_v16')) || [];
-    let userSettings = JSON.parse(localStorage.getItem('pharmacy_settings_v16')) || {
+    let inventory = JSON.parse(localStorage.getItem('pharmacy_inventory_v17')) || [];
+    let debtors = JSON.parse(localStorage.getItem('pharmacy_debtors_v17')) || [];
+    let uploadedLists = JSON.parse(localStorage.getItem('pharmacy_uploaded_lists_v17')) || [];
+    let userSettings = JSON.parse(localStorage.getItem('pharmacy_settings_v17')) || {
         fontFamily: "'Cairo', sans-serif",
         fontSize: "13.5",
         primary: "#0f766e",
@@ -1374,6 +1429,57 @@
     const todayStr = new Date().toISOString().slice(0, 10);
     document.getElementById('debtorDateInput').value = todayStr;
     document.getElementById('smartDebtorDate').value = todayStr;
+
+    function initBonusPercentOptions() {
+        const sel = document.getElementById('ocrBonusPercentSelect');
+        let html = '<option value="0">0% (بدون نسبة بونص)</option>';
+        for (let p = 1; p <= 100; p++) {
+            html += `<option value="${p}">${p}% بونص</option>`;
+        }
+        sel.innerHTML = html;
+    }
+
+    function clampPercent(val) {
+        const n = parseFloat(normalizeDigits(String(val ?? 0))) || 0;
+        if (n < 0) return 0;
+        if (n > 100) return 100;
+        return n;
+    }
+
+    function calcBonusUnits(qty, bonusFixed, bonusPercent) {
+        const q = Math.max(0, Number(qty) || 0);
+        const fixedB = Math.max(0, Number(bonusFixed) || 0);
+        const pct = clampPercent(bonusPercent);
+        const pctUnits = pct > 0 ? Math.round((q * pct) / 100) : 0;
+        return fixedB + pctUnits;
+    }
+
+    function syncBonusRateFromSelect() {
+        const selVal = clampPercent(document.getElementById('ocrBonusPercentSelect').value);
+        document.getElementById('ocrBonusPercentInput').value = selVal;
+        applyBonusPercentageToExtracted(selVal);
+    }
+
+    function applyBonusPercentageToExtracted(val) {
+        const pct = clampPercent(val);
+        const sel = document.getElementById('ocrBonusPercentSelect');
+        if (Number.isInteger(pct) && pct >= 0 && pct <= 100) {
+            sel.value = String(pct);
+        }
+        document.getElementById('activeBonusRateBadge').textContent = pct + '%';
+
+        extractedRows.forEach(r => {
+            r.bonusPercent = pct;
+        });
+        renderExtractedTable();
+    }
+
+    function recalcAllExtractedBonuses() {
+        const pct = clampPercent(document.getElementById('ocrBonusPercentInput').value);
+        applyBonusPercentageToExtracted(pct);
+        const totalBonusUnits = extractedRows.reduce((s, r) => s + calcBonusUnits(r.qty, r.bonus, r.bonusPercent), 0);
+        document.getElementById('ocrStatusBox').textContent = `🎁 تم حساب البونص بنسبة ${pct}% — إجمالي البونص للقائمة: ${totalBonusUnits} وحدة/كارتون.`;
+    }
 
     function detectSupplierLabel(text) {
         const t = (text || "").trim();
@@ -1546,7 +1652,7 @@
         document.body.setAttribute('data-theme', userSettings.theme);
 
         if (save) {
-            localStorage.setItem('pharmacy_settings_v16', JSON.stringify(userSettings));
+            localStorage.setItem('pharmacy_settings_v17', JSON.stringify(userSettings));
             refreshAllUI();
         }
     }
@@ -1806,7 +1912,7 @@
             amount: Number(amount) || 0
         });
         debtors.sort((a, b) => a.name.localeCompare(b.name, 'ar'));
-        localStorage.setItem('pharmacy_debtors_v16', JSON.stringify(debtors));
+        localStorage.setItem('pharmacy_debtors_v17', JSON.stringify(debtors));
         renderDebtors();
         updateDebtorDropdown();
     }
@@ -1832,7 +1938,7 @@
         }
     }
 
-    function parseSingleRowText(rawLine, defaultInvoice, defaultDate, defaultType, defaultCompany) {
+    function parseSingleRowText(rawLine, defaultInvoice, defaultDate, defaultType, defaultCompany, defaultBonusPct = 0) {
         const line = normalizeDigits(rawLine || "").replace(/\s+/g, ' ').trim();
         if (!line) return null;
         const ignoreHeaderRegex = /(اسم المادة|المجموع|سعر المفرد|التاريخ|الباركود|القائمة|المذخر|مذخر الفردوس|الاجمالي|الإجمالي|أرشيف قوائم|المتوفر|بونص|دينار|Page\s*\d)/i;
@@ -1840,7 +1946,7 @@
 
         let work = line.replace(/[|_=~`•]+/g, ' ').replace(/\s+/g, ' ').trim();
 
-        let expiry = "2028-12-01";
+        let expiry = "";
         const dmyMatch = work.match(/\b(\d{1,2})[-/.](\d{1,2})[-/.](20\d{2})\b/);
         const ymdMatch = work.match(/\b(20\d{2})[-/.](\d{1,2})[-/.](\d{1,2})\b/);
         const ymMatch = work.match(/\b(20\d{2})[-/.](\d{1,2})\b/);
@@ -1873,6 +1979,7 @@
         let qty = 1;
         let price = 0;
         let total = 0;
+        let fixedBonus = 0;
 
         if (nums.length >= 2) {
             const last = nums[nums.length - 1];
@@ -1911,6 +2018,7 @@
         const known = matchKnownDrug(cleanName);
         const finalPrice = price || (known ? Number(known.price || 0) : 0);
         const finalTotal = total || (qty * finalPrice);
+        const pct = clampPercent(defaultBonusPct);
 
         return {
             id: Date.now() + Math.floor(Math.random() * 10000),
@@ -1922,7 +2030,8 @@
             company: known ? known.company : (defaultCompany || "-"),
             expiry: expiry,
             qty: qty,
-            bonus: 0,
+            bonus: fixedBonus,
+            bonusPercent: pct,
             price: finalPrice,
             total: finalTotal
         };
@@ -1934,15 +2043,16 @@
         const statusBox = document.getElementById('ocrStatusBox');
         const rawInv = document.getElementById('ocrInvoiceName').value.trim();
         const invoiceTitle = detectSupplierLabel(rawInv || "قائمة #2 (11/2/26)");
-        const dateVal = document.getElementById('ocrInvoiceDate').value || "2026-02-11";
+        const dateVal = document.getElementById('ocrInvoiceDate').value || "";
         const typeVal = document.getElementById('ocrDefaultType').value.trim() || "عام";
         const compVal = document.getElementById('ocrDefaultCompany').value.trim() || "-";
+        const bonusPct = clampPercent(document.getElementById('ocrBonusPercentInput').value);
 
         const reader = new FileReader();
         reader.onload = async e => {
             pendingImages = [{ name: file.name, src: sourceType, dataUrl: e.target.result }];
             renderMediaPreview();
-            statusBox.textContent = "⏳ جاري تحليل صفوف الصورة واستخراج الأسعار والكارتونات بدقة...";
+            statusBox.textContent = "⏳ جاري تحليل صفوف الصورة واستخراج الأسعار والكارتونات والبونص...";
 
             try {
                 const rowSlices = await detectRowSlicesByHorizontalProjection(e.target.result);
@@ -1953,7 +2063,7 @@
                         const result = await Tesseract.recognize(rowSlices[i], 'ara+eng', { tessedit_pageseg_mode: 7 });
                         const lines = (result.data.text || "").split(/\n+/);
                         lines.forEach(l => {
-                            const rowObj = parseSingleRowText(l, invoiceTitle, dateVal, typeVal, compVal);
+                            const rowObj = parseSingleRowText(l, invoiceTitle, dateVal, typeVal, compVal, bonusPct);
                             if (rowObj) gathered.push(rowObj);
                         });
                     }
@@ -1961,7 +2071,7 @@
                     if (gathered.length > 0) {
                         extractedRows = gathered;
                         renderExtractedTable();
-                        statusBox.textContent = `✅ تم استخراج ${gathered.length} مادة — راجع أي رقم أو اسم بالجدول ثم اضغط حفظ الجدول في الأرشيف.`;
+                        statusBox.textContent = `✅ تم استخراج ${gathered.length} مادة بنسبة بونص ${bonusPct}% — عدّل أو احفظ مباشرة في الأرشيف.`;
                         return;
                     }
                 }
@@ -1993,9 +2103,10 @@
     function addEmptyExtractedRow() {
         const rawInv = document.getElementById('ocrInvoiceName').value.trim();
         const invoiceTitle = detectSupplierLabel(rawInv || "قائمة #2 (11/2/26)");
-        const dateVal = document.getElementById('ocrInvoiceDate').value || "2026-02-11";
+        const dateVal = document.getElementById('ocrInvoiceDate').value || "";
         const typeVal = document.getElementById('ocrDefaultType').value.trim() || "عام";
         const compVal = document.getElementById('ocrDefaultCompany').value.trim() || "-";
+        const bonusPct = clampPercent(document.getElementById('ocrBonusPercentInput').value);
 
         extractedRows.push({
             id: Date.now() + Math.floor(Math.random() * 1000),
@@ -2005,9 +2116,10 @@
             name: "",
             type: typeVal,
             company: compVal,
-            expiry: "2028-12-01",
+            expiry: "",
             qty: 1,
             bonus: 0,
+            bonusPercent: bonusPct,
             price: 0,
             total: 0
         });
@@ -2027,12 +2139,15 @@
                 extractedRows[idx].total = extractedRows[idx].qty * extractedRows[idx].price;
                 renderExtractedTable();
             }
+        } else if (field === 'bonusPercent') {
+            extractedRows[idx].bonusPercent = clampPercent(val);
+            renderExtractedTable();
         } else if (['qty', 'bonus', 'price', 'total'].includes(field)) {
             extractedRows[idx][field] = parseMoneyNumber(val);
             if (field === 'qty' || field === 'price') {
                 extractedRows[idx].total = extractedRows[idx].qty * extractedRows[idx].price;
-                renderExtractedTable();
             }
+            renderExtractedTable();
         } else {
             extractedRows[idx][field] = val;
         }
@@ -2054,28 +2169,38 @@
         const tbody = document.getElementById('ocrExtractedTableBody');
         document.getElementById('knownDrugsList').innerHTML = inventory.map(d => `<option value="${d.name}">`).join('');
 
+        const totalBonusUnits = extractedRows.reduce((s, r) => s + calcBonusUnits(r.qty, r.bonus, r.bonusPercent), 0);
+        document.getElementById('extractedBonusTotalBadge').textContent = totalBonusUnits + ' وحدة/كارتون';
+        const currentPct = clampPercent(document.getElementById('ocrBonusPercentInput').value);
+        document.getElementById('activeBonusRateBadge').textContent = currentPct + '%';
+
         if (!extractedRows.length) {
-            tbody.innerHTML = '<tr><td colspan="13" style="text-align:center; color:var(--text-muted);">لم يتم استخراج مواد بعد — ارفع صورة قائمة أو اضغط (سطر جديد)</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="15" style="text-align:center; color:var(--text-muted);">لم يتم استخراج مواد بعد — ارفع صورة قائمة أو اضغط (سطر جديد)</td></tr>';
             return;
         }
 
-        tbody.innerHTML = extractedRows.map((r, idx) => `
-            <tr>
-                <td>${idx + 1}</td>
-                <td><input class="table-edit-input table-edit-name" list="knownDrugsList" value="${r.name}" placeholder="اسم المادة" onchange="updateExtractedField(${idx}, 'name', this.value)"></td>
-                <td><input type="number" class="table-edit-input" style="max-width:65px;" value="${r.qty}" onchange="updateExtractedField(${idx}, 'qty', this.value)"></td>
-                <td><input type="number" class="table-edit-input" style="max-width:60px;" value="${r.bonus}" onchange="updateExtractedField(${idx}, 'bonus', this.value)"></td>
-                <td><input type="number" class="table-edit-input" value="${r.price}" onchange="updateExtractedField(${idx}, 'price', this.value)"></td>
-                <td><input type="number" class="table-edit-input" value="${r.total}" onchange="updateExtractedField(${idx}, 'total', this.value)"></td>
-                <td><input class="table-edit-input" value="${r.barcode}" onchange="updateExtractedField(${idx}, 'barcode', this.value)"></td>
-                <td><input class="table-edit-input" value="${r.type}" onchange="updateExtractedField(${idx}, 'type', this.value)"></td>
-                <td><input class="table-edit-input" value="${r.company}" onchange="updateExtractedField(${idx}, 'company', this.value)"></td>
-                <td><input type="date" class="table-edit-input" value="${r.expiry}" onchange="updateExtractedField(${idx}, 'expiry', this.value)"></td>
-                <td><input class="table-edit-input" value="${r.invoice}" onchange="updateExtractedField(${idx}, 'invoice', this.value)"></td>
-                <td><input type="date" class="table-edit-input" value="${r.invoiceDate}" onchange="updateExtractedField(${idx}, 'invoiceDate', this.value)"></td>
-                <td><button class="btn btn-danger" style="padding:3px 7px;" onclick="removeExtractedRow(${idx})">✕</button></td>
-            </tr>
-        `).join('');
+        tbody.innerHTML = extractedRows.map((r, idx) => {
+            const totalRowBonus = calcBonusUnits(r.qty, r.bonus, r.bonusPercent);
+            return `
+                <tr>
+                    <td>${idx + 1}</td>
+                    <td><input class="table-edit-input table-edit-name" list="knownDrugsList" value="${r.name}" placeholder="اسم المادة" onchange="updateExtractedField(${idx}, 'name', this.value)"></td>
+                    <td><input type="number" class="table-edit-input" style="max-width:65px;" value="${r.qty}" onchange="updateExtractedField(${idx}, 'qty', this.value)"></td>
+                    <td><input type="number" class="table-edit-input" style="max-width:65px;" value="${r.bonus}" onchange="updateExtractedField(${idx}, 'bonus', this.value)"></td>
+                    <td><input type="number" min="0" max="100" step="1" class="table-edit-input" style="max-width:65px;" value="${r.bonusPercent ?? 0}" onchange="updateExtractedField(${idx}, 'bonusPercent', this.value)"></td>
+                    <td><strong style="color:var(--success);">${totalRowBonus}</strong></td>
+                    <td><input type="number" class="table-edit-input" value="${r.price}" onchange="updateExtractedField(${idx}, 'price', this.value)"></td>
+                    <td><input type="number" class="table-edit-input" value="${r.total}" onchange="updateExtractedField(${idx}, 'total', this.value)"></td>
+                    <td><input class="table-edit-input" value="${r.barcode}" onchange="updateExtractedField(${idx}, 'barcode', this.value)"></td>
+                    <td><input class="table-edit-input" value="${r.type}" onchange="updateExtractedField(${idx}, 'type', this.value)"></td>
+                    <td><input class="table-edit-input" value="${r.company}" onchange="updateExtractedField(${idx}, 'company', this.value)"></td>
+                    <td><input type="date" class="table-edit-input" value="${r.expiry}" onchange="updateExtractedField(${idx}, 'expiry', this.value)"></td>
+                    <td><input class="table-edit-input" value="${r.invoice}" onchange="updateExtractedField(${idx}, 'invoice', this.value)"></td>
+                    <td><input type="date" class="table-edit-input" value="${r.invoiceDate}" onchange="updateExtractedField(${idx}, 'invoiceDate', this.value)"></td>
+                    <td><button class="btn btn-danger" style="padding:3px 7px;" onclick="removeExtractedRow(${idx})">✕</button></td>
+                </tr>
+            `;
+        }).join('');
     }
 
     function pushExtractedRowsToArchive() {
@@ -2085,11 +2210,18 @@
             return;
         }
 
+        let savedBonusTotal = 0;
         validRows.forEach(r => {
             const invName = detectSupplierLabel(r.invoice);
+            const pct = clampPercent(r.bonusPercent);
+            const rowBonusUnits = calcBonusUnits(r.qty, r.bonus, pct);
+            savedBonusTotal += rowBonusUnits;
+
             const existing = inventory.find(d => d.name.toLowerCase() === r.name.trim().toLowerCase() && d.invoice === invName);
             if (existing) {
                 existing.qty = Number(existing.qty || 0) + Number(r.qty || 0);
+                existing.bonus = Number(existing.bonus || 0) + rowBonusUnits;
+                existing.bonusPercent = pct;
                 if (Number(r.price) > 0) existing.price = Number(r.price);
                 if (r.barcode) existing.barcode = r.barcode.trim();
                 existing.total = Number(existing.total || 0) + Number(r.total || 0);
@@ -2097,15 +2229,16 @@
                 inventory.unshift({
                     id: Date.now() + Math.floor(Math.random() * 10000),
                     invoice: invName,
-                    invoiceDate: r.invoiceDate || "2026-02-11",
+                    invoiceDate: r.invoiceDate || "",
                     barcode: (r.barcode || "").trim(),
                     name: r.name.trim(),
                     salePrice: Number(r.price) || 0,
                     type: r.type || "عام",
                     company: r.company || "-",
-                    expiry: r.expiry || "2028-12-01",
+                    expiry: r.expiry || "",
                     qty: Number(r.qty) || 1,
-                    bonus: Number(r.bonus) || 0,
+                    bonus: rowBonusUnits,
+                    bonusPercent: pct,
                     price: Number(r.price) || 0,
                     total: Number(r.total) || 0
                 });
@@ -2113,13 +2246,14 @@
         });
 
         saveData();
-        alert(`تم حفظ ${validRows.length} مادة إلى أرشيف القوائم والأسعار بنجاح!`);
+        alert(`تم حفظ ${validRows.length} مادة في الأرشيف — إجمالي البونص المضاف لهذه القائمة: ${savedBonusTotal} وحدة/كارتون.`);
     }
 
     function applySmartInvoiceImport() {
         const raw = (document.getElementById('smartListText').value || '').trim();
         const titleInput = (document.getElementById('smartListTitle').value || '').trim();
-        const dateVal = document.getElementById('smartListDate').value || "2026-02-11";
+        const dateVal = document.getElementById('smartListDate').value || "";
+        const defaultPct = clampPercent(document.getElementById('smartListBonusPct').value);
         const invoiceTitle = detectSupplierLabel(titleInput || "قائمة #2 (11/2/26)");
 
         if (!raw) { alert('الصق سطور القائمة الجديدة أولاً.'); return; }
@@ -2131,17 +2265,21 @@
             const name = parts[0];
             const qty = parseMoneyNumber(parts[1]) || 1;
             const unitPrice = parseMoneyNumber(parts[2]);
-            const newSalePrice = parseMoneyNumber(parts[3]);
+            const extraField = parts[3] ? parseMoneyNumber(parts[3]) : 0;
+            const linePct = defaultPct > 0 ? defaultPct : (extraField > 0 && extraField <= 100 ? extraField : 0);
+            const fixedBonus = (defaultPct === 0 && extraField > 100) ? extraField : 0;
+            const bonusUnits = calcBonusUnits(qty, fixedBonus, linePct);
             const lineTotal = qty * unitPrice;
 
             const existing = inventory.find(d => d.name.toLowerCase() === name.toLowerCase());
             if (existing) {
                 existing.qty = Number(existing.qty || 0) + qty;
+                existing.bonus = Number(existing.bonus || 0) + bonusUnits;
+                existing.bonusPercent = linePct;
                 if (unitPrice > 0) existing.price = unitPrice;
-                if (newSalePrice > 0) existing.salePrice = newSalePrice;
                 existing.total = Number(existing.total || 0) + lineTotal;
                 existing.invoice = invoiceTitle;
-                existing.invoiceDate = dateVal;
+                if (dateVal) existing.invoiceDate = dateVal;
             } else {
                 inventory.unshift({
                     id: Date.now() + Math.floor(Math.random() * 10000),
@@ -2149,12 +2287,13 @@
                     invoiceDate: dateVal,
                     barcode: "",
                     name: name,
-                    salePrice: newSalePrice || unitPrice,
+                    salePrice: unitPrice,
                     type: "عام",
                     company: "-",
-                    expiry: "2028-12-01",
+                    expiry: "",
                     qty: qty,
-                    bonus: 0,
+                    bonus: bonusUnits,
+                    bonusPercent: linePct,
                     price: unitPrice,
                     total: lineTotal
                 });
@@ -2165,7 +2304,7 @@
         if (processed > 0) {
             document.getElementById('smartListText').value = '';
             saveData();
-            alert(`تم حفظ (${invoiceTitle}) بتاريخ ${dateVal}، زيادة العدد، وحساب المجموع، وتحديث الأسعار تلقائياً.`);
+            alert(`تم حفظ (${invoiceTitle}) وتحديث العدد والأسعار والبونص تلقائياً.`);
         }
     }
 
@@ -2200,14 +2339,14 @@
             items: "تسديد دفعة نقدية من الدين",
             amount: -paid
         });
-        localStorage.setItem('pharmacy_debtors_v16', JSON.stringify(debtors));
+        localStorage.setItem('pharmacy_debtors_v17', JSON.stringify(debtors));
         renderDebtors();
     }
 
     function deleteDebtor(debtorId) {
         if (confirm('حذف سجل هذا المديون نهائياً؟')) {
             debtors = debtors.filter(d => d.id !== debtorId);
-            localStorage.setItem('pharmacy_debtors_v16', JSON.stringify(debtors));
+            localStorage.setItem('pharmacy_debtors_v17', JSON.stringify(debtors));
             renderDebtors();
             updateDebtorDropdown();
         }
@@ -2290,7 +2429,7 @@
         if (!item) return;
         document.getElementById('editId').value = item.id;
         document.getElementById('editInvoice').value = item.invoice || '';
-        document.getElementById('editInvoiceDate').value = item.invoiceDate || "2026-02-11";
+        document.getElementById('editInvoiceDate').value = item.invoiceDate || "";
         document.getElementById('editBarcode').value = item.barcode || '';
         document.getElementById('editName').value = item.name || '';
         document.getElementById('editSalePrice').value = item.salePrice ?? item.price ?? 0;
@@ -2299,6 +2438,7 @@
         document.getElementById('editExpiry').value = item.expiry || '';
         document.getElementById('editQty').value = item.qty ?? 0;
         document.getElementById('editBonus').value = item.bonus ?? 0;
+        document.getElementById('editBonusPercent').value = item.bonusPercent ?? 0;
         document.getElementById('editPrice').value = item.price ?? 0;
         document.getElementById('editTotal').value = item.total ?? 0;
         document.getElementById('editDrugModal').style.display = 'flex';
@@ -2314,7 +2454,7 @@
         inventory[idx] = {
             ...inventory[idx],
             invoice: detectSupplierLabel(document.getElementById('editInvoice').value.trim()),
-            invoiceDate: document.getElementById('editInvoiceDate').value || "2026-02-11",
+            invoiceDate: document.getElementById('editInvoiceDate').value || "",
             barcode: document.getElementById('editBarcode').value.trim(),
             name: document.getElementById('editName').value.trim(),
             salePrice: parseMoneyNumber(document.getElementById('editSalePrice').value),
@@ -2323,6 +2463,7 @@
             expiry: document.getElementById('editExpiry').value,
             qty: parseMoneyNumber(document.getElementById('editQty').value),
             bonus: parseMoneyNumber(document.getElementById('editBonus').value),
+            bonusPercent: clampPercent(document.getElementById('editBonusPercent').value),
             price: parseMoneyNumber(document.getElementById('editPrice').value),
             total: parseMoneyNumber(document.getElementById('editTotal').value)
         };
@@ -2332,7 +2473,7 @@
     }
 
     function saveData() {
-        localStorage.setItem('pharmacy_inventory_v16', JSON.stringify(inventory));
+        localStorage.setItem('pharmacy_inventory_v17', JSON.stringify(inventory));
         refreshAllUI();
     }
 
@@ -2350,6 +2491,7 @@
             expiry: document.getElementById('inExpiry').value,
             qty: parseMoneyNumber(document.getElementById('inQty').value),
             bonus: parseMoneyNumber(document.getElementById('inBonus').value),
+            bonusPercent: 0,
             price: 0,
             total: 0
         });
@@ -2369,18 +2511,23 @@
         const salePrice = parseMoneyNumber(document.getElementById('invSalePriceInput').value) || unitPrice;
         const nameVal = document.getElementById('invNameInput').value.trim();
         const qtyVal = parseMoneyNumber(document.getElementById('invQtyInput').value);
+        const fixedBonus = parseMoneyNumber(document.getElementById('invBonusInput').value);
+        const pctBonus = clampPercent(document.getElementById('invBonusPctInput').value);
+        const totalBonusUnits = calcBonusUnits(qtyVal, fixedBonus, pctBonus);
         const totalVal = parseMoneyNumber(document.getElementById('invTotalInput').value) || (qtyVal * unitPrice);
         const invName = detectSupplierLabel(document.getElementById('invTitleInput').value.trim());
-        const invDate = document.getElementById('invDateInput').value || "2026-02-11";
+        const invDate = document.getElementById('invDateInput').value || "";
 
         const existing = inventory.find(d => d.name.toLowerCase() === nameVal.toLowerCase());
         if (existing) {
             existing.qty = Number(existing.qty || 0) + qtyVal;
+            existing.bonus = Number(existing.bonus || 0) + totalBonusUnits;
+            existing.bonusPercent = pctBonus;
             if (salePrice > 0) existing.salePrice = salePrice;
             if (unitPrice > 0) existing.price = unitPrice;
             existing.total = Number(existing.total || 0) + totalVal;
             existing.invoice = invName;
-            existing.invoiceDate = invDate;
+            if (invDate) existing.invoiceDate = invDate;
         } else {
             inventory.unshift({
                 id: Date.now(),
@@ -2389,11 +2536,12 @@
                 barcode: document.getElementById('invBarcodeInput').value.trim(),
                 name: nameVal,
                 salePrice: salePrice,
-                type: document.getElementById('invTypeInput').value.trim(),
-                company: document.getElementById('invCompanyInput').value.trim(),
-                expiry: document.getElementById('invExpiryInput').value,
+                type: document.getElementById('invTypeInput').value.trim() || "عام",
+                company: document.getElementById('invCompanyInput').value.trim() || "-",
+                expiry: document.getElementById('invExpiryInput').value || "",
                 qty: qtyVal,
-                bonus: parseMoneyNumber(document.getElementById('invBonusInput').value),
+                bonus: totalBonusUnits,
+                bonusPercent: pctBonus,
                 price: unitPrice,
                 total: totalVal
             });
@@ -2403,9 +2551,10 @@
         document.getElementById('invSalePriceInput').value = 0;
         document.getElementById('invQtyInput').value = 1;
         document.getElementById('invBonusInput').value = 0;
+        document.getElementById('invBonusPctInput').value = 0;
         document.getElementById('invPriceInput').value = 0;
         document.getElementById('invTotalInput').value = 0;
-        alert('تمت إضافة المادة وتحديث العدد والأسعار تلقائياً!');
+        alert(`تمت إضافة المادة وتحديث العدد والأسعار والبونص (${totalBonusUnits} وحدة) تلقائياً!`);
     }
 
     function handlePdfFile(event) {
@@ -2451,11 +2600,12 @@
                 if ((yr === 'ALL' || yr === iYr) && (mo === 'ALL' || mo === iMo)) {
                     const key = `${item.invoice} — ${iYr}/${iMo}`;
                     if (!map.has(key)) {
-                        map.set(key, { invoice: item.invoice, count: 0, sum: 0, date: dStr });
+                        map.set(key, { invoice: item.invoice, count: 0, sum: 0, bonusSum: 0, date: dStr });
                     }
                     const cur = map.get(key);
                     cur.count += 1;
                     cur.sum += Number(item.total || 0);
+                    cur.bonusSum += Number(item.bonus || 0);
                 }
             });
 
@@ -2471,9 +2621,9 @@
                 <div class="invoice-chip">
                     <div class="invoice-chip-top">
                         <strong style="font-size:0.88rem; color:var(--primary);">📦 ${label}</strong>
-                        <span class="status-pill pill-success">📅 ${val.date}</span>
+                        <span class="status-pill pill-success">📅 ${val.date || 'بدون تاريخ'}</span>
                     </div>
-                    <div style="font-size:0.78rem; color:var(--text-muted);">${val.count} مادة</div>
+                    <div style="font-size:0.78rem; color:var(--text-muted);">${val.count} مادة — البونص: <strong style="color:var(--success);">${val.bonusSum}</strong></div>
                     <div class="invoice-chip-top" style="margin-top:4px;">
                         <strong style="color:var(--secondary); font-size:0.86rem;">المجموع: ${val.sum.toLocaleString()} د.ع</strong>
                         <button class="btn btn-primary" style="padding:3px 8px; font-size:0.75rem;" onclick="selectInvoiceInDropdown('${val.invoice.replace(/'/g, "\\'")}')">عرض المواد</button>
@@ -2514,9 +2664,9 @@
                     <td><strong>${item.barcode || '—'}</strong></td>
                     <td><strong>${item.name}</strong></td>
                     <td><strong style="color:var(--success);">${sPrice.toLocaleString()} د.ع</strong></td>
-                    <td>${item.type}</td>
-                    <td>${item.company}</td>
-                    <td>${item.expiry}</td>
+                    <td>${item.type || '—'}</td>
+                    <td>${item.company || '—'}</td>
+                    <td>${item.expiry || '—'}</td>
                     <td>${qtyBadge}</td>
                     <td class="no-print"><button class="btn btn-secondary" style="padding:3px 8px; font-size:0.76rem;" onclick="openEditModal(${item.id})">✏️</button></td>
                 </tr>
@@ -2524,6 +2674,7 @@
         }).join('');
 
         let totalSum = 0;
+        let bonusSum = 0;
         const filtered2 = inventory.filter(d => {
             const matchInv = invFilter === 'ALL' || d.invoice === invFilter;
             const matchText = d.name.toLowerCase().includes(q2) || d.company.toLowerCase().includes(q2) || d.type.toLowerCase().includes(q2) || (d.invoice && d.invoice.toLowerCase().includes(q2));
@@ -2532,18 +2683,22 @@
 
         document.getElementById('tablePage2Body').innerHTML = filtered2.map((item, index) => {
             totalSum += Number(item.total || 0);
+            const bUnits = Number(item.bonus || 0);
+            bonusSum += bUnits;
+            const pctLabel = item.bonusPercent ? `${item.bonusPercent}%` : '—';
             return `
                 <tr>
                     <td>${index + 1}</td>
                     <td style="font-size:0.8rem; font-weight:700; color:var(--primary);">${item.invoice}</td>
-                    <td>${item.invoiceDate || "2026-02-11"}</td>
+                    <td>${item.invoiceDate || "—"}</td>
                     <td><strong>${item.barcode || '—'}</strong></td>
                     <td><strong>${item.name}</strong></td>
-                    <td>${item.type}</td>
-                    <td>${item.company}</td>
-                    <td>${item.expiry}</td>
+                    <td>${item.type || '—'}</td>
+                    <td>${item.company || '—'}</td>
+                    <td>${item.expiry || '—'}</td>
                     <td>${item.qty}</td>
-                    <td>${item.bonus}</td>
+                    <td><strong style="color:var(--success);">${bUnits}</strong></td>
+                    <td>${pctLabel}</td>
                     <td>${Number(item.price).toLocaleString()}</td>
                     <td><strong>${Number(item.total).toLocaleString()}</strong></td>
                     <td class="no-print">
@@ -2556,6 +2711,7 @@
 
         document.getElementById('statTotalItems').textContent = filtered2.length;
         document.getElementById('statTotalCost').textContent = totalSum.toLocaleString() + ' د.ع';
+        document.getElementById('statTotalBonus').textContent = bonusSum + ' وحدة';
     }
 
     function updateAlerts() {
@@ -2570,13 +2726,13 @@
         inventory.forEach(item => {
             if (item.expiry) {
                 const expDate = new Date(item.expiry);
-                if (expDate <= alertDateLimit) {
+                if (!isNaN(expDate) && expDate <= alertDateLimit) {
                     alertCount++;
                     const isExpired = expDate < today;
                     expRows.push(`
                         <tr>
                             <td><strong>${item.name}</strong></td>
-                            <td>${item.company}</td>
+                            <td>${item.company || '—'}</td>
                             <td>${item.expiry}</td>
                             <td><span class="status-pill ${isExpired ? 'pill-danger' : 'pill-warning'}">${isExpired ? 'منتهي' : 'قريب'}</span></td>
                             <td>${item.qty}</td>
@@ -2591,8 +2747,8 @@
                 lowRows.push(`
                     <tr>
                         <td><strong>${item.name}</strong></td>
-                        <td>${item.type}</td>
-                        <td>${item.company}</td>
+                        <td>${item.type || '—'}</td>
+                        <td>${item.company || '—'}</td>
                         <td><span class="status-pill pill-danger">${item.qty}</span></td>
                         <td>${item.invoice}</td>
                         <td class="no-print"><button class="btn btn-secondary" style="padding:2px 6px; font-size:0.75rem;" onclick="openEditModal(${item.id})">✏️</button></td>
@@ -2633,6 +2789,7 @@
         renderExtractedTable();
     }
 
+    initBonusPercentOptions();
     buildAlphaBar();
     loadSettingsToUI();
     refreshAllUI();
