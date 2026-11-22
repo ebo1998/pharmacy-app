@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>نظام إدارة الصيدلية والديون والمذاخر</title>
+    <title>نظام إدارة الصيدلية والديون والمذاخر الذكي</title>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@400;600;700;800&family=Changa:wght@400;600;700&family=El+Messiri:wght@400;600;700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=Lateef&family=Lalezar&family=Lemonada:wght@400;600;700&family=Mada:wght@400;600;700&family=Markazi+Text:wght@400;600;700&family=Mirza:wght@400;700&family=Noto+Kufi+Arabic:wght@400;600;700&family=Noto+Naskh+Arabic:wght@400;600;700&family=Noto+Sans+Arabic:wght@400;600;700&family=Rakkas&family=Readex+Pro:wght@400;600;700&family=Reem+Kufi:wght@400;600;700&family=Rubik:wght@400;600;700&family=Scheherazade+New:wght@400;700&family=Tajawal:wght@400;500;700;800&family=Vazirmatn:wght@400;600;700&display=swap" rel="stylesheet">
     
@@ -182,6 +182,14 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 8px;
+        }
+
+        .smart-box {
+            border: 2px solid var(--secondary);
+            background: linear-gradient(135deg, rgba(2, 132, 199, 0.06), rgba(15, 118, 110, 0.06));
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 14px;
         }
 
         .scanner-hero {
@@ -539,7 +547,7 @@
 
 <header class="no-print">
     <div class="header-top">
-        <h1>💊 نظام إدارة الصيدلية والديون والمذاخر</h1>
+        <h1>💊 نظام إدارة الصيدلية والديون والمذاخر الذكي</h1>
         <div class="header-actions">
             <button class="btn btn-light" onclick="window.print()">🖨️ طباعة</button>
             <button class="btn btn-light" onclick="toggleTheme()">🌓 ليلي / نهاري</button>
@@ -733,6 +741,27 @@
             </div>
         </div>
 
+        <div class="smart-box no-print">
+            <div class="card-title" style="color:var(--secondary); margin-bottom:6px;">
+                <span>🤖 إضافة سجل ديون من صورة أو نص (ترتيب تلقائي من أ إلى ي وحساب المجموع)</span>
+            </div>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">
+                أدخل أو الصق السجل (مثال: <strong>علي حسين - 2026-11-22 - Atacand 16mg (2) - 34000</strong>) أو التقط صورة السجل ليُضاف مباشرة على اسمه ويُحسب مجموع ديونه:
+            </p>
+            <div class="form-grid" style="margin-bottom:8px;">
+                <div class="form-group">
+                    <label>التقاط / رفع صورة سجل دين</label>
+                    <input type="file" accept="image/*" capture="environment" onchange="handleMediaFiles(event, 'camera')">
+                </div>
+                <div class="form-group">
+                    <label>تاريخ الوجبة</label>
+                    <input type="date" id="smartDebtorDate">
+                </div>
+            </div>
+            <textarea id="smartDebtorText" rows="2" placeholder="اكتب أو الصق سجل المديونين (كل سطر: الاسم - المواد - المبلغ)..."></textarea>
+            <button class="btn btn-secondary" style="margin-top:8px;" onclick="applySmartDebtorImport()">⚡ تحليل وإضافة على أسماء المديونين</button>
+        </div>
+
         <div class="card no-print">
             <div class="card-title"><span>➕ إضافة اسم مديون جديد أو تسجيل وجبة دين</span></div>
             <form onsubmit="addManualDebtorOrBatch(event)">
@@ -824,8 +853,28 @@
             </div>
         </div>
     </div>
-
     <div id="page4" class="page">
+        <div class="smart-box no-print">
+            <div class="card-title" style="color:var(--primary); margin-bottom:6px;">
+                <span>🤖 إضافة قائمة جديدة وتحديث الأسعار القديمة وحساب العدد والمجموع أوتوماتيكياً</span>
+            </div>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">
+                الصق سطور القائمة الجديدة (مثال: <strong>Atacand 16 mg | 2 | 15000 | 18000</strong>: اسم المادة | العدد | سعر المفرد | سعر البيع الجديد)، وسيقوم النظام بحساب المجموع، زيادة العدد، وتحديث السعر القديم تلقائياً:
+            </p>
+            <div class="form-grid" style="margin-bottom:8px;">
+                <div class="form-group">
+                    <label>اسم المذخر ورقم القائمة</label>
+                    <input type="text" id="smartListTitle" placeholder="مثال: مذخر الفردوس - قائمة جديدة">
+                </div>
+                <div class="form-group">
+                    <label>تاريخ القائمة</label>
+                    <input type="date" id="smartListDate">
+                </div>
+            </div>
+            <textarea id="smartListText" rows="3" placeholder="كل سطر: اسم المادة | العدد | سعر المفرد | سعر البيع الجديد (اختياري)"></textarea>
+            <button class="btn btn-primary" style="margin-top:8px;" onclick="applySmartInvoiceImport()">⚡ حفظ القائمة وتحديث الأسعار والعدد تلقائياً</button>
+        </div>
+
         <div class="card" style="border-right: 4px solid var(--secondary);">
             <div class="card-title" style="color: var(--secondary);">
                 <span>📸 رفع القوائم بالكاميرا أو من المعرض أو ملف PDF</span>
@@ -1184,10 +1233,10 @@
 
     const arabicLetters = ["الكل", "أ", "ب", "ت", "ث", "ج", "ح", "خ", "د", "ذ", "ر", "ز", "س", "ش", "ص", "ض", "ط", "ظ", "ع", "غ", "ف", "ق", "ك", "ل", "م", "ن", "هـ", "و", "ي"];
 
-    let inventory = JSON.parse(localStorage.getItem('pharmacy_inventory_v7')) || initialAlferdosData;
-    let debtors = JSON.parse(localStorage.getItem('pharmacy_debtors_v7')) || [];
-    let uploadedLists = JSON.parse(localStorage.getItem('pharmacy_uploaded_lists_v7')) || [];
-    let userSettings = JSON.parse(localStorage.getItem('pharmacy_settings_v7')) || {
+    let inventory = JSON.parse(localStorage.getItem('pharmacy_inventory_v8')) || initialAlferdosData;
+    let debtors = JSON.parse(localStorage.getItem('pharmacy_debtors_v8')) || [];
+    let uploadedLists = JSON.parse(localStorage.getItem('pharmacy_uploaded_lists_v8')) || [];
+    let userSettings = JSON.parse(localStorage.getItem('pharmacy_settings_v8')) || {
         fontFamily: "'Cairo', sans-serif",
         fontSize: "13.5",
         primary: "#0f766e",
@@ -1209,7 +1258,10 @@
     let pendingPdfUrl = null;
     let pendingPdfName = null;
 
-    document.getElementById('debtorDateInput').value = new Date().toISOString().slice(0, 10);
+    const todayStr = new Date().toISOString().slice(0, 10);
+    document.getElementById('debtorDateInput').value = todayStr;
+    document.getElementById('smartDebtorDate').value = todayStr;
+    document.getElementById('smartListDate').value = todayStr;
 
     function loadSettingsToUI() {
         document.getElementById('settingFontFamily').value = userSettings.fontFamily;
@@ -1243,7 +1295,7 @@
         document.body.setAttribute('data-theme', userSettings.theme);
 
         if (save) {
-            localStorage.setItem('pharmacy_settings_v7', JSON.stringify(userSettings));
+            localStorage.setItem('pharmacy_settings_v8', JSON.stringify(userSettings));
             renderTables();
             updateAlerts();
         }
@@ -1508,15 +1560,95 @@
         }
         if (phone && !debtor.phone) debtor.phone = phone;
         debtor.batches.unshift({
-            id: Date.now(),
+            id: Date.now() + Math.floor(Math.random() * 10),
             date: date || new Date().toISOString().slice(0, 10),
             items: itemsText || "وجبة علاج بالدين",
             amount: Number(amount) || 0
         });
         debtors.sort((a, b) => a.name.localeCompare(b.name, 'ar'));
-        localStorage.setItem('pharmacy_debtors_v7', JSON.stringify(debtors));
+        localStorage.setItem('pharmacy_debtors_v8', JSON.stringify(debtors));
         renderDebtors();
         updateDebtorDropdown();
+    }
+
+    function applySmartDebtorImport() {
+        const raw = (document.getElementById('smartDebtorText').value || '').trim();
+        const dateVal = document.getElementById('smartDebtorDate').value || new Date().toISOString().slice(0, 10);
+        if (!raw) {
+            alert('اكتب أو الصق سطر واحد على الأقل من سجل الديون.');
+            return;
+        }
+        const lines = raw.split(/\n+/).map(l => l.trim()).filter(Boolean);
+        let addedCount = 0;
+        lines.forEach(line => {
+            const parts = line.split(/[-|،]+/).map(p => p.trim()).filter(Boolean);
+            if (parts.length >= 2) {
+                const name = parts[0];
+                const amount = parseInt((parts[parts.length - 1] || "0").replace(/[^\d-]/g, '')) || 0;
+                const items = parts.slice(1, parts.length - 1).join(' + ') || "وجبة دين";
+                addDebtEntry(name, "", dateVal, items, amount);
+                addedCount++;
+            }
+        });
+        if (addedCount > 0) {
+            document.getElementById('smartDebtorText').value = '';
+            alert(`تمت إضافة ${addedCount} سجل دين وفرز الأسماء من أ إلى ي وحساب المجموع تلقائياً.`);
+        }
+    }
+
+    function applySmartInvoiceImport() {
+        const raw = (document.getElementById('smartListText').value || '').trim();
+        const titleInput = (document.getElementById('smartListTitle').value || '').trim();
+        const dateVal = document.getElementById('smartListDate').value || new Date().toISOString().slice(0, 10);
+        const invoiceTitle = `${titleInput || 'قائمة مذخر'} (${dateVal})`;
+
+        if (!raw) {
+            alert('الصق سطور القائمة الجديدة أولاً.');
+            return;
+        }
+
+        const lines = raw.split(/\n+/).map(l => l.trim()).filter(Boolean);
+        let processed = 0;
+        lines.forEach(line => {
+            const parts = line.split(/[-|،]+/).map(p => p.trim());
+            if (!parts[0]) return;
+            const name = parts[0];
+            const qty = parseInt((parts[1] || "1").replace(/[^\d]/g, '')) || 1;
+            const unitPrice = parseInt((parts[2] || "0").replace(/[^\d]/g, '')) || 0;
+            const newSalePrice = parseInt((parts[3] || "0").replace(/[^\d]/g, '')) || 0;
+            const lineTotal = qty * unitPrice;
+
+            const existing = inventory.find(d => d.name.toLowerCase() === name.toLowerCase());
+            if (existing) {
+                existing.qty = Number(existing.qty || 0) + qty;
+                if (unitPrice > 0) existing.price = unitPrice;
+                if (newSalePrice > 0) existing.salePrice = newSalePrice;
+                existing.total = Number(existing.total || 0) + lineTotal;
+                existing.invoice = invoiceTitle;
+            } else {
+                inventory.unshift({
+                    id: Date.now() + Math.floor(Math.random() * 1000),
+                    invoice: invoiceTitle,
+                    barcode: "",
+                    name: name,
+                    salePrice: newSalePrice || unitPrice,
+                    type: "عام",
+                    company: "-",
+                    expiry: "2028-12-01",
+                    qty: qty,
+                    bonus: 0,
+                    price: unitPrice,
+                    total: lineTotal
+                });
+            }
+            processed++;
+        });
+
+        if (processed > 0) {
+            document.getElementById('smartListText').value = '';
+            saveData();
+            alert(`تم حفظ (${invoiceTitle})، زيادة العدد، وحساب المجموع، وتحديث أسعار المواد تلقائياً.`);
+        }
     }
 
     function addManualDebtorOrBatch(e) {
@@ -1550,14 +1682,14 @@
             items: "تسديد دفعة نقدية من الدين",
             amount: -paid
         });
-        localStorage.setItem('pharmacy_debtors_v7', JSON.stringify(debtors));
+        localStorage.setItem('pharmacy_debtors_v8', JSON.stringify(debtors));
         renderDebtors();
     }
 
     function deleteDebtor(debtorId) {
         if (confirm('حذف سجل هذا المديون نهائياً؟')) {
             debtors = debtors.filter(d => d.id !== debtorId);
-            localStorage.setItem('pharmacy_debtors_v7', JSON.stringify(debtors));
+            localStorage.setItem('pharmacy_debtors_v8', JSON.stringify(debtors));
             renderDebtors();
             updateDebtorDropdown();
         }
@@ -1691,7 +1823,7 @@
     }
 
     function saveData() {
-        localStorage.setItem('pharmacy_inventory_v7', JSON.stringify(inventory));
+        localStorage.setItem('pharmacy_inventory_v8', JSON.stringify(inventory));
         renderTables();
         updateAlerts();
         updateInvoiceDropdown();
@@ -1730,20 +1862,32 @@
         e.preventDefault();
         const unitPrice = parseInt(document.getElementById('invPriceInput').value) || 0;
         const salePrice = parseInt(document.getElementById('invSalePriceInput').value) || unitPrice;
-        inventory.unshift({
-            id: Date.now(),
-            invoice: document.getElementById('invTitleInput').value.trim(),
-            barcode: document.getElementById('invBarcodeInput').value.trim(),
-            name: document.getElementById('invNameInput').value.trim(),
-            salePrice: salePrice,
-            type: document.getElementById('invTypeInput').value.trim(),
-            company: document.getElementById('invCompanyInput').value.trim(),
-            expiry: document.getElementById('invExpiryInput').value,
-            qty: parseInt(document.getElementById('invQtyInput').value) || 0,
-            bonus: parseInt(document.getElementById('invBonusInput').value) || 0,
-            price: unitPrice,
-            total: parseInt(document.getElementById('invTotalInput').value) || 0
-        });
+        const nameVal = document.getElementById('invNameInput').value.trim();
+        const qtyVal = parseInt(document.getElementById('invQtyInput').value) || 0;
+        const totalVal = parseInt(document.getElementById('invTotalInput').value) || 0;
+
+        const existing = inventory.find(d => d.name.toLowerCase() === nameVal.toLowerCase());
+        if (existing) {
+            existing.qty = Number(existing.qty || 0) + qtyVal;
+            if (salePrice > 0) existing.salePrice = salePrice;
+            if (unitPrice > 0) existing.price = unitPrice;
+            existing.total = Number(existing.total || 0) + totalVal;
+        } else {
+            inventory.unshift({
+                id: Date.now(),
+                invoice: document.getElementById('invTitleInput').value.trim(),
+                barcode: document.getElementById('invBarcodeInput').value.trim(),
+                name: nameVal,
+                salePrice: salePrice,
+                type: document.getElementById('invTypeInput').value.trim(),
+                company: document.getElementById('invCompanyInput').value.trim(),
+                expiry: document.getElementById('invExpiryInput').value,
+                qty: qtyVal,
+                bonus: parseInt(document.getElementById('invBonusInput').value) || 0,
+                price: unitPrice,
+                total: totalVal
+            });
+        }
         saveData();
         ['invBarcodeInput', 'invNameInput', 'invTypeInput', 'invCompanyInput', 'invExpiryInput'].forEach(id => document.getElementById(id).value = '');
         document.getElementById('invSalePriceInput').value = 0;
@@ -1751,7 +1895,7 @@
         document.getElementById('invBonusInput').value = 0;
         document.getElementById('invPriceInput').value = 0;
         document.getElementById('invTotalInput').value = 0;
-        alert('تمت إضافة المادة وحفظها في القائمة!');
+        alert('تمت إضافة المادة وتحديث العدد والأسعار تلقائياً!');
     }
 
     function handleMediaFiles(event, sourceType) {
@@ -1812,7 +1956,7 @@
             pdfName: pendingPdfName || '—',
             date: new Date().toLocaleDateString('ar-IQ')
         });
-        localStorage.setItem('pharmacy_uploaded_lists_v7', JSON.stringify(uploadedLists));
+        localStorage.setItem('pharmacy_uploaded_lists_v8', JSON.stringify(uploadedLists));
         clearUploadedMedia();
         document.getElementById('uploadInvoiceName').value = '';
         renderInvoicesSummary();
