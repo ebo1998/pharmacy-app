@@ -904,7 +904,7 @@
     <div id="page4" class="page">
         <div class="card" style="border-right: 4px solid var(--secondary);">
             <div class="card-title" style="color: var(--secondary);">
-                <span>📸 سحب معلومات الصورة بدقة وتحويلها إلى جدول (بدون خلط بالأسعار أو الكودات)</span>
+                <span>📸 سحب معلومات الصورة وتحويلها إلى جدول (بقراءة مقطّعة بدون تداخل أرقام)</span>
             </div>
 
             <div class="form-grid" style="margin-bottom:12px;">
@@ -948,7 +948,7 @@
             </div>
 
             <div id="ocrStatusBox" class="ocr-status-box">
-                ارفع صورة واضحة للقائمة ليتم تحسين تباينها وسحب الأسماء والكميات والأسعار بدقة في الجدول أدناه.
+                ارفع صورة واضحة للقائمة لتقسيمها وقراءتها سطراً بسطر دون خلط للأسعار أو الكودات.
             </div>
 
             <div id="mediaPreviewArea" class="media-preview-list"></div>
@@ -958,7 +958,7 @@
 
             <div style="margin-top:14px;">
                 <div class="card-title" style="margin-bottom:8px;">
-                    <span>📋 جدول تفريغ الصورة (مرتب ومفصول — راجعه ثم أضفه للأرشيف)</span>
+                    <span>📋 جدول تفريغ الصورة (راجع أو عدّل ثم أضفه للأرشيف)</span>
                     <div style="display:flex; gap:6px; flex-wrap:wrap;">
                         <button class="btn btn-secondary" onclick="addEmptyExtractedRow()">➕ سطر جديد</button>
                         <button class="btn btn-success" onclick="pushExtractedRowsToArchive()">✅ إضافة الجدول إلى أرشيف القوائم</button>
@@ -1334,10 +1334,10 @@
 
     const arabicLetters = ["الكل", "أ", "ب", "ت", "ث", "ج", "ح", "خ", "د", "ذ", "ر", "ز", "س", "ش", "ص", "ض", "ط", "ظ", "ع", "غ", "ف", "ق", "ك", "ل", "م", "ن", "هـ", "و", "ي"];
 
-    let inventory = JSON.parse(localStorage.getItem('pharmacy_inventory_v13')) || initialAlferdosData;
-    let debtors = JSON.parse(localStorage.getItem('pharmacy_debtors_v13')) || [];
-    let uploadedLists = JSON.parse(localStorage.getItem('pharmacy_uploaded_lists_v13')) || [];
-    let userSettings = JSON.parse(localStorage.getItem('pharmacy_settings_v13')) || {
+    let inventory = JSON.parse(localStorage.getItem('pharmacy_inventory_v14')) || initialAlferdosData;
+    let debtors = JSON.parse(localStorage.getItem('pharmacy_debtors_v14')) || [];
+    let uploadedLists = JSON.parse(localStorage.getItem('pharmacy_uploaded_lists_v14')) || [];
+    let userSettings = JSON.parse(localStorage.getItem('pharmacy_settings_v14')) || {
         fontFamily: "'Cairo', sans-serif",
         fontSize: "13.5",
         primary: "#0f766e",
@@ -1383,28 +1383,43 @@
             .replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
     }
 
-    function preprocessImageForOcr(dataUrl) {
+    function buildSlicesFromImage(dataUrl) {
         return new Promise(resolve => {
             const img = new Image();
             img.onload = () => {
-                const scale = img.width < 1200 ? 1.8 : 1;
-                const canvas = document.createElement('canvas');
-                canvas.width = Math.round(img.width * scale);
-                canvas.height = Math.round(img.height * scale);
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                const targetWidth = Math.max(1200, img.width);
+                const scale = targetWidth / img.width;
+                const fullH = Math.round(img.height * scale);
 
-                const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                const d = imgData.data;
-                for (let i = 0; i < d.length; i += 4) {
-                    const gray = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
-                    const bw = gray > 145 ? 255 : 0;
-                    d[i] = d[i + 1] = d[i + 2] = bw;
+                const sliceH = Math.min(fullH, 700);
+                const overlap = Math.min(90, Math.round(sliceH * 0.14));
+                const slices = [];
+
+                let y = 0;
+                while (y < fullH) {
+                    const h = Math.min(sliceH, fullH - y);
+                    const canvas = document.createElement('canvas');
+                    canvas.width = targetWidth;
+                    canvas.height = h;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, y, img.width, h / scale, 0, 0, targetWidth, h);
+
+                    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const d = imgData.data;
+                    for (let i = 0; i < d.length; i += 4) {
+                        const gray = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+                        const val = gray > 155 ? 255 : 0;
+                        d[i] = d[i + 1] = d[i + 2] = val;
+                    }
+                    ctx.putImageData(imgData, 0, 0);
+                    slices.push(canvas.toDataURL('image/png'));
+
+                    if (y + h >= fullH) break;
+                    y += Math.max(100, sliceH - overlap);
                 }
-                ctx.putImageData(imgData, 0, 0);
-                resolve(canvas.toDataURL('image/png'));
+                resolve(slices);
             };
-            img.onerror = () => resolve(dataUrl);
+            img.onerror = () => resolve([dataUrl]);
             img.src = dataUrl;
         });
     }
@@ -1441,7 +1456,7 @@
         document.body.setAttribute('data-theme', userSettings.theme);
 
         if (save) {
-            localStorage.setItem('pharmacy_settings_v13', JSON.stringify(userSettings));
+            localStorage.setItem('pharmacy_settings_v14', JSON.stringify(userSettings));
             refreshAllUI();
         }
     }
@@ -1701,7 +1716,7 @@
             amount: Number(amount) || 0
         });
         debtors.sort((a, b) => a.name.localeCompare(b.name, 'ar'));
-        localStorage.setItem('pharmacy_debtors_v13', JSON.stringify(debtors));
+        localStorage.setItem('pharmacy_debtors_v14', JSON.stringify(debtors));
         renderDebtors();
         updateDebtorDropdown();
     }
@@ -1730,7 +1745,7 @@
     function parseOcrTextToRows(rawText, defaultInvoice, defaultDate, defaultType, defaultCompany) {
         const lines = normalizeDigits(rawText || "").split(/\n+/).map(l => l.trim()).filter(Boolean);
         const rows = [];
-        const ignoreHeaderRegex = /(اسم المادة|المجموع|سعر المفرد|التاريخ|الباركود|القائمة|المذخر|مذخر الفردوس|الاجمالي|الإجمالي)/i;
+        const ignoreHeaderRegex = /(اسم المادة|المجموع|سعر المفرد|التاريخ|الباركود|القائمة|المذخر|مذخر الفردوس|الاجمالي|الإجمالي|أرشيف قوائم)/i;
 
         lines.forEach(line => {
             if (ignoreHeaderRegex.test(line)) return;
@@ -1769,43 +1784,46 @@
             let total = 0;
 
             if (nums.length >= 3) {
-                const cTotal = nums[nums.length - 1];
-                const cPrice = nums[nums.length - 2];
-                const cQty = nums[nums.length - 3];
-                if (cQty * cPrice === cTotal) {
-                    qty = cQty;
-                    price = cPrice;
-                    total = cTotal;
-                } else if (cPrice * cTotal === cQty) {
-                    qty = cTotal;
-                    price = cPrice;
-                    total = cQty;
+                const n3 = nums[nums.length - 1];
+                const n2 = nums[nums.length - 2];
+                const n1 = nums[nums.length - 3];
+
+                if (n1 * n2 === n3) {
+                    qty = n1;
+                    price = n2;
+                    total = n3;
+                } else if (n2 * n3 === n1) {
+                    qty = n3;
+                    price = n2;
+                    total = n1;
                 } else {
-                    qty = cQty <= 500 ? cQty : 1;
-                    price = cPrice;
-                    total = qty * price;
+                    qty = n1 <= 250 ? n1 : 1;
+                    price = n2;
+                    total = n3;
                 }
             } else if (nums.length === 2) {
                 const a = nums[0];
                 const b = nums[1];
-                if (a <= 200 && b >= 250) {
+                if (a <= 250 && b >= 250) {
                     qty = a;
                     price = b;
-                    total = qty * price;
-                } else if (b <= 200 && a >= 250) {
+                    total = a * b;
+                } else if (b <= 250 && a >= 250) {
                     qty = b;
                     price = a;
-                    total = qty * price;
+                    total = a * b;
                 } else {
                     qty = 1;
-                    price = Math.min(a, b);
-                    total = Math.max(a, b);
+                    price = a;
+                    total = b;
                 }
             } else if (nums.length === 1) {
                 if (nums[0] >= 250) {
                     qty = 1;
                     price = nums[0];
                     total = nums[0];
+                } else {
+                    qty = nums[0];
                 }
             }
 
@@ -1847,17 +1865,31 @@
         reader.onload = async e => {
             pendingImages = [{ name: file.name, src: sourceType, dataUrl: e.target.result }];
             renderMediaPreview();
-            statusBox.textContent = "⏳ جاري تحسين وضوح الصورة وسحب الأسماء والأسعار بدقة...";
+            statusBox.textContent = "⏳ جاري تقسيم الصورة وقراءة كل جزء بدقة لتجنب خلط الأسطر والأسعار...";
 
             try {
-                const enhancedImg = await preprocessImageForOcr(e.target.result);
+                const slices = await buildSlicesFromImage(e.target.result);
                 if (window.Tesseract) {
-                    const result = await Tesseract.recognize(enhancedImg, 'ara+eng');
-                    const parsed = parseOcrTextToRows(result.data.text, invoiceTitle, dateVal, typeVal, compVal);
-                    if (parsed.length > 0) {
-                        extractedRows = [...extractedRows, ...parsed];
+                    const gathered = [];
+                    const seenNames = new Set();
+
+                    for (let i = 0; i < slices.length; i++) {
+                        statusBox.textContent = `⏳ جاري قراءة الجزء ${i + 1} من ${slices.length}...`;
+                        const result = await Tesseract.recognize(slices[i], 'ara+eng', { tessedit_pageseg_mode: 6 });
+                        const parsed = parseOcrTextToRows(result.data.text, invoiceTitle, dateVal, typeVal, compVal);
+                        parsed.forEach(item => {
+                            const key = item.name.toLowerCase();
+                            if (!seenNames.has(key)) {
+                                seenNames.add(key);
+                                gathered.push(item);
+                            }
+                        });
+                    }
+
+                    if (gathered.length > 0) {
+                        extractedRows = [...extractedRows, ...gathered];
                         renderExtractedTable();
-                        statusBox.textContent = `✅ تم سحب ${parsed.length} مادة بدقة وفصل الأسعار عن الكودات والتواريخ — راجع الجدول أو أضفه للأرشيف.`;
+                        statusBox.textContent = `✅ تم استخراج ${gathered.length} مادة بدون خلط — راجع أي رقم أو اسم بالجدول ثم أضفه للأرشيف.`;
                         return;
                     }
                 }
@@ -1877,7 +1909,7 @@
                 total: 0
             });
             renderExtractedTable();
-            statusBox.textContent = "⚠️ تعذر قراءة الخط من الصورة تلقائياً — تم فتح سطر بالجدول لإدخال البيانات أو لصقها.";
+            statusBox.textContent = "⚠️ لم يظهر نص واضح من الصورة — تم إضافة سطر فارغ بالجدول لإدخال بياناته بسهولة.";
         };
         reader.readAsDataURL(file);
         event.target.value = '';
@@ -1910,10 +1942,6 @@
         if (!extractedRows[idx]) return;
         if (['qty', 'bonus', 'price', 'total'].includes(field)) {
             extractedRows[idx][field] = parseInt(val, 10) || 0;
-            if (field === 'qty' || field === 'price') {
-                extractedRows[idx].total = extractedRows[idx].qty * extractedRows[idx].price;
-                renderExtractedTable();
-            }
         } else {
             extractedRows[idx][field] = val;
         }
@@ -2083,14 +2111,14 @@
             items: "تسديد دفعة نقدية من الدين",
             amount: -paid
         });
-        localStorage.setItem('pharmacy_debtors_v13', JSON.stringify(debtors));
+        localStorage.setItem('pharmacy_debtors_v14', JSON.stringify(debtors));
         renderDebtors();
     }
 
     function deleteDebtor(debtorId) {
         if (confirm('حذف سجل هذا المديون نهائياً؟')) {
             debtors = debtors.filter(d => d.id !== debtorId);
-            localStorage.setItem('pharmacy_debtors_v13', JSON.stringify(debtors));
+            localStorage.setItem('pharmacy_debtors_v14', JSON.stringify(debtors));
             renderDebtors();
             updateDebtorDropdown();
         }
@@ -2215,7 +2243,7 @@
     }
 
     function saveData() {
-        localStorage.setItem('pharmacy_inventory_v13', JSON.stringify(inventory));
+        localStorage.setItem('pharmacy_inventory_v14', JSON.stringify(inventory));
         refreshAllUI();
     }
 
