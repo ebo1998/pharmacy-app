@@ -1,848 +1,902 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" id="htmlRoot">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- إعدادات تشغيل التطبيق بملء الشاشة على أجهزة الآيفون والآيباد iOS -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="صيدليتي">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#0d9488">
-
-    <title id="docTitle">صيدليتي</title>
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Readex+Pro:wght@400;600&family=Amiri:wght@400;700&family=Tajawal:wght@400;700&family=Almarai:wght@400;700&family=Changa:wght@400;700&family=El+Messiri:wght@400;700&family=Reem+Kufi:wght@400;700&family=Scheherazade+New:wght@400;700&family=Lateef&family=Noto+Naskh+Arabic:wght@400;700&family=Noto+Kufi+Arabic:wght@400;700&family=Harmattan:wght@400;700&family=Katibeh&family=Lalezar&family=Rakkas&family=Lemonada:wght@400;700&family=Marhey:wght@400;700&family=Roboto:wght@400;700&family=Open+Sans:wght@400;700&family=Lato:wght@400;700&family=Montserrat:wght@400;700&family=Poppins:wght@400;700&family=Inter:wght@400;700&family=Oswald:wght@400;700&family=Raleway:wght@400;700&family=Ubuntu:wght@400;700&family=Playfair+Display:wght@400;700&family=Merriweather:wght@400;700&family=Nunito:wght@400;700&family=PT+Sans:wght@400;700&family=Quicksand:wght@400;700&family=Mulish:wght@400;700&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة الصيدلية والمذاخر الاحترافي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #0d9488; --primary-dark: #0f766e; --bg: #f1f5f9; --card: #ffffff; --text: #1e293b; --danger: #ef4444; --warning: #f59e0b; --success: #10b981; --border: #cbd5e1; --font-family: 'Cairo', sans-serif; }
-        * { box-sizing: border-box; font-family: var(--font-family); }
-        body { background-color: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; padding-top: env(safe-area-inset-top); }
-        
-        /* إخفاء الإعلانات المزعجة تماماً */
-        iframe[src*="ads"], .adsbygoogle, div[id*="announcement"], div[class*="banner"], a[href*="appsgeyser"][href*="banner"] { display: none !important; visibility: hidden !important; height: 0 !important; }
+        :root {
+            --primary: #0f766e;
+            --primary-dark: #115e59;
+            --secondary: #0284c7;
+            --bg: #f1f5f9;
+            --card: #ffffff;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --danger: #dc2626;
+            --warning: #d97706;
+            --success: #16a34a;
+        }
 
-        header { background-color: var(--primary); color: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); width: 100%; }
-        header h1 { margin: 0; font-size: 1.2rem; }
-        .lang-select { padding: 6px; border-radius: 6px; border: none; font-weight: bold; background: #fff; color: var(--primary-dark); cursor: pointer; }
-        
-        .tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; background: #e2e8f0; padding: 8px; width: 100%; box-sizing: border-box; }
-        .tab-btn { padding: 10px 5px; border: none; background: #fff; font-size: 0.8rem; font-weight: bold; color: #475569; cursor: pointer; border-radius: 4px; text-align: center; transition: 0.2s; }
-        .tab-btn.active { color: white; background-color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .tab-btn.full-width { grid-column: span 3; }
-        
-        .container { max-width: 100%; width: 100%; margin: 0 auto; padding: 10px; box-sizing: border-box; }
-        .section { display: none; width: 100%; }
-        .section.active { display: block; }
-        
-        .card { background: var(--card); padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 15px; border: 1px solid var(--border); width: 100%; box-sizing: border-box; }
-        .form-grid { display: flex; flex-direction: column; gap: 10px; width: 100%; }
-        .form-group { display: flex; flex-direction: column; width: 100%; }
-        label { font-weight: bold; margin-bottom: 4px; font-size: 0.85rem; }
-        input, select { padding: 9px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.95rem; background: #fff; color: var(--text); width: 100%; box-sizing: border-box; }
-        
-        .btn { background-color: var(--primary); color: white; border: none; padding: 10px; border-radius: 6px; font-size: 0.95rem; font-weight: bold; cursor: pointer; margin-top: 10px; width: 100%; transition: 0.2s; }
-        .btn:hover { background-color: var(--primary-dark); }
-        .btn-danger { background-color: var(--danger); padding: 5px 10px; font-size: 0.8rem; width: auto; }
-        .btn-warning { background-color: var(--warning); color: white; padding: 5px 10px; font-size: 0.8rem; width: auto; }
-        .btn-success { background-color: var(--success); color: white; }
-        
-        .search-box { width: 100%; padding: 10px; margin-bottom: 10px; border: 2px solid var(--primary); border-radius: 6px; font-size: 0.95rem; box-sizing: border-box; }
-        
-        .table-container { width: 100%; overflow-x: auto; border-radius: 6px; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 20px; box-sizing: border-box; }
-        table { width: 100%; border-collapse: collapse; min-width: 400px; }
-        th, td { padding: 10px; text-align: inherit; border-bottom: 1px solid var(--border); font-size: 0.85rem; white-space: nowrap; }
-        th { background-color: #f8fafc; color: var(--primary-dark); }
+        [data-theme="dark"] {
+            --primary: #14b8a6;
+            --primary-dark: #0d9488;
+            --secondary: #38bdf8;
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+        }
 
-        .badge-expired { background: #fee2e2; color: #991b1b; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.75rem; }
-        .badge-warning { background: #fef3c7; color: #92400e; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.75rem; }
-        .badge-safe { background: #d1fae5; color: #065f46; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.75rem; }
+        * {
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
 
-        .med-item-row { display: flex; gap: 5px; margin-bottom: 5px; align-items: center; width: 100%; }
-        .med-images { display: flex; gap: 4px; flex-wrap: wrap; }
-        .med-images img { width: 45px; height: 45px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border); cursor: pointer; }
-        .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; }
-        .modal img { max-width: 90%; max-height: 90%; border-radius: 6px; }
-        .sync-badge { background: #10b981; color: white; padding: 3px 8px; border-radius: 15px; font-size: 0.7rem; display: inline-block; margin-top: 5px; }
-        #reader { width: 100%; max-width: 320px; margin: 10px auto; display: none; }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            transition: 0.3s;
+            padding-bottom: 50px;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.2s;
+        }
+
+        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-secondary { background: var(--secondary); color: white; }
+        .btn-light { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-warning { background: var(--warning); color: white; }
+        .btn-success { background: var(--success); color: white; }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            background: var(--card);
+            padding: 10px 20px;
+            gap: 10px;
+            border-bottom: 2px solid var(--border);
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 8px;
+            position: relative;
+            white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .badge {
+            background: var(--danger);
+            color: white;
+            font-size: 0.75rem;
+            padding: 2px 7px;
+            border-radius: 12px;
+            margin-right: 5px;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        .page { display: none; }
+        .page.active { display: block; animation: fadeIn 0.3s; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Cards & Grids */
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .card-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            color: var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        /* Barcode Scanner Box */
+        .scanner-hero {
+            background: linear-gradient(135deg, rgba(15, 118, 110, 0.1), rgba(2, 132, 199, 0.1));
+            border: 2px dashed var(--primary);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .scanner-input-group {
+            display: flex;
+            max-width: 600px;
+            margin: 12px auto 0;
+            gap: 10px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
+        }
+
+        /* Scanned Result Card */
+        .scan-result {
+            display: none;
+            background: var(--card);
+            border-right: 5px solid var(--success);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: right;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .scan-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .scan-item span { display: block; font-size: 0.8rem; color: var(--text-muted); }
+        .scan-item strong { font-size: 1.05rem; color: var(--text); }
+
+        /* Form Grid */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            align-items: end;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--text-muted);
+        }
+
+        /* Tables */
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: right;
+            font-size: 0.92rem;
+        }
+
+        th {
+            background: var(--primary);
+            color: white;
+            padding: 12px 10px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        tr:hover { background-color: rgba(15, 118, 110, 0.04); }
+
+        .status-pill {
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .pill-danger { background: #fee2e2; color: #b91c1c; }
+        .pill-warning { background: #fef3c7; color: #b45309; }
+        .pill-success { background: #dcfce7; color: #15803d; }
+
+        /* Stats Row */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: var(--card);
+            padding: 18px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            border-right: 4px solid var(--primary);
+        }
+
+        .stat-box h3 { font-size: 0.85rem; color: var(--text-muted); }
+        .stat-box .num { font-size: 1.6rem; font-weight: 800; margin-top: 5px; }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+        }
+
+        .modal-content {
+            background: var(--card);
+            padding: 25px;
+            border-radius: 12px;
+            max-width: 650px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
 
         @media print {
-            body { background: white; }
-            header, .tabs, .card, .search-box, .btn, .lang-select { display: none !important; }
-            .section { display: block !important; }
-            .table-container { box-shadow: none; border: 1px solid #000; }
+            header, .nav-tabs, .no-print { display: none !important; }
+            .page { display: block !important; }
+            .card { box-shadow: none; border: none; }
         }
     </style>
 </head>
-<body id="bodyTag">
+<body>
 
 <header>
-    <h1 id="t_title">💊 نظام صيدليتي المتطور</h1>
-    <select class="lang-select" id="langSelect" onchange="changeLanguage(this.value)">
-        <option value="ar">العربية</option>
-        <option value="ckb">سۆرانی</option>
-        <option value="kmr">Kurmancî</option>
-        <option value="bad">بادینی</option>
-        <option value="trk">Türkmençe</option>
-        <option value="en">English</option>
-    </select>
+    <h1>💊 نظام إدارة الصيدلية الذكي (كركوك)</h1>
+    <div class="header-actions no-print">
+        <button class="btn btn-light" onclick="openImportModal()">📥 استيراد قائمة جديدة</button>
+        <button class="btn btn-light" onclick="exportBackup()">💾 حفظ نسخة احتياطية</button>
+        <button class="btn btn-light" onclick="window.print()">🖨️ طباعة</button>
+        <button class="btn btn-light" onclick="toggleTheme()">🌓 المظهر</button>
+    </div>
 </header>
 
-<div class="tabs">
-    <button class="tab-btn active" onclick="openTab('patients')" id="tb_patients">المرضى</button>
-    <button class="tab-btn" onclick="openTab('inventory')" id="tb_inventory">المخزون</button>
-    <button class="tab-btn" onclick="openTab('sales')" id="tb_sales">🛒 المبيعات</button>
-    <button class="tab-btn" onclick="openTab('expiry')" id="tb_expiry">⏳ الصلاحية</button>
-    <button class="tab-btn" onclick="openTab('charity')" id="tb_charity">❤️ الخير</button>
-    <button class="tab-btn" onclick="openTab('debts')" id="tb_debts">الديون</button>
-    <button class="tab-btn full-width" onclick="openTab('settings')" id="tb_settings">الإعدادات والحماية</button>
+<div class="nav-tabs no-print">
+    <button class="tab-btn active" onclick="switchTab('page1', this)">1️⃣ واجهة الصيدلية والباركود (بدون أسعار)</button>
+    <button class="tab-btn" onclick="switchTab('page2', this)">2️⃣ أرشيف قوائم المذاخر والفواتير (مع الأسعار)</button>
+    <button class="tab-btn" onclick="switchTab('page3', this)">
+        ⚠️ التنبيهات والنواقص والإكسباير <span class="badge" id="alertBadge">0</span>
+    </button>
 </div>
 
 <div class="container">
-    <!-- 1. المرضى المزمنين -->
-    <div id="patients" class="section active">
-        <div class="card">
-            <h3 id="p_title">إضافة / تعديل مريض مزمن</h3>
-            <input type="hidden" id="pEditId">
-            <div class="form-grid">
-                <div class="form-group"><label id="l_pName">الاسم:</label><input type="text" id="pName"></div>
-                <div class="form-group"><label id="l_pAge">العمر:</label><input type="number" id="pAge"></div>
-                <div class="form-group">
-                    <label id="l_pNotes">الأدوية والجرعات (متعددة):</label>
-                    <div id="medsListContainer">
-                        <div class="med-item-row">
-                            <input type="text" class="med-input-field" placeholder="اسم الدواء والجرعة...">
-                            <button type="button" class="btn btn-danger" style="width:auto; margin:0;" onclick="this.parentElement.remove()" id="b_delRow">حذف</button>
-                        </div>
+
+    <!-- ==================== الصفحة الأولى: واجهة الصيدلية والباركود ==================== -->
+    <div id="page1" class="page active">
+        
+        <!-- قسم قارئ الباركود -->
+        <div class="scanner-hero no-print">
+            <h2>🔍 فحص العلاج السريع بجهاز الباركود</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">اضغط داخل المربع وامسح باركود العلاج بالجهاز أو اكتب اسم المادة للبحث الفوري</p>
+            <div class="scanner-input-group">
+                <input type="text" id="barcodeScanInput" placeholder="امسح الباركود هنا (Barcode) أو ابحث بالاسم..." autofocus onkeyup="handleBarcodeSearch(event)">
+                <button class="btn btn-primary" onclick="searchBarcodeManual()">بحث</button>
+            </div>
+
+            <!-- نتيجة المسح -->
+            <div id="scanResultBox" class="scan-result">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h3 id="resName" style="color:var(--primary); font-size:1.25rem;">-</h3>
+                    <button class="btn btn-warning" onclick="dispenseOneItem()">➖ صرف/بيع قطعة (1)</button>
+                </div>
+                <div class="scan-grid">
+                    <div class="scan-item"><span>الباركود:</span><strong id="resBarcode">-</strong></div>
+                    <div class="scan-item"><span>نوع المادة:</span><strong id="resType">-</strong></div>
+                    <div class="scan-item"><span>الشركة المنتجة:</span><strong id="resCompany">-</strong></div>
+                    <div class="scan-item"><span>تاريخ الانتهاء:</span><strong id="resExpiry">-</strong></div>
+                    <div class="scan-item"><span>الكمية / الكارتون:</span><strong id="resQty">-</strong></div>
+                    <div class="scan-item"><span>البونص:</span><strong id="resBonus">-</strong></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- قسم إضافة / ربط باركود جديد -->
+        <div class="card no-print">
+            <div class="card-title">➕ إضافة علاج جديد أو ربط باركود بالجهاز</div>
+            <form id="addDrugForm" onsubmit="addNewDrug(event)">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>رقم الباركود (امسحه بالجهاز)</label>
+                        <input type="text" id="inBarcode" placeholder="امسح الباركود هنا..." required>
                     </div>
-                    <button type="button" class="btn btn-warning" style="width:auto; font-size:0.8rem; margin-top:5px;" onclick="addMedInputRow()" id="b_addMoreMed">+ إضافة دواء آخر</button>
-                </div>
-                <div class="form-group"><label id="l_pImages">صور الأدوية:</label><input type="file" id="pImages" accept="image/*" multiple></div>
-            </div>
-            <button class="btn" onclick="savePatient()" id="b_savePatient">حفظ المريض</button>
-        </div>
-        <input type="text" class="search-box" id="searchPatient" onkeyup="renderPatients()" placeholder="🔍 ابحث...">
-        <div class="table-container">
-            <table>
-                <thead><tr><th id="th_pName">الاسم</th><th id="th_pAge">العمر</th><th id="th_pNotes">الأدوية</th><th id="th_pImages">صور</th><th id="th_pAction">إجراء</th></tr></thead>
-                <tbody id="patientsTable"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- 2. المخزون والباركود -->
-    <div id="inventory" class="section">
-        <div class="card">
-            <h3 id="m_title">إضافة / تعديل علاج في المخزون</h3>
-            <input type="hidden" id="mEditId">
-            <div class="form-grid">
-                <div class="form-group"><label id="l_mName">اسم العلاج:</label><input type="text" id="mName"></div>
-                <div class="form-group"><label id="l_mCode">الكود الداخلي:</label><input type="text" id="mCode"></div>
-                <div class="form-group">
-                    <label id="l_mBarcode">الباركود:</label>
-                    <div style="display:flex; gap:5px;">
-                        <input type="text" id="mBarcode" placeholder="رقم الباركود">
-                        <button type="button" class="btn" style="width:auto; margin:0;" onclick="startBarcodeScanner()" id="b_cam">📷 كاميرا</button>
+                    <div class="form-group">
+                        <label>اسم المادة (العلاج)</label>
+                        <input type="text" id="inName" placeholder="مثال: Adol 250mg Supp" required>
+                    </div>
+                    <div class="form-group">
+                        <label>نوع المادة</label>
+                        <input type="text" id="inType" placeholder="Tablet, Syrup, Vial..." required>
+                    </div>
+                    <div class="form-group">
+                        <label>الشركة المنتجة</label>
+                        <input type="text" id="inCompany" placeholder="مثال: Julphar, ASWAR..." required>
+                    </div>
+                    <div class="form-group">
+                        <label>تاريخ الانتهاء (YYYY-MM-DD)</label>
+                        <input type="date" id="inExpiry" required>
+                    </div>
+                    <div class="form-group">
+                        <label>الكمية / كارتون</label>
+                        <input type="number" id="inQty" value="1" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label>البونص</label>
+                        <input type="number" id="inBonus" value="0" min="0">
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success" style="width:100%; justify-content:center; height:42px;">💾 حفظ في الصيدلية</button>
                     </div>
                 </div>
-                <div class="form-group"><label id="l_mPrice">السعر (د.ع):</label><input type="number" id="mPrice"></div>
-                <div class="form-group"><label id="l_mExpiry">تاريخ انتهاء الصلاحية (الإكسباير):</label><input type="date" id="mExpiryDate"></div>
-            </div>
-            <div id="reader"></div>
-            <button class="btn" onclick="saveMedicine()" id="b_saveMed">حفظ العلاج بالمخزون</button>
+            </form>
         </div>
-        <input type="text" class="search-box" id="searchMed" onkeyup="renderMeds()" placeholder="🔍 ابحث...">
-        <div class="table-container">
-            <table>
-                <thead><tr><th id="th_mName">العلاج</th><th id="th_mCode">الكود</th><th id="th_mBarcode">الباركود</th><th id="th_mPrice">السعر</th><th id="th_mExpiry">الإكسباير</th><th id="th_mAction">إجراء</th></tr></thead>
-                <tbody id="medsTable"></tbody>
-            </table>
-        </div>
-    </div>
 
-    <!-- 3. المبيعات -->
-    <div id="sales" class="section">
+        <!-- جدول عرض المواد في الصفحة الأولى (بدون أسعار) -->
         <div class="card">
-            <h3 id="s_title">🛒 فاتورة مبيعات / شراء أدوية للمراجعين</h3>
-            <div class="form-grid">
-                <div class="form-group">
-                    <label id="l_sMed">اختر العلاج من المخزون:</label>
-                    <select id="saleMedSelect" onchange="updateSalePrice()">
-                        <option value="">-- اختر --</option>
-                    </select>
-                </div>
-                <div class="form-group"><label id="l_sPrice">السعر المفرد:</label><input type="number" id="salePrice" readonly></div>
-                <div class="form-group"><label id="l_sQty">الكمية:</label><input type="number" id="saleQty" value="1" min="1"></div>
+            <div class="card-title">
+                <span>📋 سجل مواد الصيدلية (عرض إداري بدون أسعار)</span>
+                <input type="text" id="filterPage1" placeholder="فلترة سريعة حسب الاسم أو الشركة..." style="max-width:300px;" onkeyup="renderTables()">
             </div>
-            <button class="btn btn-success" onclick="addSaleItem()" id="b_addSale">+ إضافة للفاتورة</button>
-        </div>
-
-        <div class="card" style="background:#f8fafc;">
-            <h3 id="s_listTitle">📋 تفاصيل الفاتورة الحالية</h3>
-            <div class="table-container">
+            <div class="table-responsive">
                 <table>
-                    <thead><tr><th id="th_sMed">العلاج</th><th id="th_sPrice">السعر</th><th id="th_sQty">الكمية</th><th id="th_sTotal">المجموع</th><th id="th_sAction">إزالة</th></tr></thead>
-                    <tbody id="salesTable"></tbody>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>الباركود</th>
+                            <th>اسم المادة</th>
+                            <th>نوع المادة</th>
+                            <th>الشركة المنتجة</th>
+                            <th>تاريخ الانتهاء</th>
+                            <th>كارتون / كمية</th>
+                            <th>بونص</th>
+                            <th class="no-print">إجراءات (ربط باركود / تعديل)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablePage1Body"></tbody>
                 </table>
             </div>
-            <h3 style="text-align:left; color:var(--primary);"><span id="t_grandTotal">المبلغ الإجمالي</span>: <span id="grandTotal">0</span> د.ع</h3>
-            <button class="btn" onclick="completeSale()" id="b_saveSale">💾 إتمام وحفظ عملية البيع</button>
         </div>
     </div>
 
-    <!-- 4. الصلاحية -->
-    <div id="expiry" class="section">
-        <div class="card">
-            <h3 id="e_title">⏳ مراقبة تواريخ الأدوية (الإكسباير) والتنبيهات</h3>
-            <p id="e_desc" style="color:#64748b; font-size:0.85rem;">يراقب أدوية المخزون ويحذرك إذا اقترب تاريخ انتهائها.</p>
-        </div>
-        <div class="table-container">
-            <table>
-                <thead><tr><th id="th_eName">اسم العلاج</th><th id="th_eCode">الكود</th><th id="th_eDate">تاريخ الإكسباير</th><th id="th_eStatus">الحالة</th></tr></thead>
-                <tbody id="expiryTable"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- 5. الخير -->
-    <div id="charity" class="section">
-        <div class="card">
-            <h3 id="c_title">❤️ تسجيل علاج خيري (أدوية الخير)</h3>
-            <div class="form-grid">
-                <div class="form-group"><label id="l_cName">اسم المستفيد / المحتاج:</label><input type="text" id="cName"></div>
-                <div class="form-group"><label id="l_cMed">اسم العلاج المقدم:</label><input type="text" id="cMedName"></div>
-                <div class="form-group"><label id="l_cPrice">قيمة العلاج التقديرية:</label><input type="number" id="cPrice"></div>
-                <div class="form-group"><label id="l_cNotes">ملاحظات:</label><input type="text" id="cNotes"></div>
+    <!-- ==================== الصفحة الثانية: قوائم المذاخر والأسعار ==================== -->
+    <div id="page2" class="page">
+        <div class="stats-grid">
+            <div class="stat-box">
+                <h3>عدد المواد في القوائم</h3>
+                <div class="num" id="statTotalItems">0</div>
             </div>
-            <button class="btn btn-success" onclick="saveCharityItem()" id="b_saveCharity">💾 حفظ في سجل الخير</button>
-        </div>
-        <input type="text" class="search-box" id="searchCharity" onkeyup="renderCharity()" placeholder="🔍 ابحث...">
-        <div class="table-container">
-            <table>
-                <thead><tr><th id="th_cName">المستفيد</th><th id="th_cMed">العلاج</th><th id="th_cPrice">السعر</th><th id="th_cNotes">ملاحظات</th><th id="th_cDate">التاريخ</th><th id="th_cAction">إجراء</th></tr></thead>
-                <tbody id="charityTable"></tbody>
-            </table>
-        </div>
-        <h3 style="color:var(--success);"><span id="t_charityTotal">إجمالي قيمة أدوية الخير</span>: <span id="charityTotal">0</span> د.ع</h3>
-    </div>
-
-    <!-- 6. الديون -->
-    <div id="debts" class="section">
-        <div class="card">
-            <h3 id="d_title">تسجيل / تعديل دين</h3>
-            <input type="hidden" id="dEditId">
-            <div class="form-grid">
-                <div class="form-group"><label id="l_dName">الاسم:</label><input type="text" id="dName"></div>
-                <div class="form-group"><label id="l_dAmount">المبلغ:</label><input type="number" id="dAmount"></div>
-                <div class="form-group"><label id="l_dDetails">التفاصيل:</label><input type="text" id="dDetails"></div>
+            <div class="stat-box" style="border-right-color: var(--secondary);">
+                <h3>إجمالي قيمة القوائم (دينار)</h3>
+                <div class="num" id="statTotalCost">0 د.ع</div>
             </div>
-            <button class="btn" onclick="saveDebt()" id="b_saveDebt">حفظ الدين</button>
-        </div>
-        <input type="text" class="search-box" id="searchDebt" onkeyup="renderDebts()" placeholder="🔍 ابحث...">
-        <div class="table-container">
-            <table>
-                <thead><tr><th id="th_dName">الاسم</th><th id="th_dAmount">المبلغ</th><th id="th_dDetails">التفاصيل</th><th id="th_dAction">إجراء</th></tr></thead>
-                <tbody id="debtsTable"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- 7. الإعدادات وحماية الحسابات والمظهر -->
-    <div id="settings" class="section">
-        <div class="card" style="border: 2px solid var(--primary);">
-            <h3 id="st_secTitle">🔐 حماية الحساب وربط الإيميل بكلمة مرور خاصة</h3>
-            <p id="st_secDesc" style="color:#64748b; font-size:0.85rem;">لكل إيميل رمز سري خاص به يدخلك على بيانات صيدليتك المعزولة.</p>
-            <div class="form-group">
-                <label id="st_lEmail">البريد الإلكتروني:</label>
-                <input type="email" id="userEmailInput" placeholder="example@gmail.com">
+            <div class="stat-box" style="border-right-color: var(--success);">
+                <h3>آخر قائمة مضافة</h3>
+                <div class="num" style="font-size:1.1rem;" id="statLastInvoice">مذخر الفردوس #342077</div>
             </div>
-            <div class="form-group" style="margin-top: 8px;">
-                <label id="st_lPin">الرمز السري الخاص بهذا الحساب (PIN):</label>
-                <input type="password" id="userPasswordInput" placeholder="أدخل رمز الحماية...">
-            </div>
-            <button class="btn" onclick="loginOrRegisterAccount()" id="st_bLogin">💾 ربط / تسجيل الدخول بالحساب</button>
-            <div id="syncStatus" style="margin-top: 8px;"></div>
         </div>
 
         <div class="card">
-            <h3 id="st_fontTitle">🎨 إعدادات الخطوط والمظهر</h3>
-            <div class="form-grid">
-                <div class="form-group">
-                    <label id="st_lFont">اختر نوع الخط:</label>
-                    <select id="fontSelect" onchange="changeGlobalFont(this.value)">
-                        <option value="'Cairo', sans-serif">Cairo (عربي عصري)</option>
-                        <option value="'Tajawal', sans-serif">Tajawal</option>
-                        <option value="'Almarai', sans-serif">Almarai</option>
-                        <option value="'Amiri', serif">Amiri (تراثي)</option>
-                        <option value="'Roboto', sans-serif">Roboto (English)</option>
+            <div class="card-title">
+                <span>🧾 سجل قوائم المذاخر والمشتريات (شامل الأسعار والمجموع)</span>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <select id="invoiceFilter" onchange="renderTables()" style="max-width:250px;">
+                        <option value="ALL">كل القوائم</option>
                     </select>
-                </div>
-                <div class="form-group">
-                    <label id="st_lColor">لون الثيم الأساسي:</label>
-                    <select id="colorSelect" onchange="changeColorTheme(this.value)">
-                        <option value="#0d9488">أخضر طبي</option>
-                        <option value="#2563eb">أزرق ملكي</option>
-                        <option value="#7c3aed">بنفسجي</option>
-                        <option value="#dc2626">أحمر</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label id="st_lTStyle">شكل الجداول:</label>
-                    <select id="tableStyleSelect" onchange="changeTableStyle(this.value)">
-                        <option value="style-1">النمط 1: قياسي بسيط</option>
-                        <option value="style-2">النمط 2: جداول منفصلة</option>
-                    </select>
+                    <input type="text" id="filterPage2" placeholder="بحث في القوائم..." style="max-width:220px;" onkeyup="renderTables()">
                 </div>
             </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>المذخر / القائمة</th>
+                            <th>اسم المادة</th>
+                            <th>نوع المادة</th>
+                            <th>الشركة المنتجة</th>
+                            <th>تاريخ الانتهاء</th>
+                            <th>كارتون</th>
+                            <th>بونص</th>
+                            <th>سعر المفرد</th>
+                            <th>المجموع</th>
+                            <th class="no-print">حذف</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablePage2Body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== الصفحة الثالثة: التنبيهات الذكية ==================== -->
+    <div id="page3" class="page">
+        <div class="card" style="border-right: 4px solid var(--danger);">
+            <div class="card-title" style="color: var(--danger);">
+                <span>⏳ تنبيهات تاريخ الانتهاء (منتهي أو ينتهي خلال 6 أشهر)</span>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>اسم المادة</th>
+                            <th>الشركة</th>
+                            <th>تاريخ الانتهاء</th>
+                            <th>الحالة</th>
+                            <th>الكمية المتبقية</th>
+                        </tr>
+                    </thead>
+                    <tbody id="expiryAlertBody"></tbody>
+                </table>
+            </div>
         </div>
 
-        <div class="card">
-            <h3 id="st_printTitle">🖨️ طباعة التقارير</h3>
-            <button class="btn" style="background:#2563eb;" onclick="window.print()" id="st_bPrint">🖨️ طباعة الصفحة الحالية / التقارير</button>
+        <div class="card" style="border-right: 4px solid var(--warning);">
+            <div class="card-title" style="color: var(--warning);">
+                <span>📉 تنبيهات النواقص (المواد التي كميتها 3 أو أقل)</span>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>اسم المادة</th>
+                            <th>نوع المادة</th>
+                            <th>الشركة</th>
+                            <th>الكمية المتبقية</th>
+                            <th>المذخر المورد</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lowStockAlertBody"></tbody>
+                </table>
+            </div>
         </div>
+    </div>
 
-        <!-- توقيع المطور -->
-        <div style="text-align: center; margin: 20px 0; color: #64748b; font-size: 0.85rem; font-weight: bold;">
-            Made by Ibrahim Ismail
+</div>
+
+<!-- نافذة استيراد قائمة جديدة -->
+<div id="importModal" class="modal">
+    <div class="modal-content">
+        <div class="card-title">
+            <span>📥 استيراد قائمة مذخر جديدة</span>
+            <button class="btn btn-danger" onclick="closeImportModal()">✕</button>
+        </div>
+        <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:10px;">
+            صوّر أي قائمة وأرسلها لي في المحادثة، وسأعطيك كود القائمة لتلصقه هنا مباشرة فيتم حفظها في الصفحة الأولى (بدون أسعار) والصفحة الثانية (بالأسعار):
+        </p>
+        <textarea id="importJsonArea" rows="8" placeholder='الصق كود القائمة هنا...'></textarea>
+        <div style="margin-top:15px; display:flex; gap:10px; justify-content:flex-end;">
+            <button class="btn btn-success" onclick="processImport()">✅ حفظ وإضافة القائمة</button>
         </div>
     </div>
 </div>
 
-<div id="imgModal" class="modal" onclick="this.style.display='none'"><img id="modalImg" src=""></div>
+<!-- نافذة ربط باركود سريع لمادة موجودة -->
+<div id="linkBarcodeModal" class="modal">
+    <div class="modal-content" style="max-width:420px;">
+        <div class="card-title">
+            <span>🏷️ ربط باركود للمادة</span>
+            <button class="btn btn-danger" onclick="closeBarcodeModal()">✕</button>
+        </div>
+        <p id="linkDrugTitle" style="font-weight:700; margin-bottom:10px; color:var(--primary);"></p>
+        <input type="text" id="linkBarcodeInput" placeholder="امسح الباركود بالجهاز الآن...">
+        <button class="btn btn-primary" style="width:100%; margin-top:12px; justify-content:center;" onclick="saveLinkedBarcode()">حفظ الباركود</button>
+    </div>
+</div>
 
 <script>
-    const translations = {
-        ar: {
-            title: "💊 نظام صيدليتي المتطور", tb_patients: "المرضى", tb_inventory: "المخزون", tb_sales: "🛒 المبيعات", tb_expiry: "⏳ الصلاحية", tb_charity: "❤️ الخير", tb_debts: "الديون", tb_settings: "الإعدادات",
-            p_title: "إضافة / تعديل مريض مزمن", l_pName: "الاسم:", l_pAge: "العمر:", l_pNotes: "الأدوية والجرعات:", l_pImages: "صور الأدوية:", b_savePatient: "حفظ المريض", b_delRow: "حذف", b_addMoreMed: "+ إضافة دواء آخر", th_pName: "الاسم", th_pAge: "العمر", th_pNotes: "الأدوية", th_pImages: "صور", th_pAction: "إجراء",
-            m_title: "إضافة / تعديل علاج في المخزون", l_mName: "اسم العلاج:", l_mCode: "الكود الداخلي:", l_mBarcode: "الباركود:", b_cam: "📷 كاميرا", l_mPrice: "السعر (د.ع):", l_mExpiry: "تاريخ انتهاء الصلاحية:", b_saveMed: "حفظ العلاج بالمخزون", th_mName: "العلاج", th_mCode: "الكود", th_mBarcode: "الباركود", th_mPrice: "السعر", th_mExpiry: "الإكسباير", th_mAction: "إجراء",
-            s_title: "🛒 فاتورة مبيعات / شراء أدوية للمراجعين", l_sMed: "اختر العلاج من المخزون:", l_sPrice: "السعر المفرد:", l_sQty: "الكمية:", b_addSale: "+ إضافة للفاتورة", s_listTitle: "📋 تفاصيل الفاتورة الحالية", th_sMed: "العلاج", th_sPrice: "السعر", th_sQty: "الكمية", th_sTotal: "المجموع", th_sAction: "إزالة", t_grandTotal: "المبلغ الإجمالي", b_saveSale: "💾 إتمام وحفظ عملية البيع",
-            e_title: "⏳ مراقبة تواريخ الأدوية (الإكسباير) والتنبيهات", e_desc: "يراقب أدوية المخزون ويحذرك إذا اقترب تاريخ انتهائها.", th_eName: "اسم العلاج", th_eCode: "الكود", th_eDate: "تاريخ الإكسباير", th_eStatus: "الحالة",
-            c_title: "❤️ تسجيل علاج خيري (أدوية الخير)", l_cName: "اسم المستفيد / المحتاج:", l_cMed: "اسم العلاج المقدم:", l_cPrice: "قيمة العلاج التقديرية:", l_cNotes: "ملاحظات:", b_saveCharity: "💾 حفظ في سجل الخير", th_cName: "المستفيد", th_cMed: "العلاج", th_cPrice: "السعر", th_cNotes: "ملاحظات", th_cDate: "التاريخ", th_cAction: "إجراء", t_charityTotal: "إجمالي قيمة أدوية الخير",
-            d_title: "تسجيل / تعديل دين", l_dName: "الاسم:", l_dAmount: "المبلغ:", l_dDetails: "التفاصيل:", b_saveDebt: "حفظ الدين", th_dName: "الاسم", th_dAmount: "المبلغ", th_dDetails: "التفاصيل", th_dAction: "إجراء",
-            st_secTitle: "🔐 حماية الحساب وربط الإيميل بكلمة مرور خاصة", st_secDesc: "لكل إيميل رمز سري خاص به يدخلك على بيانات صيدليتك المعزولة.", st_lEmail: "البريد الإلكتروني:", st_lPin: "الرمز السري الخاص بهذا الحساب (PIN):", st_bLogin: "💾 ربط / تسجيل الدخول بالحساب", st_fontTitle: "🎨 إعدادات الخطوط والمظهر", st_lFont: "اختر نوع الخط:", st_lColor: "لون الثيم الأساسي:", st_lTStyle: "شكل الجداول:", st_printTitle: "🖨️ طباعة التقارير", st_bPrint: "🖨️ طباعة الصفحة الحالية / التقارير",
-            deleteBtn: "حذف", editBtn: "تعديل"
-        },
-        ckb: {
-            title: "💊 دەرمانخانە", tb_patients: "نەخۆش", tb_inventory: "کۆگا", tb_sales: "🛒 فرۆشتن", tb_expiry: "⏳ بەسەرچوون", tb_charity: "❤️ خێر", tb_debts: "قەرز", tb_settings: "ڕێکخستن",
-            p_title: "نەخۆش", l_pName: "ناو:", l_pAge: "تەمەن:", l_pNotes: "دەرمان:", l_pImages: "وێنە:", b_savePatient: "پاشەکەوت", b_delRow: "سڕینەوە", b_addMoreMed: "+ دەرمانی تر", th_pName: "ناو", th_pAge: "تەمەن", th_pNotes: "دەرمان", th_pImages: "وێنە", th_pAction: "کردار",
-            m_title: "دەرمان", l_mName: "ناو:", l_mCode: "کۆد:", l_mBarcode: "بارکۆد:", b_cam: "📷 کامێرا", l_mPrice: "نرخ:", l_mExpiry: "بەسەرچوون:", b_saveMed: "پاشەکەوت", th_mName: "ناو", th_mCode: "کۆد", th_mBarcode: "بارکۆد", th_mPrice: "نرخ", th_mExpiry: "بەسەرچوون", th_mAction: "کردار",
-            s_title: "🛒 فرۆشتن", l_sMed: "دەرمان هەڵبژێرە:", l_sPrice: "نرخ:", l_sQty: "دانە:", b_addSale: "+ زیادکردن", s_listTitle: "📋 لیستی داواکاری", th_sMed: "ناو", th_sPrice: "نرخ", th_sQty: "دانە", th_sTotal: "گشتی", th_sAction: "لابردن", t_grandTotal: "کۆی گشتی", b_saveSale: "💾 پاشەکەوتکردنی فرۆشتن",
-            e_title: "⏳ بەسەرچوون", e_desc: "چاودێری دەرمانەکان", th_eName: "ناو", th_eCode: "کۆد", th_eDate: "بەڕێکەوت", th_eStatus: "بار",
-            c_title: "❤️ خێر", l_cName: "ناوی نەدار:", l_cMed: "دەرمان:", l_cPrice: "نرخ:", l_cNotes: "تێبینی:", b_saveCharity: "💾 پاشەکەوت", th_cName: "ناو", th_cMed: "دەرمان", th_cPrice: "نرخ", th_cNotes: "تێبینی", th_cDate: "بەڕێکەوت", th_cAction: "کردار", t_charityTotal: "کۆی خێر",
-            d_title: "قەرز", l_dName: "ناو:", l_dAmount: "بڕ:", l_dDetails: "وردەکاری:", b_saveDebt: "پاشەکەوت", th_dName: "ناو", th_dAmount: "بڕ", th_dDetails: "وردەکاری", th_dAction: "کردار",
-            st_secTitle: "🔐 پاراستن", st_secDesc: "پاراستنی هەژمار", st_lEmail: "ئیمەیڵ:", st_lPin: "کۆدی نهێنی:", st_bLogin: "💾 تێپەڕبوون", st_fontTitle: "🎨 شێواز", st_lFont: "فۆنت:", st_lColor: "ڕەنگ:", st_lTStyle: "شێوازی خشتە:", st_printTitle: "🖨️ چاپ", st_bPrint: "🖨️ چاپکردنی پەڕە",
-            deleteBtn: "سڕینەوە", editBtn: "دەستکاری"
-        },
-        kmr: {
-            title: "💊 Dermannoxwê", tb_patients: "Nexweş", tb_inventory: "Stok", tb_sales: "🛒 Firotin", tb_expiry: "⏳ Dem", tb_charity: "❤️ Xêr", tb_debts: "Deyn", tb_settings: "Mîheng",
-            p_title: "Nexweş", l_pName: "Nav:", l_pAge: "Temen:", l_pNotes: "Derman:", l_pImages: "Wêne:", b_savePatient: "Tomar", b_delRow: "Jêbirin", b_addMoreMed: "+ Dermanek din", th_pName: "Nav", th_pAge: "Temen", th_pNotes: "Derman", th_pImages: "Wêne", th_pAction: "Cîbicî",
-            m_title: "Derman", l_mName: "Nav:", l_mCode: "Kod:", l_mBarcode: "Barkod:", b_cam: "📷 Kamera", l_mPrice: "Bihayê:", l_mExpiry: "Dem:", b_saveMed: "Tomar", th_mName: "Nav", th_mCode: "Kod", th_mBarcode: "Barkod", th_mPrice: "Bihayê", th_mExpiry: "Dem", th_mAction: "Cîbicî",
-            s_title: "🛒 Firotin", l_sMed: "Derman hilbijêre:", l_sPrice: "Bihayê:", l_sQty: "Hejmar:", b_addSale: "+ Zêde bike", s_listTitle: "📋 Lîste", th_sMed: "Nav", th_sPrice: "Bihayê", th_sQty: "Hejmar", th_sTotal: "Giştî", th_sAction: "Jêbirin", t_grandTotal: "Giştî", b_saveSale: "💾 Tomar bike",
-            e_title: "⏳ Dem", e_desc: "Çavdêriya dermanan", th_eName: "Nav", th_eCode: "Kod", th_eDate: "Dem", th_eStatus: "Rewş",
-            c_title: "❤️ Xêr", l_cName: "Navê kesî:", l_cMed: "Derman:", l_cPrice: "Bihayê:", l_cNotes: "Têbînî:", b_saveCharity: "💾 Tomar bike", th_cName: "Nav", th_cMed: "Derman", th_cPrice: "Bihayê", th_cNotes: "Têbînî", th_cDate: "Dem", th_cAction: "Cîbicî", t_charityTotal: "Giştî",
-            d_title: "Deyn", l_dName: "Nav:", l_dAmount: "Mîqdar:", l_dDetails: "Hûrgilî:", b_saveDebt: "Tomar", th_dName: "Nav", th_dAmount: "Mîqdar", th_dDetails: "Hûrgilî", th_dAction: "Cîbicî",
-            st_secTitle: "🔐 Ewlehî", st_secDesc: "Parastina hesab", st_lEmail: "E-name:", st_lPin: "PIN:", st_bLogin: "💾 Têkeve", st_fontTitle: "🎨 Sêwiran", st_lFont: "Font:", st_lColor: "Reng:", st_lTStyle: "Tablo:", st_printTitle: "🖨️ Çap", st_bPrint: "🖨️ Çap bike",
-            deleteBtn: "Jêbirin", editBtn: "Guherandin"
-        },
-        bad: {
-            title: "💊 دەرمانخانە", tb_patients: "نەخۆش", tb_inventory: "کۆگا", tb_sales: "🛒 فرۆشتن", tb_expiry: "⏳ دەم", tb_charity: "❤️ خێر", tb_debts: "قەرز", tb_settings: "رێکخستن",
-            p_title: "نەخۆش", l_pName: "ناڤ:", l_pAge: "تەمەن:", l_pNotes: "دەرمان:", l_pImages: "وێنە:", b_savePatient: "تۆمار", b_delRow: "ژێبرن", b_addMoreMed: "+ دەرمانەک دی", th_pName: "ناڤ", th_pAge: "تەمەن", th_pNotes: "دەرمان", th_pImages: "وێنە", th_pAction: "کریار",
-            m_title: "دەرمان", l_mName: "ناڤ:", l_mCode: "کۆد:", l_mBarcode: "بارکۆد:", b_cam: "📷 کامێرا", l_mPrice: "بها:", l_mExpiry: "دەم:", b_saveMed: "تۆمار", th_mName: "ناڤ", th_mCode: "کۆد", th_mBarcode: "بارکۆد", th_mPrice: "بها", th_mExpiry: "دەم", th_mAction: "کریار",
-            s_title: "🛒 فرۆشتن", l_sMed: "دەرمان هەلبژێرە:", l_sPrice: "بها:", l_sQty: "کوژمە:", b_addSale: "+ زێدەکرن", s_listTitle: "📋 لێست", th_sMed: "ناڤ", th_sPrice: "بها", th_sQty: "کوژمە", th_sTotal: "گشتی", th_sAction: "ژێبرن", t_grandTotal: "گشتی", b_saveSale: "💾 تۆمارکرن",
-            e_title: "⏳ دەم", e_desc: "چاڤدێریا دەرمانان", th_eName: "ناڤ", th_eCode: "کۆد", th_eDate: "دەم", th_eStatus: "رەوش",
-            c_title: "❤️ خێر", l_cName: "ناڤێ کەسی:", l_cMed: "دەرمان:", l_cPrice: "بها:", l_cNotes: "تێبینی:", b_saveCharity: "💾 تۆمارکرن", th_cName: "ناڤ", th_cMed: "دەرمان", th_cPrice: "بها", th_cNotes: "تێبینی", th_cDate: "دەم", th_cAction: "کریار", t_charityTotal: "گشتی",
-            d_title: "قەرز", l_dName: "ناڤ:", l_dAmount: "مقدار:", l_dDetails: "وردەکاری:", b_saveDebt: "تۆمار", th_dName: "ناڤ", th_dAmount: "مقدار", th_dDetails: "وردەکاری", th_dAction: "کریار",
-            st_secTitle: "🔐 پاراستن", st_secDesc: "پاراستنا هەژمارێ", st_lEmail: "ئیمەیڵ:", st_lPin: "PIN:", st_bLogin: "💾 تێپەڕبوون", st_fontTitle: "🎨 شێواز", st_lFont: "فۆنت:", st_lColor: "رەنگ:", st_lTStyle: "خشتە:", st_printTitle: "🖨️ چاپ", st_bPrint: "🖨️ چاپکرن",
-            deleteBtn: "ژێبرن", editBtn: "دەستکاری"
-        },
-        trk: {
-            title: "💊 Eczane", tb_patients: "Hastalar", tb_inventory: "Stok", tb_sales: "🛒 Satış", tb_expiry: "⏳ Süre", tb_charity: "❤️ Hayır", tb_debts: "Borçlar", tb_settings: "Ayarlar",
-            p_title: "Hasta", l_pName: "Adı:", l_pAge: "Yaş:", l_pNotes: "İlaçlar:", l_pImages: "Resim:", b_savePatient: "Kaydet", b_delRow: "Sil", b_addMoreMed: "+ İlaç Ekle", th_pName: "Adı", th_pAge: "Yaş", th_pNotes: "İlaçlar", th_pImages: "Resim", th_pAction: "İşlem",
-            m_title: "İlaç", l_mName: "Adı:", l_mCode: "Kod:", l_mBarcode: "Barkod:", b_cam: "📷 Kamera", l_mPrice: "Fiyat:", l_mExpiry: "Süre:", b_saveMed: "Kaydet", th_mName: "Adı", th_mCode: "Kod", th_mBarcode: "Barkod", th_mPrice: "Fiyat", th_mExpiry: "Süre", th_mAction: "İşlem",
-            s_title: "🛒 Satış", l_sMed: "İlaç Seç:", l_sPrice: "Fiyat:", l_sQty: "Adet:", b_addSale: "+ Ekle", s_listTitle: "📋 Liste", th_sMed: "Adı", th_sPrice: "Fiyat", th_sQty: "Adet", th_sTotal: "Toplam", th_sAction: "Sil", t_grandTotal: "Genel Toplam", b_saveSale: "💾 Satışı Tamamla",
-            e_title: "⏳ Süre", e_desc: "İlaç takip", th_eName: "Adı", th_eCode: "Kod", th_eDate: "Tarih", th_eStatus: "Durum",
-            c_title: "❤️ Hayır", l_cName: "İsim:", l_cMed: "İlaç:", l_cPrice: "Fiyat:", l_cNotes: "Not:", b_saveCharity: "💾 Kaydet", th_cName: "İsim", th_cMed: "İlaç", th_cPrice: "Fiyat", th_cNotes: "Not", th_cDate: "Tarih", th_cAction: "İşlem", t_charityTotal: "Toplam",
-            d_title: "Borç", l_dName: "Adı:", l_dAmount: "Tutar:", l_dDetails: "Detay:", b_saveDebt: "Kaydet", th_dName: "Adı", th_dAmount: "Tutar", th_dDetails: "Detay", th_dAction: "İşlem",
-            st_secTitle: "🔐 Güvenlik", st_secDesc: "Hesap koruma", st_lEmail: "E-posta:", st_lPin: "PIN:", st_bLogin: "💾 Giriş", st_fontTitle: "🎨 Tasarım", st_lFont: "Font:", st_lColor: "Renk:", st_lTStyle: "Tablo:", st_printTitle: "🖨️ Yazdır", st_bPrint: "🖨️ Yazdır",
-            deleteBtn: "Sil", editBtn: "Düzenle"
-        },
-        en: {
-            title: "💊 Pharmacy App", tb_patients: "Patients", tb_inventory: "Inventory", tb_sales: "🛒 Sales", tb_expiry: "⏳ Expiry", tb_charity: "❤️ Charity", tb_debts: "Debts", tb_settings: "Settings",
-            p_title: "Patient", l_pName: "Name:", l_pAge: "Age:", l_pNotes: "Medications:", l_pImages: "Images:", b_savePatient: "Save", b_delRow: "Delete", b_addMoreMed: "+ Add Med", th_pName: "Name", th_pAge: "Age", th_pNotes: "Notes", th_pImages: "Images", th_pAction: "Action",
-            m_title: "Medicine", l_mName: "Name:", l_mCode: "Code:", l_mBarcode: "Barcode:", b_cam: "📷 Camera", l_mPrice: "Price:", l_mExpiry: "Expiry:", b_saveMed: "Save", th_mName: "Name", th_mCode: "Code", th_mBarcode: "Barcode", th_mPrice: "Price", th_mExpiry: "Expiry", th_mAction: "Action",
-            s_title: "🛒 Sales", l_sMed: "Select Med:", l_sPrice: "Price:", l_sQty: "Qty:", b_addSale: "+ Add", s_listTitle: "📋 Cart", th_sMed: "Name", th_sPrice: "Price", th_sQty: "Qty", th_sTotal: "Total", th_sAction: "Action", t_grandTotal: "Grand Total", b_saveSale: "💾 Complete Sale",
-            e_title: "⏳ Expiry", e_desc: "Expiry monitoring", th_eName: "Name", th_eCode: "Code", th_eDate: "Date", th_eStatus: "Status",
-            c_title: "❤️ Charity", l_cName: "Beneficiary:", l_cMed: "Medication:", l_cPrice: "Price:", l_cNotes: "Notes:", b_saveCharity: "💾 Save", th_cName: "Name", th_cMed: "Medication", th_cPrice: "Price", th_cNotes: "Notes", th_cDate: "Date", th_cAction: "Action", t_charityTotal: "Total Charity",
-            d_title: "Debt", l_dName: "Name:", l_dAmount: "Amount:", l_dDetails: "Details:", b_saveDebt: "Save", th_dName: "Name", th_dAmount: "Amount", th_dDetails: "Details", th_dAction: "Action",
-            st_secTitle: "🔐 Security & Account", st_secDesc: "Protect your data with email and PIN", st_lEmail: "Email:", st_lPin: "PIN Code:", st_bLogin: "💾 Login / Link", st_fontTitle: "🎨 Font & Appearance", st_lFont: "Font Family:", st_lColor: "Theme Color:", st_lTStyle: "Table Style:", st_printTitle: "🖨️ Print Reports", st_bPrint: "🖨️ Print Current Page",
-            deleteBtn: "Delete", editBtn: "Edit"
-        }
-    };
+    // البيانات الأولية المستخرجة من قائمة مذخر أدوية الفردوس رقم 342077
+    const initialAlferdosData = [
+        { id: 1, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "بارستول حب", type: "Vial", company: "-", expiry: "2028-07-01", qty: 10, bonus: 0, price: 3762, total: 37620 },
+        { id: 2, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "باندج قهوائي 10سم", type: "BANDAGE", company: "CHINA", expiry: "2028-01-01", qty: 4, bonus: 0, price: 7200, total: 28800 },
+        { id: 3, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "حب بارستول ازرق", type: "Tablet", company: "-", expiry: "2029-06-01", qty: 14, bonus: 0, price: 3300, total: 46200 },
+        { id: 4, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "حفاضه اولويز ازرق", type: "مستلزمات", company: "TURKEY", expiry: "2027-07-01", qty: 12, bonus: 0, price: 1300, total: 15600 },
+        { id: 5, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "خافضة لسان", type: "مستلزمات", company: "CHINA", expiry: "2028-01-01", qty: 5, bonus: 0, price: 1333, total: 6665 },
+        { id: 6, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "راس ممة ثنائي", type: "مستلزمات", company: "CHINA", expiry: "2030-01-01", qty: 10, bonus: 0, price: 500, total: 5000 },
+        { id: 7, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "زنك كاستراويل 25 غم سامراء", type: "Cream", company: "SDI / IRAQ", expiry: "2028-10-01", qty: 25, bonus: 0, price: 1425, total: 35625 },
+        { id: 8, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "سرنج انسولين 0.5 good", type: "Syringe", company: "good / Turkey", expiry: "2030-01-01", qty: 4, bonus: 0, price: 6900, total: 27600 },
+        { id: 9, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "كمام اسود صيني", type: "Mask", company: "CHINA", expiry: "2028-01-01", qty: 5, bonus: 0, price: 1500, total: 7500 },
+        { id: 10, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "كمامة اطفال", type: "Mask", company: "TURKEY", expiry: "2028-01-01", qty: 1, bonus: 0, price: 2500, total: 2500 },
+        { id: 11, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "لزقة الالام شفاء صيني", type: "Patch", company: "unknown", expiry: "2029-12-01", qty: 24, bonus: 0, price: 371, total: 8904 },
+        { id: 12, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "لفاف ابيض بانجي 10 سم", type: "PLASTER", company: "CHINA", expiry: "2028-01-01", qty: 4, bonus: 0, price: 3354, total: 13416 },
+        { id: 13, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "هايدرو فيال ازرق", type: "Vial", company: "-", expiry: "2029-01-01", qty: 20, bonus: 0, price: 1539, total: 30780 },
+        { id: 14, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Acuaiss ULTRA ( 10 ml )", type: "Drops", company: "DISOP / Spain", expiry: "2029-02-01", qty: 2, bonus: 0, price: 17055, total: 34110 },
+        { id: 15, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Adol ( Paracetamol 250 mg ) 10 Supp", type: "Suppositories", company: "Julphar", expiry: "2027-05-01", qty: 10, bonus: 0, price: 2332, total: 23320 },
+        { id: 16, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Afrafast ( 30 Sachets )", type: "Sachets", company: "APC / IRAQ", expiry: "2028-03-01", qty: 10, bonus: 0, price: 9000, total: 90000 },
+        { id: 17, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "ALLERCEN 10MG (10AMP)", type: "Ampoule", company: "ocean", expiry: "2027-10-01", qty: 4, bonus: 0, price: 6607, total: 26428 },
+        { id: 18, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Anginovag Spray 10 ml", type: "Spray", company: "ferrer / ESP", expiry: "2028-04-01", qty: 2, bonus: 0, price: 8512, total: 17024 },
+        { id: 19, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Angiosar-Plus ( 160/5/12.5mg ) 30 tab", type: "Tablet", company: "Dar Al Dawa", expiry: "2028-11-01", qty: 5, bonus: 0, price: 15151, total: 75755 },
+        { id: 20, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Aqdexa (10Ampoules)", type: "Ampoule", company: "AQUALAB", expiry: "2028-05-01", qty: 6, bonus: 0, price: 5130, total: 30780 },
+        { id: 21, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "AS-Aslavox CREAM", type: "Cream", company: "ASWAR", expiry: "2029-04-01", qty: 15, bonus: 0, price: 544, total: 8160 },
+        { id: 22, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "AS-Betnosun cream", type: "Cream", company: "ASWAR", expiry: "2029-04-01", qty: 15, bonus: 0, price: 513, total: 7695 },
+        { id: 23, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "AS-Dermodeem Cream", type: "Cream", company: "ASWAR", expiry: "2029-04-01", qty: 25, bonus: 0, price: 493, total: 12325 },
+        { id: 24, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "AS-DERMODEEM OINTMENT", type: "Ointment", company: "ASWAR", expiry: "2029-04-01", qty: 25, bonus: 0, price: 590, total: 14750 },
+        { id: 25, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "As-Fugidin Cream", type: "Cream", company: "ASWAR", expiry: "2028-02-01", qty: 15, bonus: 0, price: 483, total: 7245 },
+        { id: 26, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "As-Hydrocortison Cream", type: "Cream", company: "ASWAR", expiry: "2027-05-01", qty: 15, bonus: 0, price: 749, total: 11235 },
+        { id: 27, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "AS-NYESTOCORT OINTMENT", type: "Ointment", company: "ASWAR", expiry: "2028-09-01", qty: 25, bonus: 0, price: 1029, total: 25725 },
+        { id: 28, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "ASALORMINE SYRUP ASWAR", type: "Syrup", company: "ASWAR", expiry: "2029-04-01", qty: 20, bonus: 0, price: 491, total: 9820 },
+        { id: 29, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "ASMAFORT ( Ketotifen 1 mg ) 100 ml", type: "Syrup", company: "Julphar", expiry: "2028-08-01", qty: 15, bonus: 0, price: 3250, total: 48750 },
+        { id: 30, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "ASWARFOCEN Ointment", type: "Ointment", company: "ASWAR", expiry: "2029-06-01", qty: 12, bonus: 0, price: 1406, total: 16872 },
+        { id: 31, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Atacand 16 mg ( 28 tab ) اصلي", type: "Tablet", company: "ASTRAZENECA", expiry: "2028-01-01", qty: 2, bonus: 0, price: 14295, total: 28590 },
+        { id: 32, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Atacand 8 mg ( 28 tab ) اصلي", type: "Tablet", company: "ASTRAZENECA", expiry: "2028-04-01", qty: 2, bonus: 0, price: 11028, total: 22056 },
+        { id: 33, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "Atacand Plus ( 16/12.5 mg ) 28 tab اصلي", type: "Tablet", company: "ASTRAZENECA", expiry: "2028-07-01", qty: 2, bonus: 0, price: 14320, total: 28640 },
+        { id: 34, invoice: "مذخر الفردوس #342077 (02/11/2026)", barcode: "", name: "راس ممة ثنائي AVEAT", type: "مستلزمات", company: "AVEAT", expiry: "2028-01-01", qty: 10, bonus: 0, price: 1653, total: 16530 }
+    ];
 
-    let currentLang = localStorage.getItem('ph_lang') || 'ar';
-    let currentUserEmail = localStorage.getItem('ph_email') || '';
-    let patients = [], meds = [], debts = [], charity = [];
-    let currentCart = [];
+    let inventory = JSON.parse(localStorage.getItem('pharmacy_inventory_v1')) || initialAlferdosData;
+    let currentScannedId = null;
+    let linkingDrugId = null;
 
-    document.getElementById('langSelect').value = currentLang;
-
-    function changeLanguage(lang) {
-        currentLang = lang;
-        localStorage.setItem('ph_lang', lang);
-        const t = translations[lang] || translations['ar'];
-        const isLtr = (lang === 'en' || lang === 'kmr');
-        document.getElementById('htmlRoot').dir = isLtr ? 'ltr' : 'rtl';
-        document.getElementById('bodyTag').dir = isLtr ? 'ltr' : 'rtl';
-
-        document.getElementById('t_title').innerText = t.title;
-        document.getElementById('tb_patients').innerText = t.tb_patients;
-        document.getElementById('tb_inventory').innerText = t.tb_inventory;
-        document.getElementById('tb_sales').innerText = t.tb_sales;
-        document.getElementById('tb_expiry').innerText = t.tb_expiry;
-        document.getElementById('tb_charity').innerText = t.tb_charity;
-        document.getElementById('tb_debts').innerText = t.tb_debts;
-        document.getElementById('tb_settings').innerText = t.tb_settings;
-
-        document.getElementById('p_title').innerText = t.p_title;
-        document.getElementById('l_pName').innerText = t.l_pName;
-        document.getElementById('l_pAge').innerText = t.l_pAge;
-        document.getElementById('l_pNotes').innerText = t.l_pNotes;
-        document.getElementById('l_pImages').innerText = t.l_pImages;
-        document.getElementById('b_savePatient').innerText = t.b_savePatient;
-        document.getElementById('th_pName').innerText = t.th_pName;
-        document.getElementById('th_pAge').innerText = t.th_pAge;
-        document.getElementById('th_pNotes').innerText = t.th_pNotes;
-        document.getElementById('th_pImages').innerText = t.th_pImages;
-        document.getElementById('th_pAction').innerText = t.th_pAction;
-        document.getElementById('b_addMoreMed').innerText = t.b_addMoreMed;
-
-        document.getElementById('m_title').innerText = t.m_title;
-        document.getElementById('l_mName').innerText = t.l_mName;
-        document.getElementById('l_mCode').innerText = t.l_mCode;
-        document.getElementById('l_mBarcode').innerText = t.l_mBarcode;
-        document.getElementById('b_cam').innerText = t.b_cam;
-        document.getElementById('l_mPrice').innerText = t.l_mPrice;
-        document.getElementById('l_mExpiry').innerText = t.l_mExpiry;
-        document.getElementById('b_saveMed').innerText = t.b_saveMed;
-        document.getElementById('th_mName').innerText = t.th_mName;
-        document.getElementById('th_mCode').innerText = t.th_mCode;
-        document.getElementById('th_mBarcode').innerText = t.th_mBarcode;
-        document.getElementById('th_mPrice').innerText = t.th_mPrice;
-        document.getElementById('th_mExpiry').innerText = t.th_mExpiry;
-        document.getElementById('th_mAction').innerText = t.th_mAction;
-
-        document.getElementById('s_title').innerText = t.s_title;
-        document.getElementById('l_sMed').innerText = t.l_sMed;
-        document.getElementById('l_sPrice').innerText = t.l_sPrice;
-        document.getElementById('l_sQty').innerText = t.l_sQty;
-        document.getElementById('b_addSale').innerText = t.b_addSale;
-        document.getElementById('s_listTitle').innerText = t.s_listTitle;
-        document.getElementById('th_sMed').innerText = t.th_sMed;
-        document.getElementById('th_sPrice').innerText = t.th_sPrice;
-        document.getElementById('th_sQty').innerText = t.th_sQty;
-        document.getElementById('th_sTotal').innerText = t.th_sTotal;
-        document.getElementById('th_sAction').innerText = t.th_sAction;
-        document.getElementById('t_grandTotal').innerText = t.t_grandTotal;
-        document.getElementById('b_saveSale').innerText = t.b_saveSale;
-
-        document.getElementById('e_title').innerText = t.e_title;
-        document.getElementById('e_desc').innerText = t.e_desc;
-        document.getElementById('th_eName').innerText = t.th_eName;
-        document.getElementById('th_eCode').innerText = t.th_eCode;
-        document.getElementById('th_eDate').innerText = t.th_eDate;
-        document.getElementById('th_eStatus').innerText = t.th_eStatus;
-
-        document.getElementById('c_title').innerText = t.c_title;
-        document.getElementById('l_cName').innerText = t.l_cName;
-        document.getElementById('l_cMed').innerText = t.l_cMed;
-        document.getElementById('l_cPrice').innerText = t.l_cPrice;
-        document.getElementById('l_cNotes').innerText = t.l_cNotes;
-        document.getElementById('b_saveCharity').innerText = t.b_saveCharity;
-        document.getElementById('th_cName').innerText = t.th_cName;
-        document.getElementById('th_cMed').innerText = t.th_cMed;
-        document.getElementById('th_cPrice').innerText = t.th_cPrice;
-        document.getElementById('th_cNotes').innerText = t.th_cNotes;
-        document.getElementById('th_cDate').innerText = t.th_cDate;
-        document.getElementById('th_cAction').innerText = t.th_cAction;
-        document.getElementById('t_charityTotal').innerText = t.t_charityTotal;
-
-        document.getElementById('d_title').innerText = t.d_title;
-        document.getElementById('l_dName').innerText = t.l_dName;
-        document.getElementById('l_dAmount').innerText = t.l_dAmount;
-        document.getElementById('l_dDetails').innerText = t.l_dDetails;
-        document.getElementById('b_saveDebt').innerText = t.b_saveDebt;
-        document.getElementById('th_dName').innerText = t.th_dName;
-        document.getElementById('th_dAmount').innerText = t.th_dAmount;
-        document.getElementById('th_dDetails').innerText = t.th_dDetails;
-        document.getElementById('th_dAction').innerText = t.th_dAction;
-
-        document.getElementById('st_secTitle').innerText = t.st_secTitle;
-        document.getElementById('st_secDesc').innerText = t.st_secDesc;
-        document.getElementById('st_lEmail').innerText = t.st_lEmail;
-        document.getElementById('st_lPin').innerText = t.st_lPin;
-        document.getElementById('st_bLogin').innerText = t.st_bLogin;
-        document.getElementById('st_fontTitle').innerText = t.st_fontTitle;
-        document.getElementById('st_lFont').innerText = t.st_lFont;
-        document.getElementById('st_lColor').innerText = t.st_lColor;
-        document.getElementById('st_lTStyle').innerText = t.st_lTStyle;
-        document.getElementById('st_printTitle').innerText = t.st_printTitle;
-        document.getElementById('st_bPrint').innerText = t.st_bPrint;
-
-        renderPatients(); renderMeds(); renderDebts(); renderCharity(); renderExpiryTable(); renderSalesCart();
+    function saveData() {
+        localStorage.setItem('pharmacy_inventory_v1', JSON.stringify(inventory));
+        renderTables();
+        updateAlerts();
+        updateInvoiceDropdown();
     }
 
-    function loadAccountData(email) {
-        currentUserEmail = email;
-        patients = JSON.parse(localStorage.getItem('ph_patients_' + email)) || [];
-        meds = JSON.parse(localStorage.getItem('ph_meds_' + email)) || [];
-        debts = JSON.parse(localStorage.getItem('ph_debts_' + email)) || [];
-        charity = JSON.parse(localStorage.getItem('ph_charity_' + email)) || [];
-        renderPatients(); renderMeds(); renderDebts(); renderCharity(); renderExpiryTable();
-    }
-
-    if(currentUserEmail) {
-        document.getElementById('userEmailInput').value = currentUserEmail;
-        loadAccountData(currentUserEmail);
-    }
-
-    function loginOrRegisterAccount() {
-        const email = document.getElementById('userEmailInput').value.trim().toLowerCase();
-        const pin = document.getElementById('userPasswordInput').value.trim();
-
-        if(!email || !email.includes('@')) { alert('أدخل بريداً صحيحاً'); return; }
-        if(!pin || pin.length < 3) { alert('أدخل رمز سري من 3 خانات على الأقل'); return; }
-
-        const savedPinKey = 'ph_pin_' + email;
-        const existingPin = localStorage.getItem(savedPinKey);
-
-        if(existingPin) {
-            if(existingPin !== pin) { alert('⚠️ الرمز السري غير صحيح!'); return; }
-            alert('✅ تم تسجيل الدخول بنجاح');
-        } else {
-            localStorage.setItem(savedPinKey, pin);
-            alert('🎉 تم إنشاء وربط الحساب الجديد بنجاح');
-        }
-
-        localStorage.setItem('ph_email', email);
-        loadAccountData(email);
-        document.getElementById('syncStatus').innerHTML = `<span class="sync-badge">✓ الحساب نشط (${email})</span>`;
-        document.getElementById('userPasswordInput').value = '';
-    }
-
-    function openTab(id) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    // التنقل بين الصفحات
+    function switchTab(pageId, btn) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        event.target.classList.add('active');
-        if(id === 'sales') populateSaleSelect();
-        if(id === 'expiry') renderExpiryTable();
-        if(id === 'charity') renderCharity();
+        document.getElementById(pageId).classList.add('active');
+        btn.classList.add('active');
+        if (pageId === 'page1') {
+            setTimeout(() => document.getElementById('barcodeScanInput').focus(), 100);
+        }
     }
 
-    function autoSaveData() {
-        if(!currentUserEmail) return;
-        localStorage.setItem('ph_patients_' + currentUserEmail, JSON.stringify(patients));
-        localStorage.setItem('ph_meds_' + currentUserEmail, JSON.stringify(meds));
-        localStorage.setItem('ph_debts_' + currentUserEmail, JSON.stringify(debts));
-        localStorage.setItem('ph_charity_' + currentUserEmail, JSON.stringify(charity));
+    // البحث بالباركود أو الاسم
+    function handleBarcodeSearch(e) {
+        if (e.key === 'Enter' || document.getElementById('barcodeScanInput').value.length >= 3) {
+            searchBarcodeManual();
+        }
     }
 
-    window.addEventListener('beforeunload', autoSaveData);
-
-    function changeGlobalFont(f) { document.documentElement.style.setProperty('--font-family', f); localStorage.setItem('ph_font', f); }
-    function changeColorTheme(c) { document.documentElement.style.setProperty('--primary', c); localStorage.setItem('ph_color', c); }
-    function changeTableStyle(styleClass) { localStorage.setItem('ph_tstyle', styleClass); }
-
-    window.addEventListener('DOMContentLoaded', () => {
-        if(localStorage.getItem('ph_font')) {
-            let f = localStorage.getItem('ph_font');
-            document.documentElement.style.setProperty('--font-family', f);
-            document.getElementById('fontSelect').value = f;
+    function searchBarcodeManual() {
+        const query = document.getElementById('barcodeScanInput').value.trim().toLowerCase();
+        const box = document.getElementById('scanResultBox');
+        if (!query) {
+            box.style.display = 'none';
+            return;
         }
-        if(localStorage.getItem('ph_color')) {
-            let c = localStorage.getItem('ph_color');
-            changeColorTheme(c);
-            document.getElementById('colorSelect').value = c;
-        }
-        if(localStorage.getItem('ph_tstyle')) {
-            let ts = localStorage.getItem('ph_tstyle');
-            document.getElementById('tableStyleSelect').value = ts;
-        }
-        changeLanguage(currentLang);
-    });
 
-    function addMedInputRow(val = '') {
-        const t = translations[currentLang] || translations['ar'];
-        const container = document.getElementById('medsListContainer');
-        const div = document.createElement('div');
-        div.className = 'med-item-row';
-        div.innerHTML = `<input type="text" class="med-input-field" value="${val}" placeholder="اسم الدواء والجرعة..."><button type="button" class="btn btn-danger" style="width:auto; margin:0;" onclick="this.parentElement.remove()">${t.b_delRow || 'حذف'}</button>`;
-        container.appendChild(div);
-    }
+        const item = inventory.find(d => 
+            (d.barcode && d.barcode.toLowerCase() === query) || 
+            d.name.toLowerCase().includes(query)
+        );
 
-    async function savePatient() {
-        if(!currentUserEmail) { alert('⚠️ يرجى تسجيل الدخول بالإيميل والرمز من الإعدادات أولاً'); openTab('settings'); return; }
-        const editId = document.getElementById('pEditId').value;
-        const name = document.getElementById('pName').value;
-        const age = document.getElementById('pAge').value;
-        let medsArr = [];
-        document.querySelectorAll('.med-input-field').forEach(i => { if(i.value.trim()) medsArr.push(i.value.trim()); });
-        const notes = medsArr.join(' | ');
-        const files = document.getElementById('pImages').files;
-        if (!name) return alert('أدخل اسم المريض');
-        let imgs = [];
-        for (let f of files) imgs.push(await compressImage(f));
-
-        if (editId) {
-            let p = patients.find(i => i.id == editId);
-            if (p) { p.name = name; p.age = age; p.notes = notes; if (imgs.length > 0) p.images = p.images.concat(imgs); }
-            document.getElementById('pEditId').value = '';
+        if (item) {
+            currentScannedId = item.id;
+            document.getElementById('resName').textContent = item.name;
+            document.getElementById('resBarcode').textContent = item.barcode || 'غير مربوط بباركود';
+            document.getElementById('resType').textContent = item.type;
+            document.getElementById('resCompany').textContent = item.company;
+            document.getElementById('resExpiry').textContent = item.expiry;
+            document.getElementById('resQty').textContent = item.qty;
+            document.getElementById('resBonus').textContent = item.bonus;
+            box.style.display = 'block';
         } else {
-            patients.push({ id: Date.now(), name, age, notes, images: imgs });
-        }
-        autoSaveData();
-        document.getElementById('pName').value = ''; document.getElementById('pAge').value = '';
-        document.getElementById('medsListContainer').innerHTML = '';
-        addMedInputRow();
-        document.getElementById('pImages').value = '';
-        renderPatients();
-    }
-
-    function editPatient(id) {
-        let p = patients.find(i => i.id == id);
-        if (p) {
-            document.getElementById('pEditId').value = p.id;
-            document.getElementById('pName').value = p.name;
-            document.getElementById('pAge').value = p.age;
-            const container = document.getElementById('medsListContainer');
-            container.innerHTML = '';
-            (p.notes ? p.notes.split(' | ') : ['']).forEach(m => addMedInputRow(m));
-            openTab('patients'); window.scrollTo(0,0);
+            currentScannedId = null;
+            box.style.display = 'none';
         }
     }
 
-    function renderPatients() {
-        const t = translations[currentLang] || translations['ar'];
-        const q = document.getElementById('searchPatient').value.toLowerCase();
-        const tb = document.getElementById('patientsTable');
-        tb.innerHTML = '';
-        patients.filter(p => p.name.toLowerCase().includes(q)).forEach(p => {
-            const imgs = (p.images || []).map(s => `<img src="${s}" onclick="showModal('${s}')">`).join('');
-            tb.innerHTML += `<tr><td><strong>${p.name}</strong></td><td>${p.age}</td><td>${p.notes}</td><td><div class="med-images">${imgs}</div></td><td><button class="btn btn-warning" onclick="editPatient(${p.id})">${t.editBtn}</button> <button class="btn btn-danger" onclick="deleteItem('patients', ${p.id})">${t.deleteBtn}</button></td></tr>`;
-        });
-    }
-
-    function showModal(s) { document.getElementById('modalImg').src = s; document.getElementById('imgModal').style.display = 'flex'; }
-    function compressImage(file) {
-        return new Promise(res => {
-            const r = new FileReader(); r.readAsDataURL(file);
-            r.onload = e => {
-                const img = new Image(); img.src = e.target.result;
-                img.onload = () => {
-                    const c = document.createElement('canvas'); const w = 350, s = w / img.width;
-                    c.width = w; c.height = img.height * s;
-                    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-                    res(c.toDataURL('image/jpeg', 0.7));
-                };
-            };
-        });
-    }
-
-    function saveMedicine() {
-        if(!currentUserEmail) { alert('⚠️ يرجى تسجيل الدخول بالإيميل والرمز من الإعدادات أولاً'); openTab('settings'); return; }
-        const editId = document.getElementById('mEditId').value;
-        const name = document.getElementById('mName').value;
-        const code = document.getElementById('mCode').value;
-        const barcode = document.getElementById('mBarcode').value;
-        const price = document.getElementById('mPrice').value;
-        const expiryDate = document.getElementById('mExpiryDate').value;
-        if (!name) return alert('أدخل اسم العلاج');
-
-        if (editId) {
-            let m = meds.find(i => i.id == editId);
-            if (m) { m.name = name; m.code = code; m.barcode = barcode; m.price = price; m.expiryDate = expiryDate; }
-            document.getElementById('mEditId').value = '';
+    function dispenseOneItem() {
+        if (!currentScannedId) return;
+        const idx = inventory.findIndex(d => d.id === currentScannedId);
+        if (idx !== -1 && inventory[idx].qty > 0) {
+            inventory[idx].qty -= 1;
+            saveData();
+            searchBarcodeManual();
+            alert(`تم خصم قطعة واحدة من (${inventory[idx].name}). المتبقي: ${inventory[idx].qty}`);
         } else {
-            meds.push({ id: Date.now(), name, code, barcode, price, expiryDate });
-        }
-        autoSaveData();
-        document.getElementById('mName').value = ''; document.getElementById('mCode').value = ''; document.getElementById('mBarcode').value = ''; document.getElementById('mPrice').value = ''; document.getElementById('mExpiryDate').value = '';
-        renderMeds();
-    }
-
-    function editMedicine(id) {
-        let m = meds.find(i => i.id == id);
-        if (m) {
-            document.getElementById('mEditId').value = m.id;
-            document.getElementById('mName').value = m.name;
-            document.getElementById('mCode').value = m.code;
-            document.getElementById('mBarcode').value = m.barcode;
-            document.getElementById('mPrice').value = m.price;
-            document.getElementById('mExpiryDate').value = m.expiryDate || '';
-            openTab('inventory'); window.scrollTo(0,0);
+            alert('الكمية نفدت بالكامل!');
         }
     }
 
-    function renderMeds() {
-        const t = translations[currentLang] || translations['ar'];
-        const q = document.getElementById('searchMed').value.toLowerCase();
-        const tb = document.getElementById('medsTable');
-        tb.innerHTML = '';
-        meds.filter(m => m.name.toLowerCase().includes(q) || (m.code && m.code.toLowerCase().includes(q)) || (m.barcode && m.barcode.includes(q))).forEach(m => {
-            tb.innerHTML += `<tr><td><strong>${m.name}</strong></td><td>${m.code || '-'}</td><td>${m.barcode || '-'}</td><td>${m.price || 0} د.ع</td><td>${m.expiryDate || '-'}</td><td><button class="btn btn-warning" onclick="editMedicine(${m.id})">${t.editBtn}</button> <button class="btn btn-danger" onclick="deleteItem('meds', ${m.id})">${t.deleteBtn}</button></td></tr>`;
+    // إضافة مادة جديدة
+    function addNewDrug(e) {
+        e.preventDefault();
+        const newItem = {
+            id: Date.now(),
+            invoice: "إدخال مباشر للصيدلية",
+            barcode: document.getElementById('inBarcode').value.trim(),
+            name: document.getElementById('inName').value.trim(),
+            type: document.getElementById('inType').value.trim(),
+            company: document.getElementById('inCompany').value.trim(),
+            expiry: document.getElementById('inExpiry').value,
+            qty: parseInt(document.getElementById('inQty').value) || 0,
+            bonus: parseInt(document.getElementById('inBonus').value) || 0,
+            price: 0,
+            total: 0
+        };
+        inventory.unshift(newItem);
+        saveData();
+        document.getElementById('addDrugForm').reset();
+        alert('تم حفظ العلاج والباركود بنجاح!');
+    }
+
+    // ربط باركود لمادة موجودة مسبقاً من القوائم
+    function openBarcodeModal(id) {
+        const item = inventory.find(d => d.id === id);
+        if (!item) return;
+        linkingDrugId = id;
+        document.getElementById('linkDrugTitle').textContent = item.name;
+        document.getElementById('linkBarcodeInput').value = item.barcode || '';
+        document.getElementById('linkBarcodeModal').style.display = 'flex';
+        setTimeout(() => document.getElementById('linkBarcodeInput').focus(), 100);
+    }
+
+    function closeBarcodeModal() {
+        document.getElementById('linkBarcodeModal').style.display = 'none';
+    }
+
+    function saveLinkedBarcode() {
+        const code = document.getElementById('linkBarcodeInput').value.trim();
+        const idx = inventory.findIndex(d => d.id === linkingDrugId);
+        if (idx !== -1) {
+            inventory[idx].barcode = code;
+            saveData();
+            closeBarcodeModal();
+        }
+    }
+
+    // عرض الجداول
+    function renderTables() {
+        const q1 = document.getElementById('filterPage1').value.toLowerCase();
+        const q2 = document.getElementById('filterPage2').value.toLowerCase();
+        const invFilter = document.getElementById('invoiceFilter').value;
+
+        // جدول الصفحة الأولى (بدون أسعار)
+        const tbody1 = document.getElementById('tablePage1Body');
+        tbody1.innerHTML = '';
+        inventory.filter(d => d.name.toLowerCase().includes(q1) || d.company.toLowerCase().includes(q1) || (d.barcode && d.barcode.includes(q1)))
+            .forEach((item, index) => {
+                const qtyBadge = item.qty <= 3 ? `<span class="status-pill pill-danger">${item.qty}</span>` : `<span class="status-pill pill-success">${item.qty}</span>`;
+                tbody1.innerHTML += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td><strong>${item.barcode || '—'}</strong></td>
+                        <td><strong>${item.name}</strong></td>
+                        <td>${item.type}</td>
+                        <td>${item.company}</td>
+                        <td>${item.expiry}</td>
+                        <td>${qtyBadge}</td>
+                        <td>${item.bonus}</td>
+                        <td class="no-print">
+                            <button class="btn btn-secondary" style="padding:4px 10px; font-size:0.8rem;" onclick="openBarcodeModal(${item.id})">🏷️ ربط باركود</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+        // جدول الصفحة الثانية (مع الأسعار)
+        const tbody2 = document.getElementById('tablePage2Body');
+        tbody2.innerHTML = '';
+        let totalSum = 0;
+        const filtered2 = inventory.filter(d => {
+            const matchInv = invFilter === 'ALL' || d.invoice === invFilter;
+            const matchText = d.name.toLowerCase().includes(q2) || d.company.toLowerCase().includes(q2);
+            return matchInv && matchText;
         });
-    }
 
-    function startBarcodeScanner() {
-        const readerDiv = document.getElementById('reader'); readerDiv.style.display = 'block';
-        const scanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
-        scanner.render((decodedText) => {
-            document.getElementById('mBarcode').value = decodedText; scanner.clear(); readerDiv.style.display = 'none';
-        }, () => {});
-    }
-
-    function populateSaleSelect() {
-        const sel = document.getElementById('saleMedSelect');
-        sel.innerHTML = '<option value="">-- اختر --</option>';
-        meds.forEach(m => {
-            sel.innerHTML += `<option value="${m.id}" data-price="${m.price || 0}">${m.name} (${m.price || 0} د.ع)</option>`;
+        filtered2.forEach((item, index) => {
+            totalSum += Number(item.total || 0);
+            tbody2.innerHTML += `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td style="font-size:0.8rem; color:var(--text-muted);">${item.invoice}</td>
+                    <td><strong>${item.name}</strong></td>
+                    <td>${item.type}</td>
+                    <td>${item.company}</td>
+                    <td>${item.expiry}</td>
+                    <td>${item.qty}</td>
+                    <td>${item.bonus}</td>
+                    <td>${Number(item.price).toLocaleString()} د.ع</td>
+                    <td><strong>${Number(item.total).toLocaleString()} د.ع</strong></td>
+                    <td class="no-print">
+                        <button class="btn btn-danger" style="padding:3px 8px; font-size:0.8rem;" onclick="deleteItem(${item.id})">🗑️</button>
+                    </td>
+                </tr>
+            `;
         });
+
+        document.getElementById('statTotalItems').textContent = filtered2.length;
+        document.getElementById('statTotalCost').textContent = totalSum.toLocaleString() + ' د.ع';
     }
 
-    function updateSalePrice() {
-        const sel = document.getElementById('saleMedSelect');
-        const opt = sel.options[sel.selectedIndex];
-        document.getElementById('salePrice').value = opt.getAttribute('data-price') || 0;
-    }
+    // التنبيهات (النواقص والإكسباير)
+    function updateAlerts() {
+        const expBody = document.getElementById('expiryAlertBody');
+        const lowBody = document.getElementById('lowStockAlertBody');
+        expBody.innerHTML = '';
+        lowBody.innerHTML = '';
 
-    function addSaleItem() {
-        const sel = document.getElementById('saleMedSelect');
-        if(!sel.value) return alert('اختر علاجاً أولاً');
-        const medName = sel.options[sel.selectedIndex].text.split(' (')[0];
-        const price = parseFloat(document.getElementById('salePrice').value) || 0;
-        const qty = parseInt(document.getElementById('saleQty').value) || 1;
-
-        currentCart.push({ id: Date.now(), name: medName, price, qty, total: price * qty });
-        renderSalesCart();
-    }
-
-    function renderSalesCart() {
-        const tb = document.getElementById('salesTable');
-        if(!tb) return;
-        tb.innerHTML = ''; let grand = 0;
-        currentCart.forEach((item, idx) => {
-            grand += item.total;
-            tb.innerHTML += `<tr><td>${item.name}</td><td>${item.price}</td><td>${item.qty}</td><td>${item.total} د.ع</td><td><button class="btn btn-danger" onclick="currentCart.splice(${idx},1); renderSalesCart();">إزالة</button></td></tr>`;
-        });
-        const gtEl = document.getElementById('grandTotal');
-        if(gtEl) gtEl.innerText = grand;
-    }
-
-    function completeSale() {
-        if(currentCart.length === 0) return alert('الفاتورة فارغة!');
-        alert('تم إتمام عملية البيع بنجاح!');
-        currentCart = []; renderSalesCart();
-    }
-
-    function renderExpiryTable() {
-        const tb = document.getElementById('expiryTable');
-        if(!tb) return;
-        tb.innerHTML = '';
+        let alertCount = 0;
         const today = new Date();
+        const sixMonthsLater = new Date();
+        sixMonthsLater.setMonth(today.getMonth() + 6);
 
-        meds.forEach(m => {
-            let statusHtml = '<span class="badge-safe">سليم وآمن</span>';
-            if (m.expiryDate) {
-                const expDate = new Date(m.expiryDate);
-                const diffTime = expDate - today;
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-                if (diffDays < 0) {
-                    statusHtml = '<span class="badge-expired">منتهي الصلاحية!</span>';
-                } else if (diffDays <= 60) {
-                    statusHtml = `<span class="badge-warning">قريب جداً (${diffDays} يوم)</span>`;
+        inventory.forEach(item => {
+            // فحص الانتهاء
+            if (item.expiry) {
+                const expDate = new Date(item.expiry);
+                if (expDate <= sixMonthsLater) {
+                    alertCount++;
+                    const isExpired = expDate < today;
+                    expBody.innerHTML += `
+                        <tr>
+                            <td><strong>${item.name}</strong></td>
+                            <td>${item.company}</td>
+                            <td>${item.expiry}</td>
+                            <td><span class="status-pill ${isExpired ? 'pill-danger' : 'pill-warning'}">${isExpired ? 'منتهي الصلاحية!' : 'قريب الانتهاء'}</span></td>
+                            <td>${item.qty}</td>
+                        </tr>
+                    `;
                 }
             }
-            tb.innerHTML += `<tr><td><strong>${m.name}</strong></td><td>${m.code || '-'}</td><td>${m.expiryDate || 'غير محدد'}</td><td>${statusHtml}</td></tr>`;
+
+            // فحص النواقص (3 أو أقل)
+            if (item.qty <= 3) {
+                alertCount++;
+                lowBody.innerHTML += `
+                    <tr>
+                        <td><strong>${item.name}</strong></td>
+                        <td>${item.type}</td>
+                        <td>${item.company}</td>
+                        <td><span class="status-pill pill-danger">${item.qty} متبقي</span></td>
+                        <td>${item.invoice}</td>
+                    </tr>
+                `;
+            }
         });
+
+        document.getElementById('alertBadge').textContent = alertCount;
     }
 
-    function saveCharityItem() {
-        if(!currentUserEmail) { alert('⚠️ يرجى تسجيل الدخول أولاً'); openTab('settings'); return; }
-        const name = document.getElementById('cName').value;
-        const medName = document.getElementById('cMedName').value;
-        const price = parseFloat(document.getElementById('cPrice').value) || 0;
-        const notes = document.getElementById('cNotes').value;
-        if (!name || !medName) return alert('أدخل الاسم والعلاج');
-
-        charity.push({ id: Date.now(), name, medName, price, notes, date: new Date().toLocaleDateString() });
-        autoSaveData();
-        document.getElementById('cName').value = ''; document.getElementById('cMedName').value = ''; document.getElementById('cPrice').value = ''; document.getElementById('cNotes').value = '';
-        renderCharity();
-    }
-
-    function renderCharity() {
-        const q = document.getElementById('searchCharity') ? document.getElementById('searchCharity').value.toLowerCase() : '';
-        const tb = document.getElementById('charityTable');
-        if(!tb) return;
-        tb.innerHTML = ''; let total = 0;
-        charity.filter(c => c.name.toLowerCase().includes(q)).forEach(c => {
-            total += c.price;
-            tb.innerHTML += `<tr><td><strong>${c.name}</strong></td><td>${c.medName}</td><td>${c.price} د.ع</td><td>${c.notes || '-'}</td><td>${c.date}</td><td><button class="btn btn-danger" onclick="deleteItem('charity', ${c.id})">حذف</button></td></tr>`;
+    function updateInvoiceDropdown() {
+        const select = document.getElementById('invoiceFilter');
+        const current = select.value;
+        const invoices = [...new Set(inventory.map(i => i.invoice))];
+        select.innerHTML = '<option value="ALL">كل القوائم</option>';
+        invoices.forEach(inv => {
+            select.innerHTML += `<option value="${inv}">${inv}</option>`;
         });
-        const ctEl = document.getElementById('charityTotal');
-        if(ctEl) ctEl.innerText = total;
-    }
-
-    function saveDebt() {
-        if(!currentUserEmail) { alert('⚠️ يرجى تسجيل الدخول أولاً'); openTab('settings'); return; }
-        const editId = document.getElementById('dEditId').value;
-        const name = document.getElementById('dName').value;
-        const amount = document.getElementById('dAmount').value;
-        const details = document.getElementById('dDetails').value;
-        if (!name || !amount) return alert('أدخل الاسم والمبلغ');
-
-        if (editId) {
-            let d = debts.find(i => i.id == editId);
-            if (d) { d.name = name; d.amount = amount; d.details = details; }
-            document.getElementById('dEditId').value = '';
-        } else {
-            debts.push({ id: Date.now(), name, amount, details });
-        }
-        autoSaveData();
-        document.getElementById('dName').value = ''; document.getElementById('dAmount').value = ''; document.getElementById('dDetails').value = '';
-        renderDebts();
-    }
-
-    function editDebt(id) {
-        let d = debts.find(i => i.id == id);
-        if (d) {
-            document.getElementById('dEditId').value = d.id;
-            document.getElementById('dName').value = d.name;
-            document.getElementById('dAmount').value = d.amount;
-            document.getElementById('dDetails').value = d.details;
-            openTab('debts'); window.scrollTo(0,0);
+        select.value = current;
+        if (invoices.length > 0) {
+            document.getElementById('statLastInvoice').textContent = invoices[0];
         }
     }
 
-    function renderDebts() {
-        const t = translations[currentLang] || translations['ar'];
-        const q = document.getElementById('searchDebt').value.toLowerCase();
-        const tb = document.getElementById('debtsTable');
-        if(!tb) return;
-        tb.innerHTML = '';
-        debts.filter(d => d.name.toLowerCase().includes(q)).forEach(d => {
-            tb.innerHTML += `<tr><td><strong>${d.name}</strong></td><td style="color:#ef4444;font-weight:bold;">${d.amount} د.ع</td><td>${d.details}</td><td><button class="btn btn-warning" onclick="editDebt(${d.id})">${t.editBtn}</button> <button class="btn btn-danger" onclick="deleteItem('debts', ${d.id})">حذف</button></td></tr>`;
-        });
+    function deleteItem(id) {
+        if (confirm('هل أنت متأكد من حذف هذه المادة؟')) {
+            inventory = inventory.filter(i => i.id !== id);
+            saveData();
+        }
     }
 
-    function deleteItem(type, id) {
-        if (!confirm('هل أنت متأكد من الحذف؟')) return;
-        if (type === 'patients') { patients = patients.filter(i => i.id !== id); autoSaveData(); renderPatients(); }
-        else if (type === 'meds') { meds = meds.filter(i => i.id !== id); autoSaveData(); renderMeds(); }
-        else if (type === 'debts') { debts = debts.filter(i => i.id !== id); autoSaveData(); renderDebts(); }
-        else if (type === 'charity') { charity = charity.filter(i => i.id !== id); autoSaveData(); renderCharity(); }
+    // استيراد القوائم الجديدة
+    function openImportModal() { document.getElementById('importModal').style.display = 'flex'; }
+    function closeImportModal() { document.getElementById('importModal').style.display = 'none'; }
+
+    function processImport() {
+        try {
+            const raw = document.getElementById('importJsonArea').value.trim();
+            const newItems = JSON.parse(raw);
+            if (!Array.isArray(newItems)) throw new Error();
+            newItems.forEach((item, i) => {
+                item.id = Date.now() + i;
+                inventory.unshift(item);
+            });
+            saveData();
+            closeImportModal();
+            document.getElementById('importJsonArea').value = '';
+            alert(`تمت إضافة ${newItems.length} مادة بنجاح إلى الصفحة الأولى والثانية!`);
+        } catch (e) {
+            alert('تأكد من لصق الكود بشكل صحيح كما أرسلته لك.');
+        }
     }
+
+    // نسخة احتياطية
+    function exportBackup() {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(inventory, null, 2));
+        const a = document.createElement('a');
+        a.href = dataStr;
+        a.download = `pharmacy_backup_${new Date().toISOString().slice(0,10)}.json`;
+        a.click();
+    }
+
+    function toggleTheme() {
+        const body = document.body;
+        body.setAttribute('data-theme', body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+
+    // تشغيل مبدئي
+    saveData();
 </script>
 </body>
 </html>
