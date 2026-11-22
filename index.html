@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>نظام إدارة الصيدلية والديون والمذاخر</title>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@400;600;700;800&family=Changa:wght@400;600;700&family=El+Messiri:wght@400;600;700&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=Lateef&family=Lalezar&family=Lemonada:wght@400;600;700&family=Mada:wght@400;600;700&family=Markazi+Text:wght@400;600;700&family=Mirza:wght@400;700&family=Noto+Kufi+Arabic:wght@400;600;700&family=Noto+Naskh+Arabic:wght@400;600;700&family=Noto+Sans+Arabic:wght@400;600;700&family=Rakkas&family=Readex+Pro:wght@400;600;700&family=Reem+Kufi:wght@400;600;700&family=Rubik:wght@400;600;700&family=Scheherazade+New:wght@400;700&family=Tajawal:wght@400;500;700;800&family=Vazirmatn:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
@@ -313,6 +314,12 @@
             font-size: 0.88rem;
         }
 
+        .table-edit-input {
+            padding: 4px 6px;
+            font-size: 0.8rem;
+            min-width: 85px;
+        }
+
         .alpha-bar {
             display: flex;
             flex-wrap: wrap;
@@ -411,6 +418,17 @@
             object-fit: cover;
             border-radius: 6px;
             margin-bottom: 4px;
+        }
+
+        .ocr-status-box {
+            margin-top: 10px;
+            padding: 9px 12px;
+            border-radius: 8px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--secondary);
         }
 
         .table-responsive {
@@ -754,10 +772,6 @@
             </p>
             <div class="form-grid" style="margin-bottom:8px;">
                 <div class="form-group">
-                    <label>إرفاق صورة سجل دين (اختياري)</label>
-                    <input type="file" accept="image/*" onchange="handleMediaFiles(event, 'camera', false)">
-                </div>
-                <div class="form-group">
                     <label>تاريخ الوجبة</label>
                     <input type="date" id="smartDebtorDate">
                 </div>
@@ -888,20 +902,111 @@
         </div>
     </div>
     <div id="page4" class="page">
+        <div class="card" style="border-right: 4px solid var(--secondary);">
+            <div class="card-title" style="color: var(--secondary);">
+                <span>📸 سحب معلومات الصورة وتحويلها إلى جدول قائمة (مثل جدول الأرشيف)</span>
+            </div>
+
+            <div class="form-grid" style="margin-bottom:12px;">
+                <div class="form-group">
+                    <label>اسم المذخر / التجهيزات</label>
+                    <input type="text" id="ocrInvoiceName" placeholder="مثال: مذخر الفردوس #342077" list="existingInvoicesList">
+                    <datalist id="existingInvoicesList"></datalist>
+                </div>
+                <div class="form-group">
+                    <label>تاريخ القائمة (سنة - شهر - يوم)</label>
+                    <input type="date" id="ocrInvoiceDate">
+                </div>
+                <div class="form-group">
+                    <label>النوع / القسم الافتراضي</label>
+                    <input type="text" id="ocrDefaultType" value="عام">
+                </div>
+                <div class="form-group">
+                    <label>الشركة الافتراضية</label>
+                    <input type="text" id="ocrDefaultCompany" value="-">
+                </div>
+            </div>
+
+            <div class="media-upload-grid">
+                <label class="media-btn">
+                    <span style="font-size:1.5rem;">📷</span>
+                    <span>تصوير القائمة وسحب معلوماتها</span>
+                    <input type="file" accept="image/*" capture="environment" style="display:none;" onchange="extractTableFromImage(event, 'camera')">
+                </label>
+
+                <label class="media-btn">
+                    <span style="font-size:1.5rem;">🖼️</span>
+                    <span>رفع صورة قائمة وسحب معلوماتها</span>
+                    <input type="file" accept="image/*" style="display:none;" onchange="extractTableFromImage(event, 'gallery')">
+                </label>
+
+                <label class="media-btn">
+                    <span style="font-size:1.5rem;">📄</span>
+                    <span>معاينة ملف PDF</span>
+                    <input type="file" accept="application/pdf,.pdf" style="display:none;" onchange="handlePdfFile(event)">
+                </label>
+            </div>
+
+            <div id="ocrStatusBox" class="ocr-status-box">
+                ارفع أو صوّر القائمة ليتم سحب معلوماتها وتفريغها هنا بجدول مرتب قابل للتعديل والإضافة إلى أرشيف القوائم.
+            </div>
+
+            <div id="mediaPreviewArea" class="media-preview-list"></div>
+            <div id="pdfViewerArea" style="display:none; margin-top:12px;">
+                <iframe id="pdfFrame" style="width:100%; height:260px; border:1px solid var(--border); border-radius:8px;"></iframe>
+            </div>
+
+            <div style="margin-top:14px;">
+                <div class="card-title" style="margin-bottom:8px;">
+                    <span>📋 جدول تفريغ الصورة (عدّل أي حقل ثم أضفه للأرشيف)</span>
+                    <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                        <button class="btn btn-secondary" onclick="addEmptyExtractedRow()">➕ سطر جديد</button>
+                        <button class="btn btn-success" onclick="pushExtractedRowsToArchive()">✅ إضافة الجدول إلى أرشيف القوائم</button>
+                        <button class="btn btn-danger" onclick="clearExtractedTable()">🗑️ مسح</button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>القائمة / المذخر</th>
+                                <th>التاريخ</th>
+                                <th>الباركود</th>
+                                <th>اسم المادة</th>
+                                <th>النوع / القسم</th>
+                                <th>الشركة</th>
+                                <th>الانتهاء</th>
+                                <th>المتوفر / كارتون</th>
+                                <th>بونص</th>
+                                <th>سعر المفرد</th>
+                                <th>المجموع</th>
+                                <th>حذف</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ocrExtractedTableBody">
+                            <tr><td colspan="13" style="text-align:center; color:var(--text-muted);">لم يتم استخراج مواد بعد — ارفع صورة قائمة أو اضغط (سطر جديد)</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
         <div class="smart-box no-print">
             <div class="card-title" style="color:var(--primary); margin-bottom:6px;">
-                <span>🤖 إضافة قائمة وتحديث الأسعار القديمة وحساب العدد والمجموع حسب السنة والشهر</span>
+                <span>⚡ لصق سريع للقوائم وتحديث الأسعار القديمة وحساب العدد والمجموع</span>
             </div>
             <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">
-                اكتب اسم المذخر (مثل <strong>مذخر الفردوس</strong>) وحدد التاريخ (مثال <strong>2026-11-22</strong> أو <strong>2027-01-10</strong>)، والصق المواد (<strong>اسم المادة | العدد | سعر المفرد | سعر البيع الجديد</strong>)، ليُضاف على أرشيف المذخر ويُحدّث السعر والعدد تلقائياً:
+                اكتب اسم المذخر والتاريخ، والصق المواد (<strong>اسم المادة | العدد | سعر المفرد | سعر البيع الجديد</strong>) ليُضاف مباشرة على أرشيف القوائم ويُحدّث السعر والعدد تلقائياً:
             </p>
             <div class="form-grid" style="margin-bottom:8px;">
                 <div class="form-group">
                     <label>اسم المذخر / التجهيزات</label>
-                    <input type="text" id="smartListTitle" placeholder="مثال: مذخر الفردوس" list="existingInvoicesList">
+                    <input type="text" id="smartListTitle" placeholder="مثال: مذخر الفردوس #342077" list="existingInvoicesList">
                 </div>
                 <div class="form-group">
-                    <label>تاريخ القائمة (سنة - شهر - يوم)</label>
+                    <label>تاريخ القائمة</label>
                     <input type="date" id="smartListDate">
                 </div>
             </div>
@@ -909,64 +1014,9 @@
             <button class="btn btn-primary" style="margin-top:8px;" onclick="applySmartInvoiceImport()">⚡ حفظ القائمة وتحديث الأسعار والعدد تلقائياً</button>
         </div>
 
-        <div class="card" style="border-right: 4px solid var(--secondary);">
-            <div class="card-title" style="color: var(--secondary);">
-                <span>📸 رفع صورة قائمة أو ملف PDF (تُصنّف حسب المذخر والسنة والشهر)</span>
-            </div>
-            <div class="form-grid" style="margin-bottom:12px;">
-                <div class="form-group">
-                    <label>اسم المذخر ورقم القائمة</label>
-                    <input type="text" id="uploadInvoiceName" placeholder="مثال: مذخر الفردوس" list="existingInvoicesList">
-                    <datalist id="existingInvoicesList"></datalist>
-                </div>
-                <div class="form-group">
-                    <label>تاريخ القائمة</label>
-                    <input type="date" id="uploadInvoiceDate">
-                </div>
-                <div class="form-group">
-                    <label>حالة المواد</label>
-                    <select id="uploadItemsStatus">
-                        <option value="متاحة ومستخدمة في الصيدلية">متاحة ومستخدمة في الصيدلية</option>
-                        <option value="مواد متاحة في المخزون">مواد متاحة في المخزون</option>
-                        <option value="قائمة مشتريات جديدة">قائمة مشتريات جديدة</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="media-upload-grid">
-                <label class="media-btn">
-                    <span style="font-size:1.5rem;">📷</span>
-                    <span>التقاط صورة قائمة بالكاميرا</span>
-                    <input type="file" accept="image/*" capture="environment" style="display:none;" onchange="handleMediaFiles(event, 'camera', true)">
-                </label>
-
-                <label class="media-btn">
-                    <span style="font-size:1.5rem;">🖼️</span>
-                    <span>اختيار صور قائمة من المعرض</span>
-                    <input type="file" accept="image/*" multiple style="display:none;" onchange="handleMediaFiles(event, 'gallery', true)">
-                </label>
-
-                <label class="media-btn">
-                    <span style="font-size:1.5rem;">📄</span>
-                    <span>تحميل ملف PDF</span>
-                    <input type="file" accept="application/pdf,.pdf" style="display:none;" onchange="handlePdfFile(event)">
-                </label>
-            </div>
-
-            <div id="mediaPreviewArea" class="media-preview-list"></div>
-            <div id="pdfViewerArea" style="display:none; margin-top:12px;">
-                <iframe id="pdfFrame" style="width:100%; height:300px; border:1px solid var(--border); border-radius:8px;"></iframe>
-            </div>
-
-            <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
-                <button class="btn btn-success" onclick="saveUploadedListRecord()">💾 حفظ القائمة في الأرشيف</button>
-                <button class="btn btn-danger" onclick="clearUploadedMedia()">🗑️ مسح المرفقات</button>
-            </div>
-        </div>
-
         <div class="card" style="border-right: 4px solid var(--success);">
             <div class="card-title" style="color: var(--success);">
-                <span>📝 إضافة مادة لقائمة جديدة أو سابقة</span>
+                <span>📝 إضافة مادة مفردة لقائمة جديدة أو سابقة</span>
             </div>
             <form onsubmit="addItemToSpecificInvoice(event)">
                 <div class="form-grid">
@@ -1284,10 +1334,10 @@
 
     const arabicLetters = ["الكل", "أ", "ب", "ت", "ث", "ج", "ح", "خ", "د", "ذ", "ر", "ز", "س", "ش", "ص", "ض", "ط", "ظ", "ع", "غ", "ف", "ق", "ك", "ل", "م", "ن", "هـ", "و", "ي"];
 
-    let inventory = JSON.parse(localStorage.getItem('pharmacy_inventory_v11')) || initialAlferdosData;
-    let debtors = JSON.parse(localStorage.getItem('pharmacy_debtors_v11')) || [];
-    let uploadedLists = JSON.parse(localStorage.getItem('pharmacy_uploaded_lists_v11')) || [];
-    let userSettings = JSON.parse(localStorage.getItem('pharmacy_settings_v11')) || {
+    let inventory = JSON.parse(localStorage.getItem('pharmacy_inventory_v12')) || initialAlferdosData;
+    let debtors = JSON.parse(localStorage.getItem('pharmacy_debtors_v12')) || [];
+    let uploadedLists = JSON.parse(localStorage.getItem('pharmacy_uploaded_lists_v12')) || [];
+    let userSettings = JSON.parse(localStorage.getItem('pharmacy_settings_v12')) || {
         fontFamily: "'Cairo', sans-serif",
         fontSize: "13.5",
         primary: "#0f766e",
@@ -1307,30 +1357,25 @@
     let activeLetter = "الكل";
     let pendingImages = [];
     let pendingPdfUrl = null;
-    let pendingPdfName = null;
+    let extractedRows = [];
     let isRendering = false;
 
     const todayStr = new Date().toISOString().slice(0, 10);
     document.getElementById('debtorDateInput').value = todayStr;
     document.getElementById('smartDebtorDate').value = todayStr;
     document.getElementById('smartListDate').value = todayStr;
-    document.getElementById('uploadInvoiceDate').value = todayStr;
+    document.getElementById('ocrInvoiceDate').value = todayStr;
     document.getElementById('invDateInput').value = todayStr;
 
     function detectSupplierLabel(text) {
         const t = (text || "").trim();
-        if (!t) return "مذخر الفردوس";
-        if (t.includes("فردوس")) return "مذخر الفردوس";
+        if (!t) return "مذخر الفردوس #342077";
+        if (t.includes("فردوس") && !t.includes("#")) return "مذخر الفردوس #342077";
         return t;
     }
 
-    function getYearFromDate(d) {
-        return (d || todayStr).slice(0, 4);
-    }
-
-    function getMonthFromDate(d) {
-        return (d || todayStr).slice(5, 7);
-    }
+    function getYearFromDate(d) { return (d || todayStr).slice(0, 4); }
+    function getMonthFromDate(d) { return (d || todayStr).slice(5, 7); }
 
     function loadSettingsToUI() {
         document.getElementById('settingFontFamily').value = userSettings.fontFamily;
@@ -1364,7 +1409,7 @@
         document.body.setAttribute('data-theme', userSettings.theme);
 
         if (save) {
-            localStorage.setItem('pharmacy_settings_v11', JSON.stringify(userSettings));
+            localStorage.setItem('pharmacy_settings_v12', JSON.stringify(userSettings));
             refreshAllUI();
         }
     }
@@ -1444,11 +1489,7 @@
         if (!drug) return;
         const unitPrice = Number(drug.salePrice || drug.price || 0);
         const existing = salesCart.find(c => c.id === id);
-        if (existing) {
-            existing.count += 1;
-        } else {
-            salesCart.push({ id: drug.id, name: drug.name, price: unitPrice, count: 1 });
-        }
+        if (existing) { existing.count += 1; } else { salesCart.push({ id: drug.id, name: drug.name, price: unitPrice, count: 1 }); }
         renderCart();
     }
 
@@ -1479,7 +1520,7 @@
             return;
         }
 
-        const rows = salesCart.map((c, idx) => {
+        tbody.innerHTML = salesCart.map((c, idx) => {
             const sub = c.price * c.count;
             grandTotal += sub;
             return `
@@ -1498,7 +1539,6 @@
             `;
         }).join('');
 
-        tbody.innerHTML = rows;
         document.getElementById('posGrandTotal').textContent = grandTotal.toLocaleString() + ' د.ع';
     }
 
@@ -1593,9 +1633,7 @@
                 document.getElementById('barcodeScanInput').value = decodedText;
                 executeBarcodeLookup(decodedText, true);
             })
-            .catch(() => {
-                alert("لم يظهر باركود واضح في الصورة، جرب صورة أقرب للباركود.");
-            });
+            .catch(() => alert("لم يظهر باركود واضح في الصورة."));
         event.target.value = '';
     }
 
@@ -1620,12 +1658,7 @@
         const cleanName = name.trim();
         let debtor = debtors.find(d => d.name === cleanName);
         if (!debtor) {
-            debtor = {
-                id: Date.now() + Math.floor(Math.random() * 100),
-                name: cleanName,
-                phone: phone || "",
-                batches: []
-            };
+            debtor = { id: Date.now() + Math.floor(Math.random() * 100), name: cleanName, phone: phone || "", batches: [] };
             debtors.push(debtor);
         }
         if (phone && !debtor.phone) debtor.phone = phone;
@@ -1636,7 +1669,7 @@
             amount: Number(amount) || 0
         });
         debtors.sort((a, b) => a.name.localeCompare(b.name, 'ar'));
-        localStorage.setItem('pharmacy_debtors_v11', JSON.stringify(debtors));
+        localStorage.setItem('pharmacy_debtors_v12', JSON.stringify(debtors));
         renderDebtors();
         updateDebtorDropdown();
     }
@@ -1644,13 +1677,9 @@
     function applySmartDebtorImport() {
         const raw = (document.getElementById('smartDebtorText').value || '').trim();
         const dateVal = document.getElementById('smartDebtorDate').value || todayStr;
-        if (!raw) {
-            alert('اكتب أو الصق سطر واحد على الأقل من سجل الديون.');
-            return;
-        }
-        const lines = raw.split(/\n+/).map(l => l.trim()).filter(Boolean);
+        if (!raw) { alert('اكتب أو الصق سطر واحد على الأقل من سجل الديون.'); return; }
         let addedCount = 0;
-        lines.forEach(line => {
+        raw.split(/\n+/).map(l => l.trim()).filter(Boolean).forEach(line => {
             const parts = line.split(/[-|،]+/).map(p => p.trim()).filter(Boolean);
             if (parts.length >= 2) {
                 const name = parts[0];
@@ -1666,20 +1695,231 @@
         }
     }
 
+    function parseOcrTextToRows(rawText, defaultInvoice, defaultDate, defaultType, defaultCompany) {
+        const lines = (rawText || "").split(/\n+/).map(l => l.trim()).filter(Boolean);
+        const rows = [];
+        lines.forEach(line => {
+            if (/^مذخر\s+الفردوس/i.test(line) && lines.length > 1) return;
+            const cleanLine = line.replace(/\s+/g, ' ').trim();
+            const nums = cleanLine.match(/\b\d[\d,]*\b/g) || [];
+            const dateMatch = cleanLine.match(/\b20\d{2}[-/]\d{1,2}[-/]\d{1,2}\b/);
+
+            let namePart = cleanLine.replace(/\b20\d{2}[-/]\d{1,2}[-/]\d{1,2}\b/g, '').trim();
+            const parsedNums = nums.map(n => parseInt(n.replace(/,/g, ''), 10) || 0);
+
+            let qty = 1;
+            let price = 0;
+            let total = 0;
+
+            if (parsedNums.length >= 3) {
+                qty = parsedNums[parsedNums.length - 3] || 1;
+                price = parsedNums[parsedNums.length - 2] || 0;
+                total = parsedNums[parsedNums.length - 1] || (qty * price);
+                namePart = namePart.replace(/\b\d[\d,]*\b/g, '').trim();
+            } else if (parsedNums.length === 2) {
+                qty = parsedNums[0] || 1;
+                price = parsedNums[1] || 0;
+                total = qty * price;
+                namePart = namePart.replace(/\b\d[\d,]*\b/g, '').trim();
+            } else if (parsedNums.length === 1) {
+                price = parsedNums[0] || 0;
+                total = price;
+                namePart = namePart.replace(/\b\d[\d,]*\b/g, '').trim();
+            }
+
+            if (namePart.length >= 2) {
+                rows.push({
+                    invoice: defaultInvoice,
+                    invoiceDate: defaultDate,
+                    barcode: "",
+                    name: namePart,
+                    type: defaultType || "عام",
+                    company: defaultCompany || "-",
+                    expiry: dateMatch ? dateMatch[0] : "2028-12-01",
+                    qty: qty,
+                    bonus: 0,
+                    price: price,
+                    total: total
+                });
+            }
+        });
+        return rows;
+    }
+
+    async function extractTableFromImage(event, sourceType) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const statusBox = document.getElementById('ocrStatusBox');
+        const rawInv = document.getElementById('ocrInvoiceName').value.trim();
+        const invoiceTitle = detectSupplierLabel(rawInv || "مذخر الفردوس #342077");
+        const dateVal = document.getElementById('ocrInvoiceDate').value || todayStr;
+        const typeVal = document.getElementById('ocrDefaultType').value.trim() || "عام";
+        const compVal = document.getElementById('ocrDefaultCompany').value.trim() || "-";
+
+        const reader = new FileReader();
+        reader.onload = async e => {
+            pendingImages = [{ name: file.name, src: sourceType, dataUrl: e.target.result }];
+            renderMediaPreview();
+            statusBox.textContent = "⏳ جاري سحب المعلومات من الصورة وتحويلها إلى جدول...";
+
+            try {
+                if (window.Tesseract) {
+                    const result = await Tesseract.recognize(e.target.result, 'ara+eng');
+                    const parsed = parseOcrTextToRows(result.data.text, invoiceTitle, dateVal, typeVal, compVal);
+                    if (parsed.length > 0) {
+                        extractedRows = [...extractedRows, ...parsed];
+                        renderExtractedTable();
+                        statusBox.textContent = `✅ تم سحب ${parsed.length} مادة من الصورة وتفريغها بالجدول — راجعها أو أضفها مباشرة للأرشيف.`;
+                        return;
+                    }
+                }
+            } catch {}
+
+            extractedRows.push({
+                invoice: invoiceTitle,
+                invoiceDate: dateVal,
+                barcode: "",
+                name: "",
+                type: typeVal,
+                company: compVal,
+                expiry: "2028-12-01",
+                qty: 1,
+                bonus: 0,
+                price: 0,
+                total: 0
+            });
+            renderExtractedTable();
+            statusBox.textContent = "⚠️ لم تتضح النصوص تلقائياً من الصورة — تم تجهيز سطر بالجدول لتكملة بياناته أو لصق السطور فوراً.";
+        };
+        reader.readAsDataURL(file);
+        event.target.value = '';
+    }
+
+    function addEmptyExtractedRow() {
+        const rawInv = document.getElementById('ocrInvoiceName').value.trim();
+        const invoiceTitle = detectSupplierLabel(rawInv || "مذخر الفردوس #342077");
+        const dateVal = document.getElementById('ocrInvoiceDate').value || todayStr;
+        const typeVal = document.getElementById('ocrDefaultType').value.trim() || "عام";
+        const compVal = document.getElementById('ocrDefaultCompany').value.trim() || "-";
+
+        extractedRows.push({
+            invoice: invoiceTitle,
+            invoiceDate: dateVal,
+            barcode: "",
+            name: "",
+            type: typeVal,
+            company: compVal,
+            expiry: "2028-12-01",
+            qty: 1,
+            bonus: 0,
+            price: 0,
+            total: 0
+        });
+        renderExtractedTable();
+    }
+
+    function updateExtractedField(idx, field, val) {
+        if (!extractedRows[idx]) return;
+        if (['qty', 'bonus', 'price', 'total'].includes(field)) {
+            extractedRows[idx][field] = parseInt(val, 10) || 0;
+            if (field === 'qty' || field === 'price') {
+                extractedRows[idx].total = extractedRows[idx].qty * extractedRows[idx].price;
+                renderExtractedTable();
+            }
+        } else {
+            extractedRows[idx][field] = val;
+        }
+    }
+
+    function removeExtractedRow(idx) {
+        extractedRows.splice(idx, 1);
+        renderExtractedTable();
+    }
+
+    function clearExtractedTable() {
+        extractedRows = [];
+        clearUploadedMedia();
+        renderExtractedTable();
+        document.getElementById('ocrStatusBox').textContent = "تم مسح جدول التفريغ.";
+    }
+
+    function renderExtractedTable() {
+        const tbody = document.getElementById('ocrExtractedTableBody');
+        if (!extractedRows.length) {
+            tbody.innerHTML = '<tr><td colspan="13" style="text-align:center; color:var(--text-muted);">لم يتم استخراج مواد بعد — ارفع صورة قائمة أو اضغط (سطر جديد)</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = extractedRows.map((r, idx) => `
+            <tr>
+                <td>${idx + 1}</td>
+                <td><input class="table-edit-input" value="${r.invoice}" onchange="updateExtractedField(${idx}, 'invoice', this.value)"></td>
+                <td><input type="date" class="table-edit-input" value="${r.invoiceDate}" onchange="updateExtractedField(${idx}, 'invoiceDate', this.value)"></td>
+                <td><input class="table-edit-input" value="${r.barcode}" onchange="updateExtractedField(${idx}, 'barcode', this.value)"></td>
+                <td><input class="table-edit-input" value="${r.name}" placeholder="اسم المادة" onchange="updateExtractedField(${idx}, 'name', this.value)"></td>
+                <td><input class="table-edit-input" value="${r.type}" onchange="updateExtractedField(${idx}, 'type', this.value)"></td>
+                <td><input class="table-edit-input" value="${r.company}" onchange="updateExtractedField(${idx}, 'company', this.value)"></td>
+                <td><input type="date" class="table-edit-input" value="${r.expiry}" onchange="updateExtractedField(${idx}, 'expiry', this.value)"></td>
+                <td><input type="number" class="table-edit-input" value="${r.qty}" onchange="updateExtractedField(${idx}, 'qty', this.value)"></td>
+                <td><input type="number" class="table-edit-input" value="${r.bonus}" onchange="updateExtractedField(${idx}, 'bonus', this.value)"></td>
+                <td><input type="number" class="table-edit-input" value="${r.price}" onchange="updateExtractedField(${idx}, 'price', this.value)"></td>
+                <td><input type="number" class="table-edit-input" value="${r.total}" onchange="updateExtractedField(${idx}, 'total', this.value)"></td>
+                <td><button class="btn btn-danger" style="padding:2px 6px;" onclick="removeExtractedRow(${idx})">✕</button></td>
+            </tr>
+        `).join('');
+    }
+
+    function pushExtractedRowsToArchive() {
+        const validRows = extractedRows.filter(r => (r.name || "").trim().length > 0);
+        if (!validRows.length) {
+            alert('أدخل اسم مادة واحد على الأقل في جدول التفريغ قبل الإضافة للأرشيف.');
+            return;
+        }
+
+        validRows.forEach(r => {
+            const invName = detectSupplierLabel(r.invoice);
+            const existing = inventory.find(d => d.name.toLowerCase() === r.name.trim().toLowerCase());
+            if (existing) {
+                existing.qty = Number(existing.qty || 0) + Number(r.qty || 0);
+                if (Number(r.price) > 0) existing.price = Number(r.price);
+                existing.total = Number(existing.total || 0) + Number(r.total || 0);
+                existing.invoice = invName;
+                existing.invoiceDate = r.invoiceDate || todayStr;
+            } else {
+                inventory.unshift({
+                    id: Date.now() + Math.floor(Math.random() * 1000),
+                    invoice: invName,
+                    invoiceDate: r.invoiceDate || todayStr,
+                    barcode: (r.barcode || "").trim(),
+                    name: r.name.trim(),
+                    salePrice: Number(r.price) || 0,
+                    type: r.type || "عام",
+                    company: r.company || "-",
+                    expiry: r.expiry || "2028-12-01",
+                    qty: Number(r.qty) || 1,
+                    bonus: Number(r.bonus) || 0,
+                    price: Number(r.price) || 0,
+                    total: Number(r.total) || 0
+                });
+            }
+        });
+
+        extractedRows = [];
+        renderExtractedTable();
+        saveData();
+        alert(`تمت إضافة ${validRows.length} مادة إلى أرشيف قوائم المذاخر والأسعار وتحديث الأرصدة والأسعار تلقائياً!`);
+    }
+
     function applySmartInvoiceImport() {
         const raw = (document.getElementById('smartListText').value || '').trim();
         const titleInput = (document.getElementById('smartListTitle').value || '').trim();
         const dateVal = document.getElementById('smartListDate').value || todayStr;
-        const invoiceTitle = detectSupplierLabel(titleInput || "مذخر الفردوس");
+        const invoiceTitle = detectSupplierLabel(titleInput || "مذخر الفردوس #342077");
 
-        if (!raw) {
-            alert('الصق سطور القائمة الجديدة أولاً.');
-            return;
-        }
+        if (!raw) { alert('الصق سطور القائمة الجديدة أولاً.'); return; }
 
-        const lines = raw.split(/\n+/).map(l => l.trim()).filter(Boolean);
         let processed = 0;
-        lines.forEach(line => {
+        raw.split(/\n+/).map(l => l.trim()).filter(Boolean).forEach(line => {
             const parts = line.split(/[-|،]+/).map(p => p.trim());
             if (!parts[0]) return;
             const name = parts[0];
@@ -1754,22 +1994,21 @@
             items: "تسديد دفعة نقدية من الدين",
             amount: -paid
         });
-        localStorage.setItem('pharmacy_debtors_v11', JSON.stringify(debtors));
+        localStorage.setItem('pharmacy_debtors_v12', JSON.stringify(debtors));
         renderDebtors();
     }
 
     function deleteDebtor(debtorId) {
         if (confirm('حذف سجل هذا المديون نهائياً؟')) {
             debtors = debtors.filter(d => d.id !== debtorId);
-            localStorage.setItem('pharmacy_debtors_v11', JSON.stringify(debtors));
+            localStorage.setItem('pharmacy_debtors_v12', JSON.stringify(debtors));
             renderDebtors();
             updateDebtorDropdown();
         }
     }
 
     function buildAlphaBar() {
-        const bar = document.getElementById('alphaFilterBar');
-        bar.innerHTML = arabicLetters.map(ltr => `
+        document.getElementById('alphaFilterBar').innerHTML = arabicLetters.map(ltr => `
             <button class="alpha-btn ${activeLetter === ltr ? 'active' : ''}" onclick="selectAlpha('${ltr}')">${ltr}</button>
         `).join('');
     }
@@ -1785,9 +2024,7 @@
         const container = document.getElementById('debtorsListContainer');
 
         let totalAllDebts = 0;
-        debtors.forEach(d => {
-            totalAllDebts += d.batches.reduce((s, b) => s + Number(b.amount || 0), 0);
-        });
+        debtors.forEach(d => { totalAllDebts += d.batches.reduce((s, b) => s + Number(b.amount || 0), 0); });
         document.getElementById('statDebtorsCount').textContent = debtors.length;
         document.getElementById('statTotalDebts').textContent = totalAllDebts.toLocaleString() + ' د.ع';
 
@@ -1838,8 +2075,7 @@
     }
 
     function updateDebtorDropdown() {
-        const sel = document.getElementById('posDebtorSelect');
-        sel.innerHTML = '<option value="">اختر اسم المديون...</option>' +
+        document.getElementById('posDebtorSelect').innerHTML = '<option value="">اختر اسم المديون...</option>' +
             debtors.map(d => `<option value="${d.name}">${d.name}</option>`).join('');
     }
 
@@ -1890,7 +2126,7 @@
     }
 
     function saveData() {
-        localStorage.setItem('pharmacy_inventory_v11', JSON.stringify(inventory));
+        localStorage.setItem('pharmacy_inventory_v12', JSON.stringify(inventory));
         refreshAllUI();
     }
 
@@ -1966,40 +2202,9 @@
         alert('تمت إضافة المادة وتحديث العدد والأسعار تلقائياً!');
     }
 
-    function handleMediaFiles(event, sourceType, autoArchiveImage = false) {
-        const files = Array.from(event.target.files || []);
-        files.forEach(file => {
-            const reader = new FileReader();
-            reader.onload = e => {
-                pendingImages.push({ name: file.name, src: sourceType, dataUrl: e.target.result });
-                renderMediaPreview();
-
-                if (autoArchiveImage) {
-                    const rawTitle = document.getElementById('uploadInvoiceName').value.trim() || "مذخر الفردوس";
-                    const title = detectSupplierLabel(rawTitle);
-                    const dateVal = document.getElementById('uploadInvoiceDate').value || todayStr;
-                    const statusVal = document.getElementById('uploadItemsStatus').value;
-                    uploadedLists.unshift({
-                        id: Date.now() + Math.floor(Math.random() * 100),
-                        title,
-                        date: dateVal,
-                        status: statusVal,
-                        sourceLabel: sourceType === 'camera' ? 'صورة قائمة بالكاميرا' : 'صورة قائمة من المعرض',
-                        pdfName: '—'
-                    });
-                    localStorage.setItem('pharmacy_uploaded_lists_v11', JSON.stringify(uploadedLists));
-                    refreshAllUI();
-                }
-            };
-            reader.readAsDataURL(file);
-        });
-        event.target.value = '';
-    }
-
     function handlePdfFile(event) {
         const file = event.target.files[0];
         if (!file) return;
-        pendingPdfName = file.name;
         pendingPdfUrl = URL.createObjectURL(file);
         document.getElementById('pdfViewerArea').style.display = 'block';
         document.getElementById('pdfFrame').src = pendingPdfUrl;
@@ -2007,8 +2212,7 @@
     }
 
     function renderMediaPreview() {
-        const area = document.getElementById('mediaPreviewArea');
-        area.innerHTML = pendingImages.map(img => `
+        document.getElementById('mediaPreviewArea').innerHTML = pendingImages.map(img => `
             <div class="media-thumb">
                 <img src="${img.dataUrl}" alt="${img.name}">
                 <div>${img.src === 'camera' ? '📷 كاميرا' : '🖼️ معرض'}</div>
@@ -2019,30 +2223,9 @@
     function clearUploadedMedia() {
         pendingImages = [];
         pendingPdfUrl = null;
-        pendingPdfName = null;
         document.getElementById('mediaPreviewArea').innerHTML = '';
         document.getElementById('pdfFrame').src = '';
         document.getElementById('pdfViewerArea').style.display = 'none';
-    }
-
-    function saveUploadedListRecord() {
-        const rawTitle = document.getElementById('uploadInvoiceName').value.trim();
-        const title = detectSupplierLabel(rawTitle || "مذخر الفردوس");
-        const dateVal = document.getElementById('uploadInvoiceDate').value || todayStr;
-        const statusVal = document.getElementById('uploadItemsStatus').value;
-
-        uploadedLists.unshift({
-            id: Date.now(),
-            title,
-            date: dateVal,
-            status: statusVal,
-            sourceLabel: pendingImages.length ? 'قائمة مصورة' : (pendingPdfName ? 'ملف PDF' : 'قائمة مسجلة'),
-            pdfName: pendingPdfName || '—'
-        });
-        localStorage.setItem('pharmacy_uploaded_lists_v11', JSON.stringify(uploadedLists));
-        clearUploadedMedia();
-        refreshAllUI();
-        alert(`تم حفظ (${title}) بتاريخ ${dateVal} في الأرشيف!`);
     }
 
     function renderArchiveByYearMonth() {
@@ -2062,13 +2245,7 @@
                 if ((yr === 'ALL' || yr === iYr) && (mo === 'ALL' || mo === iMo)) {
                     const key = `${item.invoice} — ${iYr}/${iMo}`;
                     if (!map.has(key)) {
-                        map.set(key, {
-                            invoice: item.invoice,
-                            count: 0,
-                            sum: 0,
-                            date: dStr,
-                            status: 'متاحة ومستخدمة في الصيدلية'
-                        });
+                        map.set(key, { invoice: item.invoice, count: 0, sum: 0, date: dStr });
                     }
                     const cur = map.get(key);
                     cur.count += 1;
@@ -2076,29 +2253,7 @@
                 }
             });
 
-            uploadedLists.forEach(ul => {
-                const dStr = ul.date || todayStr;
-                const iYr = getYearFromDate(dStr);
-                const iMo = getMonthFromDate(dStr);
-                if ((yr === 'ALL' || yr === iYr) && (mo === 'ALL' || mo === iMo)) {
-                    const key = `${ul.title} (${ul.sourceLabel}) — ${iYr}/${iMo}`;
-                    if (!map.has(key)) {
-                        map.set(key, {
-                            invoice: ul.title,
-                            count: 1,
-                            sum: 0,
-                            date: dStr,
-                            status: ul.status || 'قائمة مرفقة'
-                        });
-                    }
-                }
-            });
-
-            const allInvoiceNames = [...new Set([
-                ...uploadedLists.map(u => u.title),
-                ...inventory.map(i => i.invoice)
-            ])].filter(Boolean);
-
+            const allInvoiceNames = [...new Set([...uploadedLists.map(u => u.title), ...inventory.map(i => i.invoice)])].filter(Boolean);
             datalist.innerHTML = allInvoiceNames.map(n => `<option value="${n}">`).join('');
 
             if (!map.size) {
@@ -2112,9 +2267,7 @@
                         <strong style="font-size:0.88rem; color:var(--primary);">📦 ${label}</strong>
                         <span class="status-pill pill-success">📅 ${val.date}</span>
                     </div>
-                    <div style="font-size:0.78rem; color:var(--text-muted);">
-                        ${val.count} مادة • ${val.status}
-                    </div>
+                    <div style="font-size:0.78rem; color:var(--text-muted);">${val.count} مادة</div>
                     <div class="invoice-chip-top" style="margin-top:4px;">
                         <strong style="color:var(--secondary); font-size:0.86rem;">المجموع: ${val.sum.toLocaleString()} د.ع</strong>
                         <button class="btn btn-primary" style="padding:3px 8px; font-size:0.75rem;" onclick="selectInvoiceInDropdown('${val.invoice.replace(/'/g, "\\'")}')">عرض المواد</button>
@@ -2139,7 +2292,6 @@
         const invFilter = document.getElementById('invoiceFilter').value;
         const limit = userSettings.lowStockLimit;
 
-        const tbody1 = document.getElementById('tablePage1Body');
         const list1 = inventory.filter(d =>
             d.name.toLowerCase().includes(q1) ||
             d.company.toLowerCase().includes(q1) ||
@@ -2147,7 +2299,7 @@
             (d.barcode && d.barcode.toLowerCase().includes(q1))
         );
 
-        tbody1.innerHTML = list1.map((item, index) => {
+        document.getElementById('tablePage1Body').innerHTML = list1.map((item, index) => {
             const sPrice = Number(item.salePrice || item.price || 0);
             const qtyBadge = item.qty <= limit ? `<span class="status-pill pill-danger">${item.qty}</span>` : `<span class="status-pill pill-success">${item.qty}</span>`;
             return `
@@ -2165,7 +2317,6 @@
             `;
         }).join('');
 
-        const tbody2 = document.getElementById('tablePage2Body');
         let totalSum = 0;
         const filtered2 = inventory.filter(d => {
             const matchInv = invFilter === 'ALL' || d.invoice === invFilter;
@@ -2173,7 +2324,7 @@
             return matchInv && matchText;
         });
 
-        tbody2.innerHTML = filtered2.map((item, index) => {
+        document.getElementById('tablePage2Body').innerHTML = filtered2.map((item, index) => {
             totalSum += Number(item.total || 0);
             return `
                 <tr>
@@ -2202,8 +2353,6 @@
     }
 
     function updateAlerts() {
-        const expBody = document.getElementById('expiryAlertBody');
-        const lowBody = document.getElementById('lowStockAlertBody');
         let alertCount = 0;
         const today = new Date();
         const alertDateLimit = new Date();
@@ -2246,8 +2395,8 @@
             }
         });
 
-        expBody.innerHTML = expRows.join('');
-        lowBody.innerHTML = lowRows.join('');
+        document.getElementById('expiryAlertBody').innerHTML = expRows.join('');
+        document.getElementById('lowStockAlertBody').innerHTML = lowRows.join('');
         document.getElementById('alertBadge').textContent = alertCount;
     }
 
