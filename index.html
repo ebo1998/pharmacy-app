@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>برنامج الصيدلية الخاص — إبراهيم إسماعيل</title>
+    <title>صيدليتي — حاسبة ومبيعات ومشتريات وديون وأرشيف قوائم</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Tajawal:wght@400;500;700;800&family=Almarai:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
@@ -52,7 +52,7 @@
             color: var(--ink);
             overflow-x: hidden;
             touch-action: pan-y;
-            padding-bottom: 50px;
+            padding-bottom: 56px;
         }
 
         header {
@@ -75,7 +75,7 @@
         }
 
         .head-top h1 {
-            font-size: 1.05rem;
+            font-size: 1.04rem;
             font-weight: 800;
         }
 
@@ -89,9 +89,9 @@
             background: rgba(255, 255, 255, 0.14);
             color: #fff;
             border: 1px solid rgba(255, 255, 255, 0.25);
-            padding: 6px 11px;
+            padding: 6px 10px;
             border-radius: 8px;
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             font-weight: 700;
             cursor: pointer;
         }
@@ -121,7 +121,7 @@
         }
 
         .card-title {
-            font-size: 0.98rem;
+            font-size: 0.96rem;
             font-weight: 800;
             color: var(--main);
             margin-bottom: 12px;
@@ -134,7 +134,7 @@
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
             gap: 10px;
             align-items: end;
         }
@@ -154,7 +154,7 @@
             border: 1px solid var(--border);
             background: var(--card-2);
             color: var(--ink);
-            font-size: 0.88rem;
+            font-size: 0.86rem;
         }
 
         .btn {
@@ -188,23 +188,23 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 10px;
         }
 
         .price-tag {
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             font-weight: 800;
             color: var(--ok);
         }
 
-        .ocr-banner {
+        .status-box {
             margin-top: 10px;
             padding: 10px 12px;
             border-radius: 9px;
             background: var(--card-2);
             border: 1px solid var(--sub);
             color: var(--sub);
-            font-size: 0.84rem;
+            font-size: 0.83rem;
             font-weight: 700;
         }
 
@@ -289,10 +289,18 @@
 
         .img-preview {
             margin-top: 10px;
-            max-width: 360px;
+            max-width: 340px;
             border-radius: 8px;
             border: 1px solid var(--border);
             display: none;
+        }
+
+        footer {
+            text-align: center;
+            padding: 16px 10px;
+            color: var(--muted);
+            font-size: 0.8rem;
+            font-weight: 700;
         }
 
         .toast {
@@ -320,7 +328,7 @@
 
 <header class="no-print">
     <div class="head-top">
-        <h1>💊 برنامج الصيدلية — حاسبة، مبيعات، مشتريات، وديون</h1>
+        <h1>💊 صيدليتي — حاسبة ومبيعات ومشتريات وديون وأرشيف قوائم</h1>
         <div style="display:flex; gap:6px;">
             <button class="btn btn-light" onclick="window.print()">🖨️ طباعة</button>
             <button class="btn btn-light" onclick="toggleTheme()">🌓 ليلي / نهاري</button>
@@ -332,1088 +340,12 @@
         <button class="nav-btn" onclick="openPage('p-sales', this)">2️⃣ قائمة المبيعات</button>
         <button class="nav-btn" onclick="openPage('p-purchases', this)">3️⃣ قائمة المشتريات</button>
         <button class="nav-btn" onclick="openPage('p-debts', this)">4️⃣ قائمة الديون (أ - ي)</button>
-        <button class="nav-btn" onclick="openPage('p-list-img', this)">5️⃣ استخراج قائمة من صورة</button>
+        <button class="nav-btn" onclick="openPage('p-lists', this)">5️⃣ القوائم وأرشيف القوائم</button>
+        <button class="nav-btn" onclick="openPage('p-style', this)">6️⃣ المظهر</button>
     </nav>
 </header>
 
 <div class="container">
 
     <!-- 1. الصفحة الرئيسية -->
-    <div id="p-home" class="page active">
-        <div class="card">
-            <div class="card-title">
-                <span>🧮 حاسبة الصيدلية — اكتب العلاج ليظهر سعرك المحدد</span>
-                <button class="btn btn-ghost" onclick="resetHomeForm()">🔄 تفريغ</button>
-            </div>
-
-            <div class="grid">
-                <div class="field" style="grid-column: span 2;">
-                    <label>اسم العلاج (اختر من القائمة أو اكتب الاسم)</label>
-                    <input type="text" id="homeDrugInput" list="drugsDatalist" placeholder="مثال: AUGMENTIN أو PANADOL..." oninput="onHomeDrugType(this.value)">
-                    <datalist id="drugsDatalist"></datalist>
-                </div>
-                <div class="field">
-                    <label>سعر البيع المحدد من قبلك (د.ع)</label>
-                    <input type="number" id="homeSetPrice" min="0" value="0" oninput="refreshHomeCalc()">
-                </div>
-                <div class="field">
-                    <label>العدد</label>
-                    <input type="number" id="homeQty" min="1" value="1" oninput="refreshHomeCalc()">
-                </div>
-                <div class="field">
-                    <label>إضافة لقائمة البيع</label>
-                    <button class="btn btn-ok" style="width:100%;" onclick="addToSaleBasket()">➕ إضافة للبيع</button>
-                </div>
-            </div>
-
-            <div class="price-box">
-                <div>
-                    <span style="font-size:0.8rem; color:var(--muted);">سعر العلاج المحدد:</span>
-                    <div class="price-tag" id="homeShownPrice">0 د.ع</div>
-                </div>
-                <div>
-                    <span style="font-size:0.8rem; color:var(--muted);">مجموع هذه المادة:</span>
-                    <div class="price-tag" id="homeShownTotal" style="color:var(--main);">0 د.ع</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-title">
-                <span>🛒 سلة البيع الحالية</span>
-                <button class="btn btn-bad" onclick="clearBasket()">🗑️ مسح السلة</button>
-            </div>
-
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>العلاج</th>
-                            <th>السعر (د.ع)</th>
-                            <th>العدد</th>
-                            <th>المجموع (د.ع)</th>
-                            <th>حذف</th>
-                        </tr>
-                    </thead>
-                    <tbody id="basketBody">
-                        <tr><td colspan="6" style="text-align:center; color:var(--muted);">أضف علاجاً من الأعلى لبدء البيع</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="price-box" style="margin-top:12px;">
-                <div>
-                    <span style="font-size:0.82rem; color:var(--muted);">المجموع الكلي:</span>
-                    <div class="price-tag" id="basketGrandTotal">0 د.ع</div>
-                </div>
-                <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-                    <select id="salePayType" onchange="toggleSaleDebtor()" style="max-width:130px; font-weight:700;">
-                        <option value="cash">💵 نقد</option>
-                        <option value="debt">📒 دين</option>
-                    </select>
-                    <input type="text" id="saleDebtorInput" list="debtorsDatalist" placeholder="اسم المديون..." style="display:none; max-width:190px;">
-                    <datalist id="debtorsDatalist"></datalist>
-                    <button class="btn btn-main" onclick="confirmSale()">✅ إتمام البيع</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-title">
-                <span>💊 جدول أسعار العلاجات المحددة في الصيدلية</span>
-                <input type="text" id="priceTableSearch" placeholder="بحث عن علاج..." style="max-width:220px;" oninput="renderPriceCatalog()">
-            </div>
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>العلاج</th>
-                            <th>سعر البيع المحدد (د.ع)</th>
-                            <th>تحديث السعر</th>
-                        </tr>
-                    </thead>
-                    <tbody id="priceCatalogBody"></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- 2. قائمة المبيعات بالتاريخ والوقت -->
-    <div id="p-sales" class="page">
-        <div class="card">
-            <div class="card-title">
-                <span>🧾 سجل المبيعات (التاريخ والوقت والعلاج والسعر)</span>
-                <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                    <input type="text" id="salesSearch" placeholder="بحث باسم العلاج أو التاريخ..." style="max-width:220px;" oninput="renderSalesLog()">
-                    <button class="btn btn-bad" onclick="clearSalesLog()">🗑️ مسح سجل المبيعات</button>
-                </div>
-            </div>
-
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>التاريخ</th>
-                            <th>الوقت</th>
-                            <th>العلاج</th>
-                            <th>العدد</th>
-                            <th>السعر (د.ع)</th>
-                            <th>المجموع (د.ع)</th>
-                            <th>نوع الدفع</th>
-                        </tr>
-                    </thead>
-                    <tbody id="salesLogBody"></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- 3. قائمة المشتريات -->
-    <div id="p-purchases" class="page">
-        <div class="card">
-            <div class="card-title">
-                <span>📦 إضافة مادة إلى قائمة المشتريات</span>
-            </div>
-            <form class="grid" onsubmit="addPurchaseItem(event)">
-                <div class="field">
-                    <label>اسم المذخر / القائمة</label>
-                    <input type="text" id="purList" required placeholder="مثال: مذخر العافية">
-                </div>
-                <div class="field">
-                    <label>التاريخ</label>
-                    <input type="date" id="purDate">
-                </div>
-                <div class="field">
-                    <label>اسم العلاج</label>
-                    <input type="text" id="purName" required placeholder="اسم المادة">
-                </div>
-                <div class="field">
-                    <label>العدد / الكارتون</label>
-                    <input type="number" id="purQty" min="1" value="1" required>
-                </div>
-                <div class="field">
-                    <label>سعر المفرد (د.ع)</label>
-                    <input type="number" id="purPrice" min="0" value="0" required>
-                </div>
-                <div class="field">
-                    <label>بونص / نسبة %</label>
-                    <input type="text" id="purBonus" placeholder="مثال: 10% أو 2">
-                </div>
-                <div class="field">
-                    <button type="submit" class="btn btn-ok" style="width:100%;">💾 حفظ بالمشتريات</button>
-                </div>
-            </form>
-        </div>
-
-        <div class="card">
-            <div class="card-title">
-                <span>📋 سجل المشتريات</span>
-                <input type="text" id="purSearch" placeholder="بحث بالمشتريات..." style="max-width:220px;" oninput="renderPurchases()">
-            </div>
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>القائمة / المذخر</th>
-                            <th>التاريخ</th>
-                            <th>العلاج</th>
-                            <th>العدد</th>
-                            <th>السعر</th>
-                            <th>المجموع</th>
-                            <th>البونص</th>
-                            <th>حذف</th>
-                        </tr>
-                    </thead>
-                    <tbody id="purchasesBody"></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- 4. قائمة الديون من الألف إلى الياء -->
-    <div id="p-debts" class="page">
-        <div class="card">
-            <div class="card-title">
-                <span>📒 إضافة مديون أو قروب على الحروف (أ - ي)</span>
-            </div>
-            <form class="grid" onsubmit="saveDebtorEntry(event)">
-                <div class="field">
-                    <label>اسم المديون أو القروب</label>
-                    <input type="text" id="debNameInput" required placeholder="مثال: أبو علي / قروب كركوك">
-                </div>
-                <div class="field">
-                    <label>الحرف (أوتوماتيكي أو اختره)</label>
-                    <select id="debLetterSelect"></select>
-                </div>
-                <div class="field">
-                    <label>تفاصيل الدين / العلاجات</label>
-                    <input type="text" id="debNoteInput" placeholder="مثال: علاجات شهرية">
-                </div>
-                <div class="field">
-                    <label>المبلغ (د.ع)</label>
-                    <input type="number" id="debAmountInput" min="0" value="0" required>
-                </div>
-                <div class="field">
-                    <button type="submit" class="btn btn-main" style="width:100%;">➕ حفظ على الحرف</button>
-                </div>
-            </form>
-        </div>
-
-        <div class="card">
-            <div class="card-title">
-                <span>🔤 حروف الديون من الألف إلى الياء</span>
-                <input type="text" id="debSearchInput" placeholder="بحث عن اسم أو قروب..." style="max-width:220px;" oninput="renderDebtsByLetter()">
-            </div>
-
-            <div class="alpha-bar" id="lettersBar"></div>
-            <div id="debtsListArea"></div>
-        </div>
-    </div>
-
-    <!-- 5. استخراج المعلومات من الصورة وإضافتها للجدول -->
-    <div id="p-list-img" class="page">
-        <div class="card">
-            <div class="card-title">
-                <span>📸 استخراج معلومات القائمة من الصورة وتنزيلها في الجدول</span>
-            </div>
-
-            <div class="grid">
-                <div class="field">
-                    <label>اسم المذخر / القائمة</label>
-                    <input type="text" id="imgListTitle" placeholder="مثال: مذخر العافية">
-                </div>
-                <div class="field">
-                    <label>تاريخ القائمة</label>
-                    <input type="date" id="imgListDate">
-                </div>
-                <div class="field">
-                    <label>نسبة البونص (1% - 100%)</label>
-                    <select id="imgBonusPctSelect" onchange="applyBonusPctToImgRows(this.value)">
-                        <option value="0">0% (بدون نسبة)</option>
-                    </select>
-                </div>
-                <div class="field">
-                    <label>رفع صورة القائمة</label>
-                    <input type="file" accept="image/*" onchange="processImageAndExtract(event)">
-                </div>
-            </div>
-
-            <div id="ocrProgressBanner" class="ocr-banner">
-                اختر صورة القائمة من الأعلى — يتم عرضها مع تدقيق الأسطر، وإذا أردت دقة مطابقة لما أستخرجه لك هنا، يمكنك لصق النص المستخرج في صندوق التحويل السريع بالأسفل ليتحول مباشرة إلى جدول كامل.
-            </div>
-
-            <img id="listImgPreview" class="img-preview" alt="معاينة القائمة">
-
-            <div class="field" style="margin-top:12px;">
-                <label>صندوق تحويل سطور القائمة إلى جدول (لصق السطور أو نص القائمة هنا لتحويلها فوراً بدون أخطاء)</label>
-                <textarea id="rawListPasteInput" rows="4" placeholder="الصق هنا سطور القائمة (مثل: AMOXIL 1000 CAP | 10 | 2750 | 27500 | 2027-03) أو أي نص قائمة..." oninput="parsePastedLinesToTable(this.value)"></textarea>
-            </div>
-
-            <div class="price-box" style="margin-top:12px;">
-                <div>
-                    <span style="font-size:0.8rem; color:var(--muted);">عدد المواد في الجدول:</span>
-                    <strong id="imgExtractedCount" style="font-size:1.05rem; margin-right:6px;">0</strong>
-                </div>
-                <div>
-                    <span style="font-size:0.8rem; color:var(--muted);">إجمالي البونص المحسوب:</span>
-                    <strong id="imgExtractedBonus" style="font-size:1.05rem; color:var(--ok); margin-right:6px;">0</strong>
-                </div>
-                <div>
-                    <span style="font-size:0.8rem; color:var(--muted);">المجموع الكلي للقائمة:</span>
-                    <strong id="imgExtractedTotal" style="font-size:1.05rem; color:var(--main); margin-right:6px;">0 د.ع</strong>
-                </div>
-            </div>
-
-            <div style="margin-top:12px;">
-                <div class="card-title" style="margin-bottom:8px;">
-                    <span>📋 جدول المواد المستخرجة</span>
-                    <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                        <button class="btn btn-sub" onclick="addImgRow()">➕ إضافة سطر</button>
-                        <button class="btn btn-bad" onclick="clearImgRows()">🗑️ تفريغ الجدول</button>
-                        <button class="btn btn-ok" onclick="saveImgRowsToPurchases()">✅ حفظ الجدول في المشتريات والأسعار</button>
-                    </div>
-                </div>
-
-                <div class="table-wrap">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>اسم المادة</th>
-                                <th>العدد</th>
-                                <th>السعر</th>
-                                <th>المجموع</th>
-                                <th>الإكسباير / التاريخ</th>
-                                <th>بونص ثابت</th>
-                                <th>نسبة %</th>
-                                <th>إجمالي البونص</th>
-                                <th>حذف</th>
-                            </tr>
-                        </thead>
-                        <tbody id="imgRowsBody"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-</div>
-
-<div id="toast" class="toast"></div>
-
-<script>
-    const STORAGE_KEY = 'ibrahim_pharmacy_clean_v3';
-    const ALPHABET = ["الكل", "أ", "ب", "ت", "ث", "ج", "ح", "خ", "د", "ذ", "ر", "ز", "س", "ش", "ص", "ض", "ط", "ظ", "ع", "غ", "ف", "ق", "ك", "ل", "م", "ن", "هـ", "و", "ي"];
-
-    let db = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
-        catalog: [],
-        sales: [],
-        purchases: [],
-        debts: [],
-        theme: 'light'
-    };
-
-    let basket = [];
-    let selectedLetter = 'الكل';
-    let imgRows = [];
-
-    function showToast(msg) {
-        const el = document.getElementById('toast');
-        el.textContent = msg;
-        el.style.display = 'block';
-        clearTimeout(el._t);
-        el._t = setTimeout(() => { el.style.display = 'none'; }, 2400);
-    }
-
-    function saveDB() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
-        renderAll();
-    }
-
-    function normalizeDigits(str) {
-        return String(str ?? '')
-            .replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d))
-            .replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
-    }
-
-    function n(val) {
-        const x = parseFloat(normalizeDigits(val).replace(/[^\d.-]/g, ''));
-        return isNaN(x) ? 0 : x;
-    }
-
-    function clampPct(v) {
-        const x = Math.round(n(v));
-        if (x < 0) return 0;
-        if (x > 100) return 100;
-        return x;
-    }
-
-    function calcBonusTotal(qty, fixedB, pct) {
-        const q = Math.max(0, n(qty));
-        const f = Math.max(0, n(fixedB));
-        const p = clampPct(pct);
-        return f + (p > 0 ? Math.round((q * p) / 100) : 0);
-    }
-
-    function initImgBonusSelect() {
-        const sel = document.getElementById('imgBonusPctSelect');
-        let html = '<option value="0">0% (بدون نسبة)</option>';
-        for (let i = 1; i <= 100; i++) {
-            html += `<option value="${i}">${i}% بونص</option>`;
-        }
-        sel.innerHTML = html;
-    }
-
-    function applyBonusPctToImgRows(val) {
-        const p = clampPct(val);
-        imgRows.forEach(r => { r.pct = p; });
-        renderImgRows();
-    }
-
-    function openPage(pageId, btn) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(pageId).classList.add('active');
-        if (btn) btn.classList.add('active');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function toggleTheme() {
-        db.theme = db.theme === 'dark' ? 'light' : 'dark';
-        document.body.setAttribute('data-theme', db.theme);
-        saveDB();
-    }
-
-    /* تحويل أي سطور نصية أو جدولية إلى صفوف منظمة ومدققة */
-    function parseSingleLineSmart(rawLine, defaultPct) {
-        const line = normalizeDigits(rawLine).replace(/\s+/g, ' ').trim();
-        if (!line || line.length < 3) return null;
-
-        const headerRegex = /^(التسلسل|الباركود|الاسم العلمي|الاسم التجاري|الشركة|العدد|البونص|الاكسباير|الإكسباير|السعر|المجموع|مذخر|قائمة رقم|المجموع الكلي)/i;
-        if (headerRegex.test(line)) return null;
-
-        // إذا السطر مفصول بـ | أو أعمدة جدول
-        if (line.includes('|')) {
-            const cols = line.split('|').map(c => c.trim());
-            const nameCol = cols.find(c => /[A-Za-z\u0600-\u06FF]{3,}/.test(c) && !/^(G\.S\.K|ABBOTT|PFIZER|NOVARTIS|LEO|MSD|JANSSEN|SCHERING)$/i.test(c)) || cols[0] || '';
-            const dateCol = cols.find(c => /\b20\d{2}[-/.]\d{1,2}(?:[-/.]\d{1,2})?\b/.test(c)) || '';
-            const numCols = cols.filter(c => /^\s*[\d,]+\s*$/.test(c)).map(c => parseInt(c.replace(/,/g, ''), 10));
-
-            let qty = 1, price = 0, total = 0;
-            if (numCols.length >= 2) {
-                const last = numCols[numCols.length - 1];
-                const prev = numCols[numCols.length - 2];
-                const firstNum = numCols[0];
-                if (firstNum >= 1 && firstNum <= 500 && prev >= 250 && last >= prev) {
-                    qty = firstNum;
-                    price = prev;
-                    total = last;
-                } else if (last >= prev && prev >= 250) {
-                    total = last;
-                    price = prev;
-                    qty = Math.max(1, Math.round(total / price));
-                } else {
-                    qty = Math.max(1, firstNum || 1);
-                    price = prev || 0;
-                    total = qty * price;
-                }
-            } else if (numCols.length === 1) {
-                if (numCols[0] >= 250) { price = numCols[0]; total = numCols[0]; }
-                else { qty = Math.max(1, numCols[0] || 1); }
-            }
-
-            if (!nameCol) return null;
-            return {
-                id: Date.now() + Math.random(),
-                name: nameCol,
-                qty,
-                price,
-                total,
-                date: dateCol,
-                fixedBonus: 0,
-                pct: defaultPct
-            };
-        }
-
-        let work = line.replace(/[|_=~`•*]+/g, ' ').replace(/\s+/g, ' ').trim();
-        let expiry = '';
-        const expMatch = work.match(/\b(20\d{2}[-/.]\d{1,2}(?:[-/.]\d{1,2})?|\d{1,2}[-/.]20\d{2})\b/);
-        if (expMatch) {
-            expiry = expMatch[0];
-            work = work.replace(expMatch[0], ' ');
-        }
-
-        work = work.replace(/^\d{1,3}\s+/, ' ');
-        const numMatches = work.match(/\b\d{1,3}(?:,\d{3})+|\b\d+\b/g) || [];
-        const numbers = numMatches.map(s => parseInt(s.replace(/,/g, ''), 10)).filter(v => !isNaN(v));
-
-        let qty = 1, price = 0, total = 0;
-        let foundProduct = false;
-        for (let i = 0; i < numbers.length; i++) {
-            for (let j = 0; j < numbers.length; j++) {
-                if (i === j) continue;
-                const qC = numbers[i];
-                const pC = numbers[j];
-                if (qC >= 1 && qC <= 500 && pC >= 250 && numbers.includes(qC * pC)) {
-                    qty = qC;
-                    price = pC;
-                    total = qC * pC;
-                    foundProduct = true;
-                    break;
-                }
-            }
-            if (foundProduct) break;
-        }
-
-        if (!foundProduct && numbers.length >= 2) {
-            const desc = [...numbers].sort((a, b) => b - a);
-            total = desc[0];
-            price = desc[1] >= 250 ? desc[1] : desc[0];
-            qty = price > 0 ? Math.max(1, Math.round(total / price)) : 1;
-            total = qty * price;
-        } else if (!foundProduct && numbers.length === 1) {
-            if (numbers[0] >= 250) { price = numbers[0]; total = numbers[0]; }
-            else { qty = Math.max(1, numbers[0]); }
-        }
-
-        const cleanName = work
-            .replace(/\b\d{1,3}(?:,\d{3})+\b/g, ' ')
-            .replace(/(?<![A-Za-z])\b\d+\b(?![A-Za-z%])/g, ' ')
-            .replace(/\s+/g, ' ')
-            .trim();
-
-        if (cleanName.length < 2) return null;
-        return {
-            id: Date.now() + Math.random(),
-            name: cleanName,
-            qty,
-            price,
-            total,
-            date: expiry,
-            fixedBonus: 0,
-            pct: defaultPct
-        };
-    }
-
-    function parsePastedLinesToTable(text) {
-        const raw = (text || '').trim();
-        if (!raw) return;
-        const defaultPct = clampPct(document.getElementById('imgBonusPctSelect').value);
-        const lines = raw.split(/\n+/);
-        const rows = [];
-        lines.forEach(l => {
-            const r = parseSingleLineSmart(l, defaultPct);
-            if (r) rows.push(r);
-        });
-        if (rows.length > 0) {
-            imgRows = rows;
-            renderImgRows();
-            document.getElementById('ocrProgressBanner').textContent = `✅ تم تحويل ${rows.length} مادة إلى الجدول بدقة — راجع أو احفظ مباشرة.`;
-        }
-    }
-
-    function preprocessImageForOCR(file) {
-        return new Promise((resolve, reject) => {
-            const img = new Image();
-            img.onload = () => {
-                const scale = img.width < 1800 ? Math.min(2.5, 2000 / img.width) : 1;
-                const w = Math.round(img.width * scale);
-                const h = Math.round(img.height * scale);
-                const canvas = document.createElement('canvas');
-                canvas.width = w;
-                canvas.height = h;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, w, h);
-                const imgData = ctx.getImageData(0, 0, w, h);
-                const d = imgData.data;
-                for (let i = 0; i < d.length; i += 4) {
-                    const gray = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
-                    const v = gray < 165 ? 0 : 255;
-                    d[i] = d[i + 1] = d[i + 2] = v;
-                }
-                ctx.putImageData(imgData, 0, 0);
-                resolve(canvas.toDataURL('image/png'));
-            };
-            img.onerror = reject;
-            img.src = URL.createObjectURL(file);
-        });
-    }
-
-    async function processImageAndExtract(ev) {
-        const file = ev.target.files[0];
-        if (!file) return;
-        const imgEl = document.getElementById('listImgPreview');
-        imgEl.src = URL.createObjectURL(file);
-        imgEl.style.display = 'block';
-
-        const banner = document.getElementById('ocrProgressBanner');
-        const defaultPct = clampPct(document.getElementById('imgBonusPctSelect').value);
-        banner.textContent = '⏳ جاري قراءة الصورة وتدقيق الأسطر...';
-
-        try {
-            const processedDataUrl = await preprocessImageForOCR(file);
-            const result = await Tesseract.recognize(processedDataUrl, 'eng+ara', {
-                logger: m => {
-                    if (m.status === 'recognizing text') {
-                        banner.textContent = `⏳ جاري استخراج بيانات الصورة... (${Math.round((m.progress || 0) * 100)}%)`;
-                    }
-                }
-            });
-
-            const lines = (result.data.text || '').split(/\n+/);
-            const parsed = [];
-            lines.forEach(line => {
-                const row = parseSingleLineSmart(line, defaultPct);
-                if (row) parsed.push(row);
-            });
-
-            if (parsed.length > 0) {
-                imgRows = parsed;
-                renderImgRows();
-                banner.textContent = `✅ تم استخراج ${parsed.length} سطر من الصورة — راجع الأرقام والأسماء وعدّل أي خانة قبل الحفظ.`;
-            } else {
-                banner.textContent = '⚠️ قراءة المتصفح لم تلتقط الأسطر بوضوح — يمكنك إدخال الأسطر يدوياً أو لصقها في الصندوق أعلاه لتحويلها فوراً.';
-            }
-        } catch {
-            banner.textContent = '⚠️ تعذر استخراج النص تلقائياً من الصورة.';
-        }
-
-        ev.target.value = '';
-    }
-
-    function addImgRow() {
-        const defaultPct = clampPct(document.getElementById('imgBonusPctSelect').value);
-        imgRows.push({ id: Date.now() + Math.random(), name: '', qty: 1, price: 0, total: 0, date: '', fixedBonus: 0, pct: defaultPct });
-        renderImgRows();
-    }
-
-    function editImgRow(idx, field, val) {
-        if (!imgRows[idx]) return;
-        if (field === 'qty' || field === 'price') {
-            imgRows[idx][field] = n(val);
-            imgRows[idx].total = imgRows[idx].qty * imgRows[idx].price;
-        } else if (field === 'total' || field === 'fixedBonus') {
-            imgRows[idx][field] = n(val);
-        } else if (field === 'pct') {
-            imgRows[idx].pct = clampPct(val);
-        } else {
-            imgRows[idx][field] = val;
-        }
-        renderImgRows();
-    }
-
-    function removeImgRow(idx) {
-        imgRows.splice(idx, 1);
-        renderImgRows();
-    }
-
-    function clearImgRows() {
-        imgRows = [];
-        renderImgRows();
-    }
-
-    function renderImgRows() {
-        const body = document.getElementById('imgRowsBody');
-        let sumBonus = 0;
-        let sumTotal = 0;
-
-        if (!imgRows.length) {
-            body.innerHTML = '<tr><td colspan="10" style="text-align:center; color:var(--muted);">لا توجد مواد في الجدول حالياً</td></tr>';
-            document.getElementById('imgExtractedCount').textContent = '0';
-            document.getElementById('imgExtractedBonus').textContent = '0';
-            document.getElementById('imgExtractedTotal').textContent = '0 د.ع';
-            return;
-        }
-
-        body.innerHTML = imgRows.map((r, i) => {
-            const bTotal = calcBonusTotal(r.qty, r.fixedBonus, r.pct);
-            const rowTot = n(r.total) || (n(r.qty) * n(r.price));
-            sumBonus += bTotal;
-            sumTotal += rowTot;
-
-            return `
-                <tr>
-                    <td>${i + 1}</td>
-                    <td><input value="${r.name}" placeholder="اسم المادة" onchange="editImgRow(${i}, 'name', this.value)" style="min-width:190px; font-weight:700;"></td>
-                    <td><input type="number" value="${r.qty}" min="0" onchange="editImgRow(${i}, 'qty', this.value)" style="max-width:75px;"></td>
-                    <td><input type="number" value="${r.price}" min="0" onchange="editImgRow(${i}, 'price', this.value)" style="max-width:100px;"></td>
-                    <td><input type="number" value="${rowTot}" min="0" onchange="editImgRow(${i}, 'total', this.value)" style="max-width:110px; font-weight:700;"></td>
-                    <td><input value="${r.date}" placeholder="2027-05" onchange="editImgRow(${i}, 'date', this.value)" style="max-width:105px;"></td>
-                    <td><input type="number" value="${r.fixedBonus}" min="0" onchange="editImgRow(${i}, 'fixedBonus', this.value)" style="max-width:75px;"></td>
-                    <td><input type="number" value="${r.pct}" min="0" max="100" onchange="editImgRow(${i}, 'pct', this.value)" style="max-width:75px;"></td>
-                    <td><strong style="color:var(--ok);">${bTotal}</strong></td>
-                    <td><button class="btn btn-bad" style="padding:3px 7px;" onclick="removeImgRow(${i})">✕</button></td>
-                </tr>
-            `;
-        }).join('');
-
-        document.getElementById('imgExtractedCount').textContent = String(imgRows.length);
-        document.getElementById('imgExtractedBonus').textContent = String(sumBonus);
-        document.getElementById('imgExtractedTotal').textContent = sumTotal.toLocaleString() + ' د.ع';
-    }
-
-    function saveImgRowsToPurchases() {
-        const valid = imgRows.filter(r => r.name.trim().length > 0);
-        if (!valid.length) {
-            showToast('الجدول فارغ');
-            return;
-        }
-        const listTitle = document.getElementById('imgListTitle').value.trim() || 'قائمة مذخر';
-        const listDate = document.getElementById('imgListDate').value || new Date().toISOString().slice(0, 10);
-
-        valid.forEach(r => {
-            const tot = n(r.total) || (n(r.qty) * n(r.price));
-            const bTotal = calcBonusTotal(r.qty, r.fixedBonus, r.pct);
-            db.purchases.unshift({
-                id: Date.now() + Math.random(),
-                list: listTitle,
-                date: r.date || listDate,
-                name: r.name.trim(),
-                qty: Math.max(1, n(r.qty)),
-                price: n(r.price),
-                total: tot,
-                bonus: bTotal > 0 ? `${bTotal} (${r.pct}%)` : ''
-            });
-            if (n(r.price) > 0) upsertCatalogPrice(r.name.trim(), n(r.price));
-        });
-
-        saveDB();
-        showToast(`تم حفظ ${valid.length} مادة في المشتريات والأسعار`);
-    }
-
-    /* 1. الصفحة الرئيسية والأسعار المحددة */
-    function onHomeDrugType(val) {
-        const found = db.catalog.find(c => c.name.toLowerCase() === val.trim().toLowerCase());
-        if (found) {
-            document.getElementById('homeSetPrice').value = n(found.price);
-        }
-        refreshHomeCalc();
-    }
-
-    function refreshHomeCalc() {
-        const p = n(document.getElementById('homeSetPrice').value);
-        const q = Math.max(1, n(document.getElementById('homeQty').value));
-        document.getElementById('homeShownPrice').textContent = p.toLocaleString() + ' د.ع';
-        document.getElementById('homeShownTotal').textContent = (p * q).toLocaleString() + ' د.ع';
-    }
-
-    function resetHomeForm() {
-        document.getElementById('homeDrugInput').value = '';
-        document.getElementById('homeSetPrice').value = 0;
-        document.getElementById('homeQty').value = 1;
-        refreshHomeCalc();
-    }
-
-    function upsertCatalogPrice(name, price) {
-        const clean = name.trim();
-        if (!clean) return;
-        const p = n(price);
-        const idx = db.catalog.findIndex(c => c.name.toLowerCase() === clean.toLowerCase());
-        if (idx >= 0) {
-            db.catalog[idx].price = p;
-        } else {
-            db.catalog.unshift({ id: Date.now() + Math.random(), name: clean, price: p });
-        }
-    }
-
-    function addToSaleBasket() {
-        const name = document.getElementById('homeDrugInput').value.trim();
-        const price = n(document.getElementById('homeSetPrice').value);
-        const qty = Math.max(1, n(document.getElementById('homeQty').value));
-        if (!name) {
-            showToast('اكتب اسم العلاج أولاً');
-            return;
-        }
-        upsertCatalogPrice(name, price);
-        basket.push({ id: Date.now() + Math.random(), name, price, qty, total: price * qty });
-        saveDB();
-        renderBasket();
-        resetHomeForm();
-        showToast('تمت إضافة العلاج للسلة');
-    }
-
-    function removeBasketItem(id) {
-        basket = basket.filter(x => x.id !== id);
-        renderBasket();
-    }
-
-    function clearBasket() {
-        basket = [];
-        renderBasket();
-    }
-
-    function renderBasket() {
-        const body = document.getElementById('basketBody');
-        if (!basket.length) {
-            body.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--muted);">أضف علاجاً من الأعلى لبدء البيع</td></tr>';
-            document.getElementById('basketGrandTotal').textContent = '0 د.ع';
-            return;
-        }
-        let sum = 0;
-        body.innerHTML = basket.map((it, i) => {
-            sum += it.total;
-            return `
-                <tr>
-                    <td>${i + 1}</td>
-                    <td><strong>${it.name}</strong></td>
-                    <td>${it.price.toLocaleString()}</td>
-                    <td>${it.qty}</td>
-                    <td><strong>${it.total.toLocaleString()}</strong></td>
-                    <td><button class="btn btn-bad" style="padding:3px 7px;" onclick="removeBasketItem(${it.id})">✕</button></td>
-                </tr>
-            `;
-        }).join('');
-        document.getElementById('basketGrandTotal').textContent = sum.toLocaleString() + ' د.ع';
-    }
-
-    function toggleSaleDebtor() {
-        const isDebt = document.getElementById('salePayType').value === 'debt';
-        document.getElementById('saleDebtorInput').style.display = isDebt ? 'inline-block' : 'none';
-    }
-
-    function confirmSale() {
-        if (!basket.length) {
-            showToast('سلة البيع فارغة');
-            return;
-        }
-        const now = new Date();
-        const dateStr = now.toISOString().slice(0, 10);
-        const timeStr = now.toLocaleTimeString('ar-IQ', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        const payType = document.getElementById('salePayType').value;
-        const debtorName = document.getElementById('saleDebtorInput').value.trim();
-
-        if (payType === 'debt' && !debtorName) {
-            showToast('اكتب اسم المديون');
-            return;
-        }
-
-        let totalBill = 0;
-        basket.forEach(item => {
-            totalBill += item.total;
-            db.sales.unshift({
-                id: Date.now() + Math.random(),
-                date: dateStr,
-                time: timeStr,
-                name: item.name,
-                qty: item.qty,
-                price: item.price,
-                total: item.total,
-                payLabel: payType === 'debt' ? `دين (${debtorName})` : 'نقد'
-            });
-        });
-
-        if (payType === 'debt') {
-            addDebtToPerson(debtorName, basket.map(x => `${x.name} (${x.qty})`).join(' + '), totalBill);
-            document.getElementById('saleDebtorInput').value = '';
-        }
-
-        basket = [];
-        saveDB();
-        renderBasket();
-        showToast(`تم تسجيل البيع (${totalBill.toLocaleString()} د.ع)`);
-    }
-
-    function updateCatalogRowPrice(id, val) {
-        const item = db.catalog.find(c => String(c.id) === String(id));
-        if (!item) return;
-        item.price = n(val);
-        saveDB();
-        showToast('تم تحديث السعر');
-    }
-
-    function renderPriceCatalog() {
-        const q = (document.getElementById('priceTableSearch').value || '').trim().toLowerCase();
-        const list = db.catalog.filter(c => !q || c.name.toLowerCase().includes(q));
-        const body = document.getElementById('priceCatalogBody');
-        document.getElementById('drugsDatalist').innerHTML = db.catalog.map(c => `<option value="${c.name}">`).join('');
-
-        if (!list.length) {
-            body.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--muted);">لم تُحدد أسعار علاجات بعد</td></tr>';
-            return;
-        }
-        body.innerHTML = list.map((c, i) => `
-            <tr>
-                <td>${i + 1}</td>
-                <td><strong>${c.name}</strong></td>
-                <td><strong style="color:var(--ok);">${n(c.price).toLocaleString()} د.ع</strong></td>
-                <td><input type="number" value="${n(c.price)}" min="0" style="max-width:120px;" onchange="updateCatalogRowPrice('${c.id}', this.value)"></td>
-            </tr>
-        `).join('');
-    }
-
-    /* 2. قائمة المبيعات */
-    function renderSalesLog() {
-        const q = (document.getElementById('salesSearch').value || '').trim().toLowerCase();
-        const rows = db.sales.filter(s => !q || s.name.toLowerCase().includes(q) || s.date.includes(q));
-        const body = document.getElementById('salesLogBody');
-        if (!rows.length) {
-            body.innerHTML = '<tr><td colspan="8" style="text-align:center; color:var(--muted);">لا توجد مبيعات مسجلة</td></tr>';
-            return;
-        }
-        body.innerHTML = rows.map((s, i) => `
-            <tr>
-                <td>${i + 1}</td>
-                <td>${s.date}</td>
-                <td>${s.time}</td>
-                <td><strong>${s.name}</strong></td>
-                <td>${s.qty}</td>
-                <td>${n(s.price).toLocaleString()}</td>
-                <td><strong>${n(s.total).toLocaleString()}</strong></td>
-                <td>${s.payLabel}</td>
-            </tr>
-        `).join('');
-    }
-
-    function clearSalesLog() {
-        if (!db.sales.length) return;
-        if (!confirm('مسح سجل المبيعات بالكامل؟')) return;
-        db.sales = [];
-        saveDB();
-    }
-
-    /* 3. قائمة المشتريات */
-    function addPurchaseItem(e) {
-        e.preventDefault();
-        const listName = document.getElementById('purList').value.trim();
-        const date = document.getElementById('purDate').value || new Date().toISOString().slice(0, 10);
-        const name = document.getElementById('purName').value.trim();
-        const qty = Math.max(1, n(document.getElementById('purQty').value));
-        const price = n(document.getElementById('purPrice').value);
-        const bonus = document.getElementById('purBonus').value.trim();
-
-        db.purchases.unshift({
-            id: Date.now() + Math.random(),
-            list: listName,
-            date,
-            name,
-            qty,
-            price,
-            total: qty * price,
-            bonus
-        });
-        upsertCatalogPrice(name, price);
-        saveDB();
-        e.target.reset();
-        showToast('تمت الإضافة للمشتريات');
-    }
-
-    function deletePurchase(id) {
-        db.purchases = db.purchases.filter(p => String(p.id) !== String(id));
-        saveDB();
-    }
-
-    function renderPurchases() {
-        const q = (document.getElementById('purSearch').value || '').trim().toLowerCase();
-        const rows = db.purchases.filter(p => !q || p.name.toLowerCase().includes(q) || p.list.toLowerCase().includes(q));
-        const body = document.getElementById('purchasesBody');
-        if (!rows.length) {
-            body.innerHTML = '<tr><td colspan="9" style="text-align:center; color:var(--muted);">لا توجد مشتريات مسجلة</td></tr>';
-            return;
-        }
-        body.innerHTML = rows.map((p, i) => `
-            <tr>
-                <td>${i + 1}</td>
-                <td><strong>${p.list}</strong></td>
-                <td>${p.date || '—'}</td>
-                <td>${p.name}</td>
-                <td>${p.qty}</td>
-                <td>${n(p.price).toLocaleString()}</td>
-                <td><strong>${n(p.total).toLocaleString()}</strong></td>
-                <td>${p.bonus || '—'}</td>
-                <td><button class="btn btn-bad" style="padding:3px 7px;" onclick="deletePurchase('${p.id}')">✕</button></td>
-            </tr>
-        `).join('');
-    }
-
-    /* 4. قائمة الديون من الألف إلى الياء */
-    function detectLetter(name) {
-        const ch = (name || '').trim().charAt(0);
-        if (['أ', 'إ', 'آ', 'ا'].includes(ch)) return 'أ';
-        if (ch === 'ه') return 'هـ';
-        return ALPHABET.includes(ch) ? ch : 'أ';
-    }
-
-    function initLettersUI() {
-        document.getElementById('debLetterSelect').innerHTML = ALPHABET.filter(l => l !== 'الكل')
-            .map(l => `<option value="${l}">حرف (${l})</option>`).join('');
-
-        document.getElementById('lettersBar').innerHTML = ALPHABET.map(l => `
-            <button class="alpha-btn ${selectedLetter === l ? 'active' : ''}" onclick="chooseLetter('${l}')">${l}</button>
-        `).join('');
-    }
-
-    function chooseLetter(l) {
-        selectedLetter = l;
-        initLettersUI();
-        renderDebtsByLetter();
-    }
-
-    function addDebtToPerson(name, note, amount, forcedLetter = null) {
-        const clean = name.trim();
-        if (!clean) return;
-        const letter = forcedLetter || detectLetter(clean);
-        let person = db.debts.find(d => d.name.toLowerCase() === clean.toLowerCase());
-        if (!person) {
-            person = { id: Date.now() + Math.random(), name: clean, letter, entries: [] };
-            db.debts.push(person);
-        }
-        person.entries.unshift({
-            id: Date.now() + Math.random(),
-            date: new Date().toISOString().slice(0, 10),
-            note: note || 'دين',
-            amount: n(amount)
-        });
-        db.debts.sort((a, b) => a.name.localeCompare(b.name, 'ar'));
-    }
-
-    function saveDebtorEntry(e) {
-        e.preventDefault();
-        const name = document.getElementById('debNameInput').value.trim();
-        const letter = document.getElementById('debLetterSelect').value;
-        const note = document.getElementById('debNoteInput').value.trim();
-        const amount = n(document.getElementById('debAmountInput').value);
-        addDebtToPerson(name, note, amount, letter);
-        saveDB();
-        e.target.reset();
-        showToast('تمت الإضافة على الحرف');
-    }
-
-    function payDebt(id) {
-        const person = db.debts.find(d => String(d.id) === String(id));
-        if (!person) return;
-        const bal = person.entries.reduce((s, x) => s + n(x.amount), 0);
-        const val = prompt(`الرصيد الحالي على (${person.name}): ${bal.toLocaleString()} د.ع\nأدخل مبلغ التسديد:`, bal);
-        if (val === null) return;
-        const paid = n(val);
-        if (paid <= 0) return;
-        person.entries.unshift({
-            id: Date.now() + Math.random(),
-            date: new Date().toISOString().slice(0, 10),
-            note: 'تسديد دفعة',
-            amount: -paid
-        });
-        saveDB();
-    }
-
-    function renderDebtsByLetter() {
-        const q = (document.getElementById('debSearchInput').value || '').trim().toLowerCase();
-        const box = document.getElementById('debtsListArea');
-        document.getElementById('debtorsDatalist').innerHTML = db.debts.map(d => `<option value="${d.name}">`).join('');
-
-        const list = db.debts.filter(d => {
-            const mLetter = selectedLetter === 'الكل' || d.letter === selectedLetter || detectLetter(d.name) === selectedLetter;
-            const mText = !q || d.name.toLowerCase().includes(q);
-            return mLetter && mText;
-        });
-
-        if (!list.length) {
-            box.innerHTML = '<p style="text-align:center; color:var(--muted); padding:12px;">لا توجد أسماء مديونين أو قروبات ضمن هذا الحرف</p>';
-            return;
-        }
-
-        box.innerHTML = list.map(d => {
-            const bal = d.entries.reduce((s, x) => s + n(x.amount), 0);
-            return `
-                <div class="debtor-card">
-                    <div class="debtor-head">
-                        <div>
-                            <strong>👤 ${d.name}</strong>
-                            <span class="badge b-green" style="margin-right:6px;">حرف: ${d.letter || detectLetter(d.name)}</span>
-                        </div>
-                        <div style="display:flex; gap:6px; align-items:center;">
-                            <span class="badge ${bal > 0 ? 'b-red' : 'b-green'}">المطلوب: ${bal.toLocaleString()} د.ع</span>
-                            <button class="btn btn-ok" style="padding:3px 8px;" onclick="payDebt('${d.id}')">💵 تسديد</button>
-                        </div>
-                    </div>
-                    ${d.entries.map(en => `
-                        <div style="font-size:0.8rem; display:flex; justify-content:space-between; padding:4px 0; border-top:1px solid var(--border);">
-                            <span>${en.date} — ${en.note}</span>
-                            <strong style="color:${n(en.amount) < 0 ? 'var(--ok)' : 'var(--bad)'};">${Math.abs(n(en.amount)).toLocaleString()} د.ع</strong>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }).join('');
-    }
-
-    function renderAll() {
-        renderPriceCatalog();
-        renderSalesLog();
-        renderPurchases();
-        renderDebtsByLetter();
-        renderImgRows();
-    }
-
-    document.body.setAttribute('data-theme', db.theme || 'light');
-    initImgBonusSelect();
-    initLettersUI();
-    refreshHomeCalc();
-    renderBasket();
-    renderAll();
-</script>
-</body>
-</html>
+    <div id="p-home" class="page active
